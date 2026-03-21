@@ -1,6 +1,7 @@
-from datetime import datetime
-from SunCastPy.utils import get_request
 from collections import defaultdict
+from datetime import datetime
+
+from SunCastPy.utils import get_request
 
 
 class ShortForecast:
