@@ -16,7 +16,7 @@ def get_request(url: str) -> dict:
         dict: Response of the API call
     """
 
-    response = requests.get(url=url)
+    response = requests.get(url=url, timeout=5)
     response.raise_for_status()
 
     return response.json()
