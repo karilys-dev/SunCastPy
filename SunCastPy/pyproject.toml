@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "SunCastPy"
+version = "0.1.0"
+description = "Starter app to get weather data and estimate if solar panels will charge and if clothes can dry in the sun."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Karilys Collazo", email = "karilys.learn@gmail.com" }]
+
+dependencies = ["requests"]
+
+[project.optional-dependencies]
+dev = ["ruff", "mypy"]
+tests = ["pytest", "pytest-cov", "pytest-html"]
+
+[project.scripts]
+# script_name = module:function
+
+[tool.setuptools]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["*"]
+exclude = ["tests*"]
+
+[tool.setuptools.package-data]
+# Example: include JSON files inside the package
+# "app" = ["*.json"]
+
+# Optional dynamic versioning
+# [tool.setuptools.dynamic]
+# version = { attr = "app.__version__" }
+[tool.pytest.ini_options]
+addopts = """
+    --cov=SunCastPy
+    --cov-report=term-missing
+    --cov-report=html
+    --html=reports/pytest_report.html
+    --self-contained-html
+    """
+
+testpaths = ["tests"]
