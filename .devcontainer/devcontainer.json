@@ -19,6 +19,8 @@
 				"streetsidesoftware.code-spell-checker",
 				"tamasfe.even-better-toml",
 				"ms-vscode.live-server",
+				"njpwerner.autodocstring",
+				"ms-python.pylint"
 			],
 		}
 	},

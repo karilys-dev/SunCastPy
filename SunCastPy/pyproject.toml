@@ -43,3 +43,21 @@ addopts = """
     """
 
 testpaths = ["tests"]
+
+[tool.pylint.main]
+disable = []
+
+[tool.pylint.messages_control]
+enable = [
+    "missing-module-docstring",
+    "missing-class-docstring",
+    "missing-function-docstring",
+]
+
+[tool.pylint.format]
+max-line-length = 88
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+ignore_missing_imports = true

@@ -22,5 +22,15 @@
             "source.fixAll": "explicit",
             "source.organizeImports": "explicit"
         }
-    }
+    },
+    "autoDocstring.docstringFormat": "google",
+    "autoDocstring.startOnNewLine": true,
+    "python.linting.mypyEnabled": true,
+    "pylint.enabled": true,
+    "pylint.args": [
+        "--disable=import-error"
+    ],
+    "mypy-type-checker.args": [
+        "--ignore-missing-imports=True"
+    ]
 }
