@@ -1,0 +1,112 @@
+{
+    "@context": [
+        "https://geojson.org/geojson-ld/geojson-context.jsonld",
+        {
+            "@version": "1.1",
+            "wx": "https://api.weather.gov/ontology#",
+            "s": "https://schema.org/",
+            "geo": "http://www.opengis.net/ont/geosparql#",
+            "unit": "http://codes.wmo.int/common/unit/",
+            "@vocab": "https://api.weather.gov/ontology#",
+            "geometry": {
+                "@id": "s:GeoCoordinates",
+                "@type": "geo:wktLiteral"
+            },
+            "city": "s:addressLocality",
+            "state": "s:addressRegion",
+            "distance": {
+                "@id": "s:Distance",
+                "@type": "s:QuantitativeValue"
+            },
+            "bearing": {
+                "@type": "s:QuantitativeValue"
+            },
+            "value": {
+                "@id": "s:value"
+            },
+            "unitCode": {
+                "@id": "s:unitCode",
+                "@type": "@id"
+            },
+            "forecastOffice": {
+                "@type": "@id"
+            },
+            "forecastGridData": {
+                "@type": "@id"
+            },
+            "publicZone": {
+                "@type": "@id"
+            },
+            "county": {
+                "@type": "@id"
+            }
+        }
+    ],
+    "id": "https://api.weather.gov/points/18.4414,-65.9995",
+    "type": "Feature",
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            -65.9995,
+            18.4414
+        ]
+    },
+    "properties": {
+        "@id": "https://api.weather.gov/points/18.4414,-65.9995",
+        "@type": "wx:Point",
+        "cwa": "SJU",
+        "type": "land",
+        "forecastOffice": "https://api.weather.gov/offices/SJU",
+        "gridId": "SJU",
+        "gridX": 171,
+        "gridY": 129,
+        "forecast": "https://api.weather.gov/gridpoints/SJU/171,129/forecast",
+        "forecastHourly": "https://api.weather.gov/gridpoints/SJU/171,129/forecast/hourly",
+        "forecastGridData": "https://api.weather.gov/gridpoints/SJU/171,129",
+        "observationStations": "https://api.weather.gov/gridpoints/SJU/171,129/stations",
+        "relativeLocation": {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -65.979794,
+                    18.412043
+                ]
+            },
+            "properties": {
+                "city": "Carolina",
+                "state": "PR",
+                "distance": {
+                    "unitCode": "wmoUnit:m",
+                    "value": 3870.101209816
+                },
+                "bearing": {
+                    "unitCode": "wmoUnit:degree_(angle)",
+                    "value": 327
+                }
+            }
+        },
+        "forecastZone": "https://api.weather.gov/zones/forecast/PRZ001",
+        "county": "https://api.weather.gov/zones/county/PRC031",
+        "fireWeatherZone": "https://api.weather.gov/zones/fire/PRZ016",
+        "timeZone": "America/Puerto_Rico",
+        "radarStation": "TJUA",
+        "astronomicalData": {
+            "sunrise": "2026-03-22T06:25:04-04:00",
+            "sunset": "2026-03-22T18:36:32-04:00",
+            "transit": "2026-03-22T12:30:48-04:00",
+            "civilTwilightBegin": "2026-03-22T06:04:23-04:00",
+            "civilTwilightEnd": "2026-03-22T18:57:12-04:00",
+            "nauticalTwilightBegin": "2026-03-22T05:39:02-04:00",
+            "nauticalTwilightEnd": "2026-03-22T19:22:34-04:00",
+            "astronomicalTwilightBegin": "2026-03-22T05:13:35-04:00",
+            "astronomicalTwilightEnd": "2026-03-22T19:48:00-04:00"
+        },
+        "nwr": {
+            "transmitter": "WXJ69",
+            "sameCode": "072031",
+            "areaBroadcast": "https://api.weather.gov/radio/WXJ69/broadcast",
+            "pointBroadcast": "https://api.weather.gov/points/18.4414,-65.9995/radio"
+        }
+    }
+}
