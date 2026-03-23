@@ -6,20 +6,24 @@ from datetime import datetime
 from SunCastPy.utils import get_request
 
 
-class ForecastSummary:
+class Forecast:
     """Extract the forecast and rain probability for each time frame"""
 
     def __init__(self, data: dict) -> None:
         self.short_forecast = data["shortForecast"]
         self.probability_of_precipitation = data["probabilityOfPrecipitation"]["value"]
-        self.long_start_time = data["startTime"]
-        self.long_end_time = data["endTime"]
+        self.start_time = data["startTime"]
+        self.end_time = data["endTime"]
+        self.temperature = data["temperature"]
+        self.temperature_unit = data["temperatureUnit"]
+        self.wind_speed = data["windSpeed"]
+        self.wind_direction = data["windDirection"]
 
     def __repr__(self) -> str:
         return (
             f"forecast = {self.short_forecast}"
-            + f" start = {self._format_hour(self.long_start_time)}"
-            + f" end = {self._format_hour(self.long_end_time)}"
+            + f" start = {self._format_hour(self.start_time)}"
+            + f" end = {self._format_hour(self.end_time)}"
             + f" chance of rain = {self.probability_of_precipitation}"
         )
 
@@ -34,9 +38,9 @@ class LocalWeather:
         _details = get_request(f"https://api.weather.gov/points/{latitude},{longitude}")
         _forecast = _details.get("properties", {}).get("forecastHourly")
         self.periods: list[dict] = get_request(_forecast)["properties"]["periods"]
-        self.short_forecast: list[ForecastSummary] = [ForecastSummary(data=p) for p in self.periods]
+        self.forecast: list[Forecast] = [Forecast(data=p) for p in self.periods]
 
-    def group_by_day_name(self, data: list[ForecastSummary]) -> dict:
+    def group_by_day_name(self, data: list[Forecast]) -> dict:
         """Group the forecast by day of the week
 
         Args:
@@ -50,7 +54,7 @@ class LocalWeather:
 
         for current in data:
             # Parse ISO 8601 string (handles timezone too)
-            dt_str = current.long_start_time
+            dt_str = current.start_time
             dt = datetime.fromisoformat(dt_str)
 
             weekday = dt.strftime("%A")
@@ -59,7 +63,7 @@ class LocalWeather:
 
         return dict(result)
 
-    def group_weather_periods(self, data: list[ForecastSummary], flatten: bool = False) -> dict:
+    def group_weather_periods(self, data: list[Forecast], flatten: bool = False) -> dict:
         """Group the weather periods by forecast name.
 
         Args:
@@ -77,7 +81,7 @@ class LocalWeather:
 
         return dict(result)
 
-    def summarize_time_slots(self, data: list[ForecastSummary]) -> list[ForecastSummary]:
+    def summarize_time_slots(self, data: list[Forecast]) -> list[Forecast]:
         """Join concurrent time slots to tell when the forecast will change.
         E.g. Rain from 6 am - 10 am
 
@@ -88,7 +92,7 @@ class LocalWeather:
             dict: Data with flattened time periods
         """
         # Start with an empty list to avoid having to check the first element in the loop
-        result: list[ForecastSummary] = []
+        result: list[Forecast] = []
 
         for current in data:
             # Make sure the climate stays the same before updating the end time
@@ -100,8 +104,8 @@ class LocalWeather:
                 # Verify that the previous end time matches the current start time
                 # E.g [4-5, 5-6] -> [4-6]
                 if result[-1].probability_of_precipitation == current.probability_of_precipitation:
-                    if result[-1].long_end_time == current.long_start_time:
-                        result[-1].long_end_time = current.long_end_time
+                    if result[-1].end_time == current.start_time:
+                        result[-1].end_time = current.end_time
                 else:
                     # raise ValueError("Expected the previous forecast and time to match but did not")
                     result.append(current)
