@@ -3,8 +3,17 @@ import json
 from pathlib import Path
 
 import pytest
+from SunCastPy.NOAA_Forecast import LocalWeather
 
 TEST_DATA_DIR = Path(__file__).parent.joinpath("data")
+
+
+@pytest.fixture
+def sample_data(mock_get_request):
+    data = {}
+    data["LocalWeather"] = LocalWeather(0, 0)
+    data["Forecast"] = data["LocalWeather"].forecast
+    return data
 
 
 @pytest.fixture
