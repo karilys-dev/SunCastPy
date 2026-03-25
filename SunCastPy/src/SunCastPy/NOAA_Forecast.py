@@ -3,32 +3,32 @@
 from collections import defaultdict
 from datetime import datetime
 
+from pydantic import BaseModel, Field, model_validator
 from SunCastPy.utils import get_request
 
 
-class Forecast:
+class Forecast(BaseModel):
     """Extract the forecast and rain probability for each time frame"""
 
-    def __init__(self, data: dict) -> None:
-        self.short_forecast = data["shortForecast"]
-        self.probability_of_precipitation = data["probabilityOfPrecipitation"]["value"]
-        self.start_time = data["startTime"]
-        self.end_time = data["endTime"]
-        self.temperature = data["temperature"]
-        self.temperature_unit = data["temperatureUnit"]
-        self.wind_speed = data["windSpeed"]
-        self.wind_direction = data["windDirection"]
+    short_forecast: str = Field(alias="shortForecast")
+    start_time: datetime = Field(alias="startTime")
+    end_time: datetime = Field(alias="endTime")
+    temperature: int
+    temperature_unit: str = Field(alias="temperatureUnit")
+    wind_speed: str = Field(alias="windSpeed")
+    wind_direction: str = Field(alias="windDirection")
+    probability_of_precipitation: int
 
-    def __repr__(self) -> str:
-        return (
-            f"forecast = {self.short_forecast}"
-            + f" start = {self._format_hour(self.start_time)}"
-            + f" end = {self._format_hour(self.end_time)}"
-            + f" chance of rain = {self.probability_of_precipitation}"
-        )
+    @model_validator(mode="before")
+    @classmethod
+    def flatten_data(cls, data):
+        pop = data.get("probabilityOfPrecipitation", {})
+        data["probability_of_precipitation"] = pop.get("value")
+        return data
 
-    def _format_hour(self, s) -> str:
-        return datetime.fromisoformat(s).strftime("%-I %p").lower()
+    @property
+    def day_name(self) -> str:
+        return self.start_time.strftime("%A")
 
 
 class LocalWeather:
@@ -38,9 +38,9 @@ class LocalWeather:
         _details = get_request(f"https://api.weather.gov/points/{latitude},{longitude}")
         _forecast = _details.get("properties", {}).get("forecastHourly")
         self.periods: list[dict] = get_request(_forecast)["properties"]["periods"]
-        self.forecast: list[Forecast] = [Forecast(data=p) for p in self.periods]
+        self.forecast: list[Forecast] = [Forecast(**p) for p in self.periods]
 
-    def group_by_day_name(self, data: list[Forecast]) -> dict:
+    def group_by_dayname(self, flatten: bool = False) -> dict:
         """Group the forecast by day of the week
 
         Args:
@@ -51,19 +51,18 @@ class LocalWeather:
             dict: Data classified by the day of the week
         """
         result = defaultdict(list)
+        if flatten:
+            self.forecast = self._summarize_time_slots()
 
-        for current in data:
+        for current in self.forecast:
             # Parse ISO 8601 string (handles timezone too)
-            dt_str = current.start_time
-            dt = datetime.fromisoformat(dt_str)
-
-            weekday = dt.strftime("%A")
+            weekday = current.start_time.strftime("%A")
 
             result[weekday].append(current)
 
         return dict(result)
 
-    def group_weather_periods(self, data: list[Forecast], flatten: bool = False) -> dict:
+    def group_by_forecast(self, flatten: bool = False) -> dict:
         """Group the weather periods by forecast name.
 
         Args:
@@ -75,13 +74,14 @@ class LocalWeather:
         """
         result: dict = defaultdict(list)
         if flatten:
-            data = self.summarize_time_slots(data=data)
-        for current in data:
+            self.forecast = self._summarize_time_slots()
+
+        for current in self.forecast:
             result[current.short_forecast].append(current)
 
         return dict(result)
 
-    def summarize_time_slots(self, data: list[Forecast]) -> list[Forecast]:
+    def _summarize_time_slots(self) -> list[Forecast]:
         """Join concurrent time slots to tell when the forecast will change.
         E.g. Rain from 6 am - 10 am
 
@@ -94,7 +94,7 @@ class LocalWeather:
         # Start with an empty list to avoid having to check the first element in the loop
         result: list[Forecast] = []
 
-        for current in data:
+        for current in self.forecast:
             # Make sure the climate stays the same before updating the end time
             current_forecast = current.short_forecast
             if not result:
@@ -107,7 +107,6 @@ class LocalWeather:
                     if result[-1].end_time == current.start_time:
                         result[-1].end_time = current.end_time
                 else:
-                    # raise ValueError("Expected the previous forecast and time to match but did not")
                     result.append(current)
             else:
                 result.append(current)
