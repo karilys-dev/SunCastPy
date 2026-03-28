@@ -34,13 +34,15 @@ class Forecast(BaseModel):
 class LocalWeather:
     """Run an API call to NOAA given the coordinates to get the local weather"""
 
-    def __init__(self, latitude: float, longitude: float) -> None:
+    def __init__(self, latitude: float, longitude: float, flatten: bool = False) -> None:
         _details = get_request(f"https://api.weather.gov/points/{latitude},{longitude}")
         _forecast = _details.get("properties", {}).get("forecastHourly")
         self.periods: list[dict] = get_request(_forecast)["properties"]["periods"]
         self.forecast: list[Forecast] = [Forecast(**p) for p in self.periods]
+        if flatten:
+            self.forecast = self._summarize_time_slots()
 
-    def group_by_dayname(self, flatten: bool = False) -> dict:
+    def group_by_dayname(self) -> dict:
         """Group the forecast by day of the week
 
         Args:
@@ -51,8 +53,6 @@ class LocalWeather:
             dict: Data classified by the day of the week
         """
         result = defaultdict(list)
-        if flatten:
-            self.forecast = self._summarize_time_slots()
 
         for current in self.forecast:
             # Parse ISO 8601 string (handles timezone too)
@@ -62,7 +62,7 @@ class LocalWeather:
 
         return dict(result)
 
-    def group_by_forecast(self, flatten: bool = False) -> dict:
+    def group_by_forecast(self) -> dict:
         """Group the weather periods by forecast name.
 
         Args:
@@ -73,8 +73,6 @@ class LocalWeather:
             dict: Data with grouped weather forecast names.
         """
         result: dict = defaultdict(list)
-        if flatten:
-            self.forecast = self._summarize_time_slots()
 
         for current in self.forecast:
             result[current.short_forecast].append(current)
@@ -97,13 +95,18 @@ class LocalWeather:
         for current in self.forecast:
             # Make sure the climate stays the same before updating the end time
             current_forecast = current.short_forecast
+            current_date = current.day_name
             if not result:
                 result = [current]
             # See if the previous entry has the same value
             elif result[-1].short_forecast == current_forecast:
                 # Verify that the previous end time matches the current start time
                 # E.g [4-5, 5-6] -> [4-6]
-                if result[-1].probability_of_precipitation == current.probability_of_precipitation:
+                if result[-1].day_name != current_date:
+                    result.append(current)
+                elif (
+                    result[-1].probability_of_precipitation == current.probability_of_precipitation
+                ):
                     if result[-1].end_time == current.start_time:
                         result[-1].end_time = current.end_time
                 else:

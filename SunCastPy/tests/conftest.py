@@ -3,7 +3,15 @@ import json
 from pathlib import Path
 
 import pytest
+from data.expected_forecast_flat import EXPECTED_FLATTENED_FORECAST
+from SunCastPy.logging_config import setup_logging
 from SunCastPy.NOAA_Forecast import LocalWeather
+
+
+@pytest.fixture(scope="session", autouse=True)
+def configure_logging():
+    setup_logging()
+
 
 TEST_DATA_DIR = Path(__file__).parent.joinpath("data")
 DATA_DETAILS = json.loads(TEST_DATA_DIR.joinpath("NOAA_SJU.json").read_text(encoding="utf-8"))
@@ -14,11 +22,14 @@ DATA_FORECAST = json.loads(
 
 @pytest.fixture
 def sample_data(mock_get_request):
-    data = {}
-    data["LocalWeather"] = LocalWeather(0, 0)
-    data["Forecast"] = data["LocalWeather"].forecast
-    data["json_forecast"] = DATA_FORECAST
-    data["json_local_weather_details"] = DATA_DETAILS
+    data = {"expected": {}, "flattened": {}, "default": {}}
+    data["default"]["LocalWeather"] = LocalWeather(0, 0)
+    data["default"]["Forecast"] = data["default"]["LocalWeather"].forecast
+    data["flattened"]["LocalWeather"] = LocalWeather(0, 0, flatten=True)
+    data["flattened"]["Forecast"] = data["flattened"]["LocalWeather"].forecast
+    data["expected"]["LocalWeather"] = DATA_DETAILS
+    data["expected"]["Forecast"] = DATA_FORECAST
+    data["expected"]["ForecastFlat"] = EXPECTED_FLATTENED_FORECAST
     return data
 
 

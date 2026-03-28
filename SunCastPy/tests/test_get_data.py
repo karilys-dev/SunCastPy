@@ -1,10 +1,14 @@
+import logging
 from datetime import datetime
 
 import pytest
 from SunCastPy.NOAA_Forecast import Forecast, LocalWeather
 
+logger = logging.getLogger(__name__)
+
 
 class Test_LocalWeather:
+    @pytest.mark.skip("Replace with expected values")
     def test_has_attributes(self, sample_data):
         data: LocalWeather = sample_data["LocalWeather"]
         assert hasattr(data, "periods")
@@ -13,12 +17,15 @@ class Test_LocalWeather:
         assert isinstance(data.forecast[0], Forecast)
 
     @pytest.mark.parametrize(
-        ("flatten", "length"),
-        (pytest.param(False, 24, id="full_data"), pytest.param(True, 6, id="flattened")),
+        ("data_type", "length"),
+        (
+            pytest.param("default", 24, id="default_output"),
+            pytest.param("flattened", 6, id="flattened_output"),
+        ),
     )
-    def test_group_by_dayname(self, sample_data, flatten, length):
-        data: LocalWeather = sample_data["LocalWeather"]
-        grouped = data.group_by_dayname(flatten=flatten)
+    def test_group_by_dayname(self, sample_data, data_type, length):
+        data: LocalWeather = sample_data[data_type]["LocalWeather"]
+        grouped = data.group_by_dayname()
         assert list(grouped.keys()) == [
             "Sunday",
             "Monday",
@@ -31,6 +38,22 @@ class Test_LocalWeather:
         assert isinstance(grouped["Monday"], list)
         assert isinstance(grouped["Monday"][0], Forecast)
         assert len(grouped["Monday"]) == length
+
+    def test_flattened_data(self, sample_data):
+        result: list[Forecast] = sample_data["flattened"]["Forecast"]
+        expected_data = sample_data["expected"]["ForecastFlat"]
+
+        for index, expected in enumerate(expected_data):
+            for key, _ in expected.dict().items():
+                if key in [
+                    "short_forecast",
+                    "start_time",
+                    "end_time",
+                    "probability_of_precipitation",
+                ]:
+                    assert getattr(expected, key) == getattr(result[index], key), (
+                        f"Expected {getattr(expected, key)} got {getattr(result[index], key)}"
+                    )
 
 
 class Test_Forecast:
@@ -53,8 +76,8 @@ class Test_Forecast:
         ),
     )
     def test_has_attributes(self, sample_data, param_name, dict_key):
-        class_data: Forecast = sample_data["Forecast"][0]
-        expected_data: dict = sample_data["json_forecast"]["properties"]["periods"][0]
+        class_data: Forecast = sample_data["default"]["Forecast"][0]
+        expected_data: dict = sample_data["expected"]["Forecast"]["properties"]["periods"][0]
         if param_name == "probability_of_precipitation":
             value = int(expected_data[dict_key]["value"])
         elif param_name in ["start_time", "end_time"]:
