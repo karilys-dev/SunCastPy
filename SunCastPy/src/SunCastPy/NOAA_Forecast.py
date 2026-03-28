@@ -4,7 +4,7 @@ from collections import defaultdict
 from datetime import datetime
 
 from pydantic import BaseModel, Field, model_validator
-from SunCastPy.utils import get_request
+from SunCastPy.utils.utils import get_request
 
 
 class Forecast(BaseModel):

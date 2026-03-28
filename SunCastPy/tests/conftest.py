@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pytest
 from data.expected_forecast_flat import EXPECTED_FLATTENED_FORECAST
-from SunCastPy.logging_config import setup_logging
 from SunCastPy.NOAA_Forecast import LocalWeather
+from SunCastPy.utils.logging_config import setup_logging
 
 
 @pytest.fixture(scope="session", autouse=True)
