@@ -8,36 +8,39 @@ logger = logging.getLogger(__name__)
 
 
 class Test_LocalWeather:
-    @pytest.mark.skip("Replace with expected values")
-    def test_has_attributes(self, sample_data):
-        data: LocalWeather = sample_data["LocalWeather"]
-        assert hasattr(data, "periods")
-        assert hasattr(data, "forecast")
-        assert isinstance(data.forecast, list)
-        assert isinstance(data.forecast[0], Forecast)
-
     @pytest.mark.parametrize(
-        ("data_type", "length"),
+        ("attribute"),
         (
-            pytest.param("default", 24, id="default_output"),
-            pytest.param("flattened", 6, id="flattened_output"),
+            pytest.param("periods"),
+            pytest.param("forecast"),
         ),
     )
-    def test_group_by_dayname(self, sample_data, data_type, length):
+    def test_has_attributes(self, sample_data, attribute):
+        data: LocalWeather = sample_data["default"]["LocalWeather"]
+        match attribute:
+            case "forecast":
+                assert isinstance(data.forecast, list)
+                assert isinstance(data.forecast[0], Forecast)
+            case "periods":
+                assert isinstance(getattr(data, attribute), list)
+                assert isinstance(getattr(data, attribute)[0], dict)
+
+    @pytest.mark.parametrize(
+        ("data_type"),
+        (
+            pytest.param("default", id="default_output"),
+            pytest.param("flattened", id="flattened_output"),
+        ),
+    )
+    def test_group_by_dayname(self, sample_data, data_type):
         data: LocalWeather = sample_data[data_type]["LocalWeather"]
         grouped = data.group_by_dayname()
-        assert list(grouped.keys()) == [
-            "Sunday",
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-        ]
-        assert isinstance(grouped["Monday"], list)
-        assert isinstance(grouped["Monday"][0], Forecast)
-        assert len(grouped["Monday"]) == length
+        expected = sample_data["expected"]["group_by_dayname"]
+        assert list(grouped.keys()) == list(expected.keys())
+        for day in grouped.keys():
+            assert isinstance(grouped[day], list)
+            assert isinstance(grouped[day][0], Forecast)
+            assert len(grouped[day]) == expected[day][data_type]
 
     def test_flattened_data(self, sample_data):
         result: list[Forecast] = sample_data["flattened"]["Forecast"]
@@ -54,6 +57,23 @@ class Test_LocalWeather:
                     assert getattr(expected, key) == getattr(result[index], key), (
                         f"Expected {getattr(expected, key)} got {getattr(result[index], key)}"
                     )
+
+    @pytest.mark.parametrize(
+        ("data_type"),
+        (
+            pytest.param("default", id="default_output"),
+            pytest.param("flattened", id="flattened_output"),
+        ),
+    )
+    def test_group_by_forecast(self, sample_data, data_type):
+        data: LocalWeather = sample_data[data_type]["LocalWeather"]
+        grouped = data.group_by_forecast()
+        expected = sample_data["expected"]["group_by_forecast"]
+        assert list(grouped.keys()) == list(expected.keys())
+        for forecast in grouped.keys():
+            assert isinstance(grouped[forecast], list)
+            assert isinstance(grouped[forecast][0], Forecast)
+            assert len(grouped[forecast]) == expected[forecast][data_type]
 
 
 class Test_Forecast:

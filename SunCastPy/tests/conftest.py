@@ -30,6 +30,23 @@ def sample_data(mock_get_request):
     data["expected"]["LocalWeather"] = DATA_DETAILS
     data["expected"]["Forecast"] = DATA_FORECAST
     data["expected"]["ForecastFlat"] = EXPECTED_FLATTENED_FORECAST
+    data["expected"]["group_by_dayname"] = {
+        "Sunday 2026-03-22": {"default": 8, "flattened": 3},
+        "Monday 2026-03-23": {"default": 24, "flattened": 6},
+        "Tuesday 2026-03-24": {"default": 24, "flattened": 4},
+        "Wednesday 2026-03-25": {"default": 24, "flattened": 3},
+        "Thursday 2026-03-26": {"default": 24, "flattened": 2},
+        "Friday 2026-03-27": {"default": 24, "flattened": 3},
+        "Saturday 2026-03-28": {"default": 24, "flattened": 3},
+        "Sunday 2026-03-29": {"default": 4, "flattened": 1},
+    }
+    data["expected"]["group_by_forecast"] = {
+        "Chance Rain Showers": {"default": 29, "flattened": 6},
+        "Scattered Rain Showers": {"default": 70, "flattened": 9},
+        "Isolated Rain Showers": {"default": 3, "flattened": 1},
+        "Scattered Showers And Thunderstorms": {"default": 42, "flattened": 7},
+        "Chance Showers And Thunderstorms": {"default": 12, "flattened": 2},
+    }
     return data
 
 
