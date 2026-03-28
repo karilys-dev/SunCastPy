@@ -1,36 +1,36 @@
 {
-    "python-envs.pythonProjects": [
-        {
-            "path": ".",
-            "envManager": "ms-python.python:venv",
-            "packageManager": "ms-python.python:pip"
-        }
-    ],
-    "python.testing.cwd": "${workspaceFolder}/SunCastPy",
-    "python.testing.pytestArgs": [],
-    "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true,
+    "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports": "explicit"
+        },
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true
+    },
     "[toml]": {
         "editor.defaultFormatter": "tamasfe.even-better-toml",
         "editor.formatOnSave": true
     },
-    "[python]": {
-        "editor.defaultFormatter": "charliermarsh.ruff",
-        "editor.formatOnSave": true,
-        "editor.codeActionsOnSave": {
-            "source.fixAll": "explicit",
-            "source.organizeImports": "explicit"
-        }
-    },
     "autoDocstring.docstringFormat": "google",
     "autoDocstring.startOnNewLine": true,
-    "python.linting.mypyEnabled": true,
-    "pylint.enabled": true,
-    "pylint.args": [
-        "--disable=import-error"
-    ],
     "mypy-type-checker.args": [
         "--ignore-missing-imports=True"
     ],
+    "pylint.args": [
+        "--disable=import-error"
+    ],
+    "pylint.enabled": true,
+    "python-envs.pythonProjects": [
+        {
+            "envManager": "ms-python.python:venv",
+            "packageManager": "ms-python.python:pip",
+            "path": "."
+        }
+    ],
+    "python.linting.mypyEnabled": true,
+    "python.testing.cwd": "${workspaceFolder}/SunCastPy",
+    "python.testing.pytestArgs": [],
+    "python.testing.pytestEnabled": true,
+    "python.testing.unittestEnabled": false,
     "ruff.lineLength": 100
 }
