@@ -47,7 +47,7 @@ class Test_LocalWeather:
         expected_data = sample_data["expected"]["ForecastFlat"]
 
         for index, expected in enumerate(expected_data):
-            for key, _ in expected.dict().items():
+            for key, _ in expected.model_dump().items():
                 if key in [
                     "short_forecast",
                     "start_time",
