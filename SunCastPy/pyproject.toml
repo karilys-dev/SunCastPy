@@ -37,11 +37,13 @@ exclude = ["test*"]
 addopts = """
     --cov=SunCastPy
     --cov-report=term-missing
-    --cov-report=html
-    --html=reports/pytest_report.html
+    --cov-fail-under=90
+    --cov-report=html:reports/coverage
+    --html=reports/pytest-report.html
     --self-contained-html
+    -p no:cacheprovider
     -vv
-    """
+"""
 
 testpaths = ["tests"]
 
