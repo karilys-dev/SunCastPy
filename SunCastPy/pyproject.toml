@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 authors = [{ name = "Karilys Collazo", email = "karilys.learn@gmail.com" }]
 
-dependencies = ["requests"]
+dependencies = ["requests", "pydantic"]
 
 [project.optional-dependencies]
 dev = ["ruff", "mypy"]
@@ -24,7 +24,7 @@ tests = ["pytest", "pytest-cov", "pytest-html"]
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["*"]
-exclude = ["tests*"]
+exclude = ["test*"]
 
 [tool.setuptools.package-data]
 # Example: include JSON files inside the package
@@ -40,10 +40,17 @@ addopts = """
     --cov-report=html
     --html=reports/pytest_report.html
     --self-contained-html
+    -vv
     """
 
 testpaths = ["tests"]
 
+[tool.coverage.run]
+source = ["src"]
+omit = ["*/conftest.py", "*/test/*", "*/tests/*"]
+
+[tool.coverage.report]
+omit = ["*/conftest.py", "*/test/*", "*/tests/*"]
 [tool.pylint.main]
 disable = []
 
