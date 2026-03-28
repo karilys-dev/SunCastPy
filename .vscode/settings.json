@@ -6,9 +6,8 @@
             "packageManager": "ms-python.python:pip"
         }
     ],
-    "python.testing.pytestArgs": [
-        "SunCastPy"
-    ],
+    "python.testing.cwd": "${workspaceFolder}/SunCastPy",
+    "python.testing.pytestArgs": [],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "[toml]": {
@@ -32,5 +31,6 @@
     ],
     "mypy-type-checker.args": [
         "--ignore-missing-imports=True"
-    ]
+    ],
+    "ruff.lineLength": 100
 }
