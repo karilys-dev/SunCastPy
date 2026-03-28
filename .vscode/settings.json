@@ -5,7 +5,7 @@
             "source.organizeImports": "explicit"
         },
         "editor.defaultFormatter": "charliermarsh.ruff",
-        "editor.formatOnSave": true
+        "editor.formatOnSave": true,
     },
     "[toml]": {
         "editor.defaultFormatter": "tamasfe.even-better-toml",
@@ -20,13 +20,6 @@
         "--disable=import-error"
     ],
     "pylint.enabled": true,
-    "python-envs.pythonProjects": [
-        {
-            "envManager": "ms-python.python:venv",
-            "packageManager": "ms-python.python:pip",
-            "path": "."
-        }
-    ],
     "python.linting.mypyEnabled": true,
     "python.testing.cwd": "${workspaceFolder}/SunCastPy",
     "python.testing.pytestArgs": [],
