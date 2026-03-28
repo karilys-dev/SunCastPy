@@ -56,7 +56,7 @@ class LocalWeather:
 
         for current in self.forecast:
             # Parse ISO 8601 string (handles timezone too)
-            weekday = current.start_time.strftime("%A")
+            weekday = current.start_time.strftime("%A %Y-%m-%d")
 
             result[weekday].append(current)
 
