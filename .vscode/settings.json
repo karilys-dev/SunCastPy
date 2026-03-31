@@ -17,7 +17,7 @@
         "--ignore-missing-imports=True"
     ],
     "pylint.args": [
-        "--disable=import-error"
+        "--disable=import-error,    w1203"
     ],
     "pylint.enabled": true,
     "python.linting.mypyEnabled": true,
@@ -25,5 +25,12 @@
     "python.testing.pytestArgs": [],
     "python.testing.pytestEnabled": true,
     "python.testing.unittestEnabled": false,
-    "ruff.lineLength": 100
+    "ruff.lineLength": 100,
+    "python-envs.pythonProjects": [
+        {
+            "path": ".",
+            "envManager": "ms-python.python:venv",
+            "packageManager": "ms-python.python:pip"
+        }
+    ]
 }

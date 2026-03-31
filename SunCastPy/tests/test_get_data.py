@@ -34,7 +34,7 @@ class Test_LocalWeather:
     )
     def test_group_by_dayname(self, sample_data, data_type):
         data: LocalWeather = sample_data[data_type]["LocalWeather"]
-        grouped = data.group_by_dayname()
+        grouped = data.group_by_date()
         expected = sample_data["expected"]["group_by_dayname"]
         assert list(grouped.keys()) == list(expected.keys())
         for day in grouped.keys():

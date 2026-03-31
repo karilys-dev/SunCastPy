@@ -64,10 +64,10 @@ def mock_get_request(monkeypatch):
     def fake_get_request(url: str):
         if url == "https://api.weather.gov/points/0,0":
             return DATA_DETAILS
-
-        if DATA_DETAILS["properties"]["forecastHourly"] in url:
+        elif DATA_DETAILS["properties"]["forecastHourly"] in url:
             return DATA_FORECAST
-
+        elif DATA_DETAILS["properties"]["forecastZone"] in url:
+            return {"properties": {"name": "San Juan and Vicinity"}}
         raise ValueError(f"Unexpected URL: {url}")
 
     monkeypatch.setattr("SunCastPy.NOAA_Forecast.get_request", fake_get_request)
