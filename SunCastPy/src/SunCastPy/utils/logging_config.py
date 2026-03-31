@@ -3,14 +3,15 @@ import sys
 
 
 def setup_logging(level=logging.INFO):
-    logger = logging.getLogger()
-    logger.setLevel(level)
+    root = logging.getLogger()
+    root.setLevel(level)
 
-    # Avoid duplicate handlers if called multiple times
-    if not logger.handlers:
+    if not root.handlers:
         handler = logging.StreamHandler(sys.stdout)
+        if level == logging.DEBUG:
+            formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(name)s | %(message)s")
+        else:
+            formatter = logging.Formatter("[%(levelname)s]\t%(message)s")
 
-        formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(name)s | %(message)s")
         handler.setFormatter(formatter)
-
-        logger.addHandler(handler)
+        root.addHandler(handler)
