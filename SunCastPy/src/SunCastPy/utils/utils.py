@@ -24,13 +24,29 @@ def get_request(url: str) -> dict:
     return response.json()
 
 
-def format_hour(s) -> str:
+def format_hour(hour: str | datetime) -> str:
     """Convert a datetime string to hour E.g. 4 pm
 
     Args:
-        s (string): datetime string
+        hour (string): datetime string
 
     Returns:
         str: Hour with units. E.g. 4 pm
     """
-    return datetime.fromisoformat(s).strftime("%-I %p").lower()
+    if isinstance(hour, str):
+        hour = datetime.fromisoformat(hour)
+    return hour.strftime("%-I %p").lower()
+
+
+def format_date(date: str | datetime) -> str:
+    """Convert a datetime string to hour E.g. 4 pm
+
+    Args:
+        date (string): datetime string
+
+    Returns:
+        str: Formatted date %A %Y-%m-%d. E.g. Monday 2026-12-31
+    """
+    if isinstance(date, str):
+        date = datetime.fromisoformat(date)
+    return date.strftime("%A %Y-%m-%d")
