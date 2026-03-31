@@ -55,7 +55,7 @@ class LocalWeather:
             get_request(_details["properties"]["forecastZone"]).get("properties", {}).get("name")
         )
 
-    def group_by_dayname(self) -> dict:
+    def group_by_date(self) -> dict:
         """Group the forecast by day of the week
 
         Args:
