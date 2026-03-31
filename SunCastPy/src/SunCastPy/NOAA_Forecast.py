@@ -43,17 +43,15 @@ class LocalWeather:
     """Run an API call to NOAA given the coordinates to get the local weather"""
 
     def __init__(self, latitude: float, longitude: float, flatten: bool = False) -> None:
-        _details: dict[str, str] = get_request(
+        _details: dict[str, dict[str, str]] = get_request(
             f"https://api.weather.gov/points/{latitude},{longitude}"
         )
-        _forecast = _details.get("properties", {}).get("forecastHourly")
+        _forecast: str = _details["properties"]["forecastHourly"]
         self.periods: list[dict] = get_request(_forecast)["properties"]["periods"]
         self.forecast: list[Forecast] = [Forecast(**p) for p in self.periods]
         if flatten:
             self.forecast = self._summarize_time_slots()
-        self.location = (
-            get_request(_details["properties"]["forecastZone"]).get("properties", {}).get("name")
-        )
+        self.location = get_request(_details["properties"]["forecastZone"])["properties"]["name"]
 
     def group_by_date(self) -> dict:
         """Group the forecast by day of the week
