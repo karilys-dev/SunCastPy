@@ -4,7 +4,7 @@ from collections import defaultdict
 from datetime import datetime
 
 from pydantic import BaseModel, Field, model_validator
-from SunCastPy.utils.utils import get_request
+from SunCastPy.utils.utils import format_date, format_hour, get_request
 
 
 class Forecast(BaseModel):
@@ -30,17 +30,30 @@ class Forecast(BaseModel):
     def day_name(self) -> str:
         return self.start_time.strftime("%A")
 
+    def __str__(self) -> str:
+        return (
+            f"{format_date(self.start_time)}"
+            + f"\t{format_hour(self.start_time)} - {format_hour(self.end_time)}"
+            + f"\tForecast = {self.short_forecast}\t"
+            + f"\tProbability of Precipitation =  {self.probability_of_precipitation}"
+        )
+
 
 class LocalWeather:
     """Run an API call to NOAA given the coordinates to get the local weather"""
 
     def __init__(self, latitude: float, longitude: float, flatten: bool = False) -> None:
-        _details = get_request(f"https://api.weather.gov/points/{latitude},{longitude}")
+        _details: dict[str, str] = get_request(
+            f"https://api.weather.gov/points/{latitude},{longitude}"
+        )
         _forecast = _details.get("properties", {}).get("forecastHourly")
         self.periods: list[dict] = get_request(_forecast)["properties"]["periods"]
         self.forecast: list[Forecast] = [Forecast(**p) for p in self.periods]
         if flatten:
             self.forecast = self._summarize_time_slots()
+        self.location = (
+            get_request(_details["properties"]["forecastZone"]).get("properties", {}).get("name")
+        )
 
     def group_by_dayname(self) -> dict:
         """Group the forecast by day of the week
@@ -56,7 +69,7 @@ class LocalWeather:
 
         for current in self.forecast:
             # Parse ISO 8601 string (handles timezone too)
-            weekday = current.start_time.strftime("%A %Y-%m-%d")
+            weekday = format_date(current.start_time)
 
             result[weekday].append(current)
 
