@@ -1,11 +1,10 @@
 {
 	"name": "SunCastPy",
-	"image": "weather:latest",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspace",
 	"remoteUser": "devuser",
 	"updateRemoteUserUID": true,
-	"containerEnv": {
-		"ARTIFACTS_DIR": "/artifacts",
-	},
 	"postCreateCommand": "bash ./scripts/docker-postCreateCommand.sh",
 	"customizations": {
 		"vscode": {

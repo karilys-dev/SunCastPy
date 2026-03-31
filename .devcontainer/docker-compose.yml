@@ -1,0 +1,18 @@
+services:
+  app:
+    image: "weather:latest"
+
+    volumes:
+      - ..:/workspace:cached
+
+    working_dir: /workspace
+
+    env_file:
+      - .env
+
+    environment:
+      LATITUDE: ${LATITUDE:?Missing Variable}
+      LONGITUDE: ${LONGITUDE:?Missing Variable}
+      ARTIFACTS_DIR: /tmp/artifacts
+
+    command: sleep infinity
