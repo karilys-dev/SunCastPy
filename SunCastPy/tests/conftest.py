@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 from data.expected_forecast_flat import EXPECTED_FLATTENED_FORECAST
-from SunCastPy.NOAA_Forecast import LocalWeather
+from SunCastPy.Forecast.NOAA_Forecast import LocalWeather
 from SunCastPy.utils.logging_config import setup_logging
 
 
@@ -70,4 +70,4 @@ def mock_get_request(monkeypatch):
             return {"properties": {"name": "San Juan and Vicinity"}}
         raise ValueError(f"Unexpected URL: {url}")
 
-    monkeypatch.setattr("SunCastPy.NOAA_Forecast.get_request", fake_get_request)
+    monkeypatch.setattr("SunCastPy.Forecast.NOAA_Forecast.get_request", fake_get_request)

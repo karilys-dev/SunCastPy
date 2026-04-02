@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 
 import pytest
-from SunCastPy.NOAA_Forecast import Forecast, LocalWeather
+from SunCastPy.Forecast.NOAA_Forecast import Forecast, LocalWeather
 
 logger = logging.getLogger(__name__)
 
