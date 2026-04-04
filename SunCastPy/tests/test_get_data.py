@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 
 import pytest
-from SunCastPy.Forecast.NOAA_Forecast import Forecast, LocalWeather
+from SunCastPy.Forecast.NOAA_Local_Forecast import Forecast, LocalWeather
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +34,7 @@ class Test_LocalWeather:
     )
     def test_group_by_dayname(self, sample_data, data_type):
         data: LocalWeather = sample_data[data_type]["LocalWeather"]
-        grouped = data.group_by_date()
+        grouped = data.weekly().weekly
         expected = sample_data["expected"]["group_by_dayname"]
         assert list(grouped.keys()) == list(expected.keys())
         for day in grouped.keys():
