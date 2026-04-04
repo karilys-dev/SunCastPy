@@ -1,42 +1,10 @@
 """Get the weather forecast by coordinates from the NOAA API"""
 
 from collections import defaultdict
-from datetime import datetime
 
-from pydantic import BaseModel, Field, model_validator
-from SunCastPy.utils.utils import format_date, format_hour, get_request
-
-
-class Forecast(BaseModel):
-    """Extract the forecast and rain probability for each time frame"""
-
-    short_forecast: str = Field(alias="shortForecast")
-    start_time: datetime = Field(alias="startTime")
-    end_time: datetime = Field(alias="endTime")
-    temperature: int
-    temperature_unit: str = Field(alias="temperatureUnit")
-    wind_speed: str = Field(alias="windSpeed")
-    wind_direction: str = Field(alias="windDirection")
-    probability_of_precipitation: int
-
-    @model_validator(mode="before")
-    @classmethod
-    def flatten_data(cls, data):
-        pop = data.get("probabilityOfPrecipitation", {})
-        data["probability_of_precipitation"] = pop.get("value")
-        return data
-
-    @property
-    def day_name(self) -> str:
-        return self.start_time.strftime("%A")
-
-    def __str__(self) -> str:
-        return (
-            f"{format_date(self.start_time)}"
-            + f"\t{format_hour(self.start_time)} - {format_hour(self.end_time)}"
-            + f"\tForecast = {self.short_forecast}\t"
-            + f"\tProbability of Precipitation =  {self.probability_of_precipitation}"
-        )
+from SunCastPy.Forecast.Base_Forecast import Forecast
+from SunCastPy.Forecast.Weekly_Forecast import WeeklyForecast
+from SunCastPy.utils.utils import get_request
 
 
 class LocalWeather:
@@ -52,26 +20,6 @@ class LocalWeather:
         if flatten:
             self.forecast = self._summarize_time_slots()
         self.location = get_request(_details["properties"]["forecastZone"])["properties"]["name"]
-
-    def group_by_date(self) -> dict:
-        """Group the forecast by day of the week
-
-        Args:
-            data (list[ShortForecast]): Forecast item containing the day of the week and
-            the ShortForecast data
-
-        Returns:
-            dict: Data classified by the day of the week
-        """
-        result = defaultdict(list)
-
-        for current in self.forecast:
-            # Parse ISO 8601 string (handles timezone too)
-            weekday = format_date(current.start_time)
-
-            result[weekday].append(current)
-
-        return dict(result)
 
     def group_by_forecast(self) -> dict:
         """Group the weather periods by forecast name.
@@ -89,6 +37,10 @@ class LocalWeather:
             result[current.short_forecast].append(current)
 
         return dict(result)
+
+    def weekly(self) -> WeeklyForecast:
+        """Return a WeeklyForecast view of the data."""
+        return WeeklyForecast(self.forecast)
 
     def _summarize_time_slots(self) -> list[Forecast]:
         """Join concurrent time slots to tell when the forecast will change.
