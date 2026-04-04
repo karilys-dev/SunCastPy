@@ -27,7 +27,7 @@ class Forecast(BaseModel):
     def day_name(self) -> str:
         return self.start_time.strftime("%A")
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # pragma: no cover
         return (
             f"{format_date(self.start_time)}"
             + f"\t{format_hour(self.start_time)} - {format_hour(self.end_time)}"
