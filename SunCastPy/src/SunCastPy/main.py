@@ -1,6 +1,7 @@
 import logging
 
-from SunCastPy.Forecast.NOAA_Forecast import Forecast, LocalWeather
+from SunCastPy.Forecast.Base_Forecast import Forecast
+from SunCastPy.Forecast.NOAA_Local_Forecast import LocalWeather
 from SunCastPy.utils.cli_args import parse_args
 from SunCastPy.utils.logging_config import setup_logging
 
