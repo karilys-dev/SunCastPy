@@ -36,6 +36,8 @@ class WeeklyForecast:
         """
         current_day: datetime = datetime.today()
         result: dict[str, Forecast] = {}
+        if days > len(self.weekly.keys()):
+            raise ValueError("Number of days is more than data contents")
         for i in range(days):
             day = current_day + timedelta(days=i)
             key = format_date(day)
