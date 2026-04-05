@@ -16,18 +16,7 @@ class Test_Weekly_Forecast:
             pytest.param("flattened", id="flattened_output"),
         ),
     )
-    def test_group_by_dayname(self, monkeypatch, sample_data, data_type):
-
-        # Define the fake date
-        today_mock = datetime(2026, 3, 22)
-
-        class MockDate(datetime):
-            @classmethod
-            def today(cls):
-                return today_mock
-
-        # Replace the date class in the module where it's used
-        monkeypatch.setattr("SunCastPy.Forecast.Weekly_Forecast.datetime", MockDate)
+    def test_group_by_dayname(self, sample_data, data_type, mock_datetime_today, today_str):
 
         data: LocalWeather = sample_data[data_type]["LocalWeather"]
         weekly_object: WeeklyForecast = data.weekly()
@@ -51,5 +40,22 @@ class Test_Weekly_Forecast:
             if day != duplicate_dayname:
                 dayname = datetime.strptime(day, "%A %Y-%m-%d").strftime("%A").lower()
                 assert getattr(weekly_object, dayname) == grouped[day]
-                if day == format_date(today_mock):
+                if day == format_date(today_str):
                     assert weekly_object.today == grouped[day]
+
+    def test_get_next_days_limit(self, sample_data, mock_datetime_today, today_str):
+        data: LocalWeather = sample_data["default"]["LocalWeather"]
+        with pytest.raises(ValueError, match="Number of days is more than data contents"):
+            data.weekly().get_next_days(days=10)
+
+    def test_get_next_days(self, sample_data, mock_datetime_today, today_str):
+        data: LocalWeather = sample_data["default"]["LocalWeather"]
+        assert len(data.weekly().weekly) == 7 + 1
+        limit = 3
+        shortened_value = data.weekly().get_next_days(limit)
+        assert len(shortened_value) == limit
+        # Confirm ['Sunday 2026-03-22', 'Monday 2026-03-23', 'Tuesday 2026-03-24']
+        assert (
+            list(shortened_value.keys())[:limit]
+            == list(sample_data["expected"]["group_by_dayname"].keys())[:limit]
+        )

@@ -1,5 +1,6 @@
 # Importing the Pytest library
 import json
+from datetime import datetime
 from pathlib import Path
 
 import pytest
@@ -71,3 +72,18 @@ def mock_get_request(monkeypatch):
         raise ValueError(f"Unexpected URL: {url}")
 
     monkeypatch.setattr("SunCastPy.Forecast.NOAA_Local_Forecast.get_request", fake_get_request)
+
+
+@pytest.fixture
+def today_str():
+    return datetime(2026, 3, 22)
+
+
+@pytest.fixture
+def mock_datetime_today(monkeypatch, today_str):
+    class MockDateTime:
+        @classmethod
+        def today(cls):
+            return today_str
+
+    monkeypatch.setattr("SunCastPy.Forecast.Weekly_Forecast.datetime", MockDateTime)
