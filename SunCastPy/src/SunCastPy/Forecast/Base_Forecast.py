@@ -29,7 +29,7 @@ class Forecast(BaseModel):
 
     def __str__(self) -> str:  # pragma: no cover
         return (
-            f"{format_date(self.start_time)}"
+            f"{format_date(self.start_time, dayname=False)}"
             + f"\t{format_hour(self.start_time)} - {format_hour(self.end_time)}"
             + f"\tForecast = {self.short_forecast}\t"
             + f"\tProbability of Precipitation =  {self.probability_of_precipitation}"

@@ -38,7 +38,7 @@ def format_hour(hour: str | datetime) -> str:
     return hour.strftime("%-I:%M %p").lower()
 
 
-def format_date(date: str | datetime) -> str:
+def format_date(date: str | datetime, dayname=True) -> str:
     """Format datetime %A %Y-%m-%d. E.g. Monday YYYY-MM-DD
 
     Args:
@@ -49,4 +49,7 @@ def format_date(date: str | datetime) -> str:
     """
     if isinstance(date, str):
         date = datetime.fromisoformat(date)
-    return date.strftime("%A %Y-%m-%d")
+    if dayname:
+        return date.strftime("%A %Y-%m-%d")
+    else:
+        return date.strftime("%Y-%m-%d")

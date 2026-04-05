@@ -32,4 +32,5 @@ class Test_Utils:
         ),
     )
     def test_format_date(self, attribute):
-        assert "Wednesday 2024-12-25" == utils.format_date(attribute)
+        assert "Wednesday 2024-12-25" == utils.format_date(attribute, dayname=True)
+        assert "2024-12-25" == utils.format_date(attribute, dayname=False)
