@@ -24,18 +24,26 @@ def weather_parser() -> argparse.ArgumentParser:
 
     parser.add_argument(
         "--flatten",
-        action="store_true",
-        help="Flatten the output structure (flag, defaults to False)",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Flatten the output structure (flag, defaults to True)",
     )
 
     parser.add_argument(
         "--group-by",
+        "-g",
         type=str,
         choices=["forecast", "date"],
         default=None,
         help="Optional grouping strategy: 'forecast' or 'date'",
     )
-
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=1,
+        choices=range(1, 8),
+        help="Limit the forecast days to show",
+    )
     return parser
 
 
