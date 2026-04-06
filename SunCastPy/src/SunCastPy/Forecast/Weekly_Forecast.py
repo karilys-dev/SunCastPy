@@ -25,7 +25,7 @@ class WeeklyForecast:
                 if format_date(datetime.today()) == key:
                     setattr(self, "today", value)
 
-    def get_next_days(self, days: int) -> dict[str, Forecast]:
+    def get_next_days(self, days: int) -> dict[str, list[Forecast]]:
         """Limit the forecast to the next input days
 
         Args:
@@ -35,7 +35,7 @@ class WeeklyForecast:
             dict[str, Forecast]: Dictionary of forecast list with limited days
         """
         current_day: datetime = datetime.today()
-        result: dict[str, Forecast] = {}
+        result: dict[str, list[Forecast]] = {}
         if days > len(self.weekly.keys()):
             raise ValueError("Number of days is more than data contents")
         for i in range(days):
