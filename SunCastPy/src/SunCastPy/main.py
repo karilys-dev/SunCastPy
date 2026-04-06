@@ -10,13 +10,14 @@ logger = logging.getLogger(__name__)
 
 
 def filter_current_weather(
-    result: LocalWeather, group_by: str
+    result: LocalWeather, group_by: str, limit: int
 ) -> dict[str, list[Forecast]] | LocalWeather:
     """Filter the weather by forecast or date
 
     Args:
         result (LocalWeather): data to group
         group_by (str): [forecast, date]
+        limit (int): limit of days to show
 
     Returns:
         dict[str, list[Forecast]] | LocalWeather: Grouped data
@@ -25,7 +26,7 @@ def filter_current_weather(
         case "forecast":
             return result.group_by_forecast()
         case "date":
-            return result.group_by_date()
+            return result.weekly().get_next_days(days=limit)
         case _:
             logger.warning("Did not group the data")
             return result
@@ -68,7 +69,11 @@ def main(args=parse_args()):
     logger.info(f"Forecast for {current_weather.location}")
 
     if args.group_by:
-        current_weather = filter_current_weather(result=current_weather, group_by=args.group_by)
+        current_weather = filter_current_weather(
+            result=current_weather,
+            group_by=args.group_by,
+            limit=args.limit,
+        )
 
     print_current_weather(current_weather=current_weather)
 
