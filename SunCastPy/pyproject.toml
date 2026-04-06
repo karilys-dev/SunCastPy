@@ -17,7 +17,7 @@ dev = ["ruff", "mypy"]
 tests = ["pytest", "pytest-cov", "pytest-html"]
 
 [project.scripts]
-# script_name = module:function
+forecast = "SunCastPy.main:main"
 
 [tool.setuptools]
 
