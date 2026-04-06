@@ -69,9 +69,12 @@ def mock_get_request(monkeypatch):
             return DATA_FORECAST
         elif DATA_DETAILS["properties"]["forecastZone"] in url:
             return {"properties": {"name": "San Juan and Vicinity"}}
+        elif url == "https://ipinfo.io":
+            return {"loc": "00.0000,-11.1111"}
         raise ValueError(f"Unexpected URL: {url}")
 
     monkeypatch.setattr("SunCastPy.Forecast.NOAA_Local_Forecast.get_request", fake_get_request)
+    monkeypatch.setattr("SunCastPy.utils.utils.get_request", fake_get_request)
 
 
 @pytest.fixture

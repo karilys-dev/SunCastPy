@@ -53,3 +53,17 @@ def format_date(date: str | datetime, dayname=True) -> str:
         return date.strftime("%A %Y-%m-%d")
     else:
         return date.strftime("%Y-%m-%d")
+
+
+def get_current_coordinates() -> dict[str, str]:
+    """Retrieve the user's current latitude and longitude
+
+    Returns:
+        dict[str, str]: latitude, longitude
+    """
+    data = get_request("https://ipinfo.io")
+    coordinates = data["loc"].split(",")
+    return {
+        "latitude": coordinates[0],
+        "longitude": coordinates[1],
+    }
