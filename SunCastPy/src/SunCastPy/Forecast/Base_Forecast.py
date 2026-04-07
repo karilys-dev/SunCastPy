@@ -15,6 +15,7 @@ class Forecast(BaseModel):
     wind_speed: str = Field(alias="windSpeed")
     wind_direction: str = Field(alias="windDirection")
     probability_of_precipitation: int
+    image_url: str = Field(alias="icon")
 
     @model_validator(mode="before")
     @classmethod
