@@ -1,10 +1,11 @@
 # Importing the Pytest library
 import json
+from datetime import datetime
 from pathlib import Path
 
 import pytest
 from data.expected_forecast_flat import EXPECTED_FLATTENED_FORECAST
-from SunCastPy.NOAA_Forecast import LocalWeather
+from SunCastPy.Forecast.NOAA_Local_Forecast import LocalWeather
 from SunCastPy.utils.logging_config import setup_logging
 
 
@@ -68,6 +69,24 @@ def mock_get_request(monkeypatch):
             return DATA_FORECAST
         elif DATA_DETAILS["properties"]["forecastZone"] in url:
             return {"properties": {"name": "San Juan and Vicinity"}}
+        elif url == "https://ipinfo.io":
+            return {"loc": "00.0000,-11.1111"}
         raise ValueError(f"Unexpected URL: {url}")
 
-    monkeypatch.setattr("SunCastPy.NOAA_Forecast.get_request", fake_get_request)
+    monkeypatch.setattr("SunCastPy.Forecast.NOAA_Local_Forecast.get_request", fake_get_request)
+    monkeypatch.setattr("SunCastPy.utils.utils.get_request", fake_get_request)
+
+
+@pytest.fixture
+def today_str():
+    return datetime(2026, 3, 22)
+
+
+@pytest.fixture
+def mock_datetime_today(monkeypatch, today_str):
+    class MockDateTime:
+        @classmethod
+        def today(cls):
+            return today_str
+
+    monkeypatch.setattr("SunCastPy.Forecast.Weekly_Forecast.datetime", MockDateTime)

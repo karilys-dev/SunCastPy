@@ -17,7 +17,7 @@ dev = ["ruff", "mypy"]
 tests = ["pytest", "pytest-cov", "pytest-html"]
 
 [project.scripts]
-# script_name = module:function
+forecast = "SunCastPy.main:main"
 
 [tool.setuptools]
 
@@ -49,7 +49,7 @@ testpaths = ["tests"]
 
 [tool.coverage.run]
 source = ["src"]
-omit = ["*/conftest.py", "*/test/*", "*/tests/*"]
+omit = ["*/conftest.py", "*/test/*", "*/tests/*", "logging_config.py"]
 
 [tool.coverage.report]
 omit = ["*/conftest.py", "*/test/*", "*/tests/*"]

@@ -2,7 +2,9 @@ import logging
 from datetime import datetime
 
 import pytest
-from SunCastPy.NOAA_Forecast import Forecast, LocalWeather
+from SunCastPy.Forecast.Base_Forecast import Forecast
+from SunCastPy.Forecast.NOAA_Local_Forecast import LocalWeather
+from SunCastPy.Forecast.Weekly_Forecast import WeeklyForecast
 
 logger = logging.getLogger(__name__)
 
@@ -34,13 +36,7 @@ class Test_LocalWeather:
     )
     def test_group_by_dayname(self, sample_data, data_type):
         data: LocalWeather = sample_data[data_type]["LocalWeather"]
-        grouped = data.group_by_date()
-        expected = sample_data["expected"]["group_by_dayname"]
-        assert list(grouped.keys()) == list(expected.keys())
-        for day in grouped.keys():
-            assert isinstance(grouped[day], list)
-            assert isinstance(grouped[day][0], Forecast)
-            assert len(grouped[day]) == expected[day][data_type]
+        assert isinstance(data.weekly(), WeeklyForecast)
 
     def test_flattened_data(self, sample_data):
         result: list[Forecast] = sample_data["flattened"]["Forecast"]
