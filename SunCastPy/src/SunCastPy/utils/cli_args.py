@@ -1,5 +1,6 @@
 import argparse
 from os import getenv
+from pathlib import Path
 
 from SunCastPy.utils.utils import get_current_coordinates
 
@@ -46,6 +47,13 @@ def weather_parser() -> argparse.ArgumentParser:
         default=1,
         choices=range(1, 8),
         help="Limit the forecast days to show",
+    )
+    parser.add_argument(
+        "--output",
+        "-o",
+        type=Path,
+        default=None,
+        help="Output file or directory path",
     )
     return parser
 
