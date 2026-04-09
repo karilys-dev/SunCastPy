@@ -37,8 +37,10 @@ def main(args=parse_args()):
             group_by=args.group_by,
             limit=args.limit,
         )
-        html = render_html(grouped_weather)
+        logger.info("Creating html report")
+        html = render_html(grouped_data=grouped_weather, location=current_weather.location)
         create_htlm(data=html, output_dir=args.output)
+        logger.info("Report saved to output directory.")
 
     else:
         print_current_weather(current_weather=current_weather)
