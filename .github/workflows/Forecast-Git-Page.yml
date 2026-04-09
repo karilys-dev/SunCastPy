@@ -32,6 +32,7 @@ jobs:
             LONGITUDE: ${{ github.event.inputs.longitude }}
             LIMIT: ${{ github.event.inputs.limit }}
             OUTPUT_DIR: ${{ github.event.inputs.output_dir }}
+            FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
         steps:
             - name: Checkout
               uses: actions/checkout@v4
