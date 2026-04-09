@@ -27,8 +27,7 @@ include = ["*"]
 exclude = ["test*"]
 
 [tool.setuptools.package-data]
-# Example: include JSON files inside the package
-# "app" = ["*.json"]
+SunCastPy = ["templates/*.j2"]
 
 # Optional dynamic versioning
 # [tool.setuptools.dynamic]
