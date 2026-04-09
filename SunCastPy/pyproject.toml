@@ -23,7 +23,7 @@ forecast = "SunCastPy.main:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["*", "*.j2"]
+include = ["*"]
 exclude = ["test*"]
 
 [tool.setuptools.package-data]
