@@ -10,10 +10,10 @@ readme = "README.md"
 requires-python = ">=3.10"
 authors = [{ name = "Karilys Collazo", email = "karilys.learn@gmail.com" }]
 
-dependencies = ["requests", "pydantic"]
+dependencies = ["requests", "pydantic", 'jinja2']
 
 [project.optional-dependencies]
-dev = ["ruff", "mypy"]
+dev = ["ruff", "mypy", "djlint"]
 tests = ["pytest", "pytest-cov", "pytest-html"]
 
 [project.scripts]
