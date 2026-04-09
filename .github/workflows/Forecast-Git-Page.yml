@@ -45,7 +45,7 @@ jobs:
             - name: Install project
               run: |
                   python -m pip install --upgrade pip
-                  pip install .
+                  pip install SunCastPy
 
             - name: Run bash script
               run: |
