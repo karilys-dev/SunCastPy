@@ -6,7 +6,16 @@
         {
             "label": "Create html Forecast 3 days",
             "type": "shell",
-            "command": "${HOME}/.venv/bin/forecast -o ./artifacts/ -g date --limit 3",
+            "command": "${workspaceFolder}/scripts/github/create-forecast-report.sh",
+            "options": {
+                "shell": {
+                    "executable": "/bin/bash",
+                    "args": [
+                        "-i",
+                        "-c"
+                    ]
+                }
+            },
             "problemMatcher": []
         }
     ]
