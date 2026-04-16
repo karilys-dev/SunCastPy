@@ -4,18 +4,31 @@ from collections import defaultdict
 
 from SunCastPy.Forecast.Base_Forecast import Forecast
 from SunCastPy.Forecast.Weekly_Forecast import WeeklyForecast
-from SunCastPy.utils.utils import get_request
+from SunCastPy.utils.utils import get_api_details, get_hourly_forecast_url, get_request
 
 
 class LocalWeather:
     """Run an API call to NOAA given the coordinates to get the local weather"""
 
-    def __init__(self, latitude: float, longitude: float, flatten: bool = False) -> None:
-        _details: dict[str, dict[str, str]] = get_request(
-            f"https://api.weather.gov/points/{latitude},{longitude}"
-        )
-        _forecast: str = _details["properties"]["forecastHourly"]
-        self.periods: list[dict] = get_request(_forecast)["properties"]["periods"]
+    def __init__(
+        self,
+        latitude: float | None = None,
+        longitude: float | None = None,
+        city: str | None = None,
+        flatten: bool = False,
+    ) -> None:
+        if latitude is not None and longitude is not None:
+            _details: dict[str, dict[str, str]] = get_api_details(
+                latitude=latitude, longitude=longitude
+            )
+            self.periods: list[dict] = get_request(get_hourly_forecast_url(_details))["properties"][
+                "periods"
+            ]
+        elif city:
+            self.periods = False
+            raise ValueError("Feature not available")
+        else:
+            raise ValueError("Missing city or latitude and longitude")
         self.forecast: list[Forecast] = [Forecast(**p) for p in self.periods]
         if flatten:
             self.forecast = self._summarize_time_slots()

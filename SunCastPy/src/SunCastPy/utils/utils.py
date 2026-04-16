@@ -67,3 +67,11 @@ def get_current_coordinates() -> dict[str, str]:
         "latitude": coordinates[0],
         "longitude": coordinates[1],
     }
+
+
+def get_api_details(latitude: float, longitude: float) -> dict[str, dict]:
+    return get_request(f"https://api.weather.gov/points/{latitude},{longitude}")
+
+
+def get_hourly_forecast_url(data: dict) -> str:
+    return data["properties"]["forecastHourly"]
