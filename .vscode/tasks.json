@@ -6,8 +6,11 @@
         {
             "label": "Create html Forecast 3 days",
             "type": "shell",
-            "command": "${workspaceFolder}/scripts/github/create-forecast-report.sh",
+            "command": "${workspaceFolder}/scripts/github/create-forecast-report.sh && code -r ${env:OUTPUT_DIR}/index.html",
             "options": {
+                "env": {
+                    "LIMIT": "3"
+                },
                 "shell": {
                     "executable": "/bin/bash",
                     "args": [
