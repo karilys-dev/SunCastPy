@@ -1,4 +1,3 @@
-import importlib.util
 import json
 import logging
 from pathlib import Path
@@ -16,21 +15,10 @@ def get_all_zones() -> dict[str, str]:
     data: dict = zones.COORDINATES.copy()
     for city, kwargs in zones.COORDINATES.items():
         logging.info(f"Getting values for {city}")
-        details = get_api_details(**kwargs)
+        details = get_api_details(**kwargs, timeout=50)
         data[city]["url"] = get_hourly_forecast_url(details)
         data[city]["forecastZone"] = get_hourly_forecast_zone_url(details)
     return data
-
-
-def get_data_path() -> Path:
-    spec: list[str] | None = importlib.util.find_spec("SunCastPy.data")
-
-    data_path: list[str] | None = spec.submodule_search_locations
-
-    if data_path:
-        return Path(data_path[0])
-    else:
-        raise FileNotFoundError("File not found")
 
 
 def export_zones_url(data, data_file) -> None:
@@ -41,7 +29,7 @@ def export_zones_url(data, data_file) -> None:
 
 def main():
     setup_logging()
-    data_path = get_data_path().joinpath("zones_url.json")
+    data_path = Path(__file__).parent.joinpath("zones_url.json")
     data = get_all_zones()
     export_zones_url(data=data, data_file=data_path)
 
