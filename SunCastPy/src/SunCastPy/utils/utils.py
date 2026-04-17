@@ -5,7 +5,7 @@ from datetime import datetime
 import requests
 
 
-def get_request(url: str) -> dict:  # pragma: no cover
+def get_request(url: str, timeout: int = 5) -> dict:  # pragma: no cover
     """Run requests.get and return the json output
 
     Args:
@@ -18,7 +18,7 @@ def get_request(url: str) -> dict:  # pragma: no cover
         dict: Response of the API call
     """
 
-    response = requests.get(url=url, timeout=5)
+    response = requests.get(url=url, timeout=timeout)
     response.raise_for_status()
 
     return response.json()
@@ -69,9 +69,13 @@ def get_current_coordinates() -> dict[str, str]:
     }
 
 
-def get_api_details(latitude: float, longitude: float) -> dict[str, dict]:
-    return get_request(f"https://api.weather.gov/points/{latitude},{longitude}")
+def get_api_details(latitude: float, longitude: float, **kwargs) -> dict[str, dict]:
+    return get_request(f"https://api.weather.gov/points/{latitude},{longitude}", **kwargs)
 
 
 def get_hourly_forecast_url(data: dict) -> str:
     return data["properties"]["forecastHourly"]
+
+
+def get_hourly_forecast_zone_url(data: dict) -> str:
+    return data["properties"]["forecastZone"]
