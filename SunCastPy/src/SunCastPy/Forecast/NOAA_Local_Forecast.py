@@ -2,9 +2,15 @@
 
 from collections import defaultdict
 
+from SunCastPy.data.zones_url import SJU_ZONES
 from SunCastPy.Forecast.Base_Forecast import Forecast
 from SunCastPy.Forecast.Weekly_Forecast import WeeklyForecast
-from SunCastPy.utils.utils import get_api_details, get_hourly_forecast_url, get_request
+from SunCastPy.utils.utils import (
+    get_api_details,
+    get_hourly_forecast_url,
+    get_hourly_forecast_zone_url,
+    get_request,
+)
 
 
 class LocalWeather:
@@ -17,22 +23,25 @@ class LocalWeather:
         city: str | None = None,
         flatten: bool = False,
     ) -> None:
+        _details: dict[str, dict] = {}
+        _periods: str = ""
+        self.periods: list[dict] = [{}]
+        self.location: str = ""
         if latitude is not None and longitude is not None:
-            _details: dict[str, dict[str, str]] = get_api_details(
-                latitude=latitude, longitude=longitude
-            )
-            self.periods: list[dict] = get_request(get_hourly_forecast_url(_details))["properties"][
-                "periods"
+            _details = get_api_details(latitude=latitude, longitude=longitude)
+            self.location = get_request(get_hourly_forecast_zone_url(_details))["properties"][
+                "name"
             ]
+            _periods = get_hourly_forecast_url(_details)
         elif city:
-            self.periods = False
-            raise ValueError("Feature not available")
+            self.location = SJU_ZONES["city"]["forecastZone"]
+            _periods = SJU_ZONES["city"]["url"]
         else:
             raise ValueError("Missing city or latitude and longitude")
+        self.periods = get_request(_periods)["properties"]["periods"]
         self.forecast: list[Forecast] = [Forecast(**p) for p in self.periods]
         if flatten:
             self.forecast = self._summarize_time_slots()
-        self.location = get_request(_details["properties"]["forecastZone"])["properties"]["name"]
 
     def group_by_forecast(self) -> dict:
         """Group the weather periods by forecast name.
