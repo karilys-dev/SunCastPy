@@ -22,8 +22,8 @@ DATA_FORECAST = json.loads(
 
 
 @pytest.fixture
-def sample_data(mock_get_request):
-    data = {"expected": {}, "flattened": {}, "default": {}}
+def sample_data(mock_get_request, mock_city):
+    data = {"expected": {}, "flattened": {}, "default": {}, "city": {}}
     data["default"]["LocalWeather"] = LocalWeather(0, 0)
     data["default"]["Forecast"] = data["default"]["LocalWeather"].forecast
     data["flattened"]["LocalWeather"] = LocalWeather(0, 0, flatten=True)
@@ -48,7 +48,25 @@ def sample_data(mock_get_request):
         "Scattered Showers And Thunderstorms": {"default": 42, "flattened": 7},
         "Chance Showers And Thunderstorms": {"default": 12, "flattened": 2},
     }
+    data["city"]["LocalWeather"] = LocalWeather(city="Test")
+    data["city"]["Forecast"] = data["city"]["LocalWeather"].forecast
+
     return data
+
+
+@pytest.fixture
+def mock_city(monkeypatch):
+    monkeypatch.setattr(
+        "SunCastPy.Forecast.NOAA_Local_Forecast.SJU_ZONES",
+        {
+            "Test": {
+                "latitude": 0,
+                "longitude": 0,
+                "url": DATA_DETAILS["properties"]["forecastHourly"],
+                "forecastZone": DATA_DETAILS["properties"]["forecastZone"],
+            }
+        },
+    )
 
 
 @pytest.fixture
