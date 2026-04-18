@@ -34,8 +34,8 @@ class LocalWeather:
             ]
             _periods = get_hourly_forecast_url(_details)
         elif city:
-            self.location = SJU_ZONES["city"]["forecastZone"]
-            _periods = SJU_ZONES["city"]["url"]
+            self.location = SJU_ZONES[city]["forecastZone"]
+            _periods = SJU_ZONES[city]["url"]
         else:
             raise ValueError("Missing city or latitude and longitude")
         self.periods = get_request(_periods)["properties"]["periods"]
