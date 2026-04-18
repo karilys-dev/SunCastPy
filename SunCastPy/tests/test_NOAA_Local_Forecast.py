@@ -1,3 +1,4 @@
+import itertools
 import logging
 from datetime import datetime
 
@@ -10,15 +11,15 @@ logger = logging.getLogger(__name__)
 
 
 class Test_LocalWeather:
+    sources = ["default", "city"]
+    attributes = ["periods", "forecast"]
+
     @pytest.mark.parametrize(
-        ("attribute"),
-        (
-            pytest.param("periods"),
-            pytest.param("forecast"),
-        ),
+        ("source", "attribute"),
+        itertools.product(sources, attributes),
     )
-    def test_has_attributes(self, sample_data, attribute):
-        data: LocalWeather = sample_data["default"]["LocalWeather"]
+    def test_has_attributes(self, sample_data, source, attribute):
+        data: LocalWeather = sample_data[source]["LocalWeather"]
         match attribute:
             case "forecast":
                 assert isinstance(data.forecast, list)
