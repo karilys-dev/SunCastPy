@@ -1,73 +1,5 @@
 {
-    "PRZ001": {
-        "cities": [
-            "Bayamon",
-            "Carolina",
-            "Catano",
-            "Guaynabo",
-            "San Juan",
-            "Toa Alta",
-            "Toa Baja",
-            "Trujillo Alto"
-        ],
-        "url": "https://api.weather.gov/zones/forecast/PRZ001",
-        "location": "San Juan and Vicinity"
-    },
-    "PRZ002": {
-        "cities": [
-            "Canovanas",
-            "Ceiba",
-            "Fajardo",
-            "Humacao",
-            "Loiza",
-            "Luquillo",
-            "Naguabo",
-            "Rio Grande"
-        ],
-        "url": "https://api.weather.gov/zones/forecast/PRZ002",
-        "location": "Northeast"
-    },
-    "PRZ003": {
-        "cities": [
-            "Arroyo",
-            "Guayama",
-            "Maunabo",
-            "Patillas",
-            "Salinas",
-            "Yabucoa"
-        ],
-        "url": "https://api.weather.gov/zones/forecast/PRZ003",
-        "location": "Southeast"
-    },
-    "PRZ004": {
-        "cities": [
-            "Aguas Buenas",
-            "Caguas",
-            "Cayey",
-            "Cidra",
-            "Comerio",
-            "Gurabo",
-            "Juncos",
-            "Las Piedras",
-            "San Lorenzo"
-        ],
-        "url": "https://api.weather.gov/zones/forecast/PRZ004",
-        "location": "Eastern Interior"
-    },
-    "PRZ005": {
-        "cities": [
-            "Arecibo",
-            "Barceloneta",
-            "Dorado",
-            "Florida",
-            "Manati",
-            "Vega Alta",
-            "Vega Baja"
-        ],
-        "url": "https://api.weather.gov/zones/forecast/PRZ005",
-        "location": "North Central"
-    },
-    "PRZ006": {
+    "Central Interior": {
         "cities": [
             "Aibonito",
             "Barranquitas",
@@ -83,43 +15,29 @@
         "url": "https://api.weather.gov/zones/forecast/PRZ006",
         "location": "Central Interior"
     },
-    "PRZ007": {
+    "Culebra": {
         "cities": [
-            "Guayanilla",
-            "Juana Diaz",
-            "Penuelas",
-            "Ponce",
-            "Santa Isabel",
-            "Yauco"
+            "Culebra"
         ],
-        "url": "https://api.weather.gov/zones/forecast/PRZ007",
-        "location": "Ponce and Vicinity"
+        "url": "https://api.weather.gov/zones/forecast/PRZ012",
+        "location": "Culebra"
     },
-    "PRZ008": {
+    "Eastern Interior": {
         "cities": [
-            "Aguadilla",
-            "Camuy",
-            "Hatillo",
-            "Isabela",
-            "Quebradillas"
+            "Aguas Buenas",
+            "Caguas",
+            "Cayey",
+            "Cidra",
+            "Comerio",
+            "Gurabo",
+            "Juncos",
+            "Las Piedras",
+            "San Lorenzo"
         ],
-        "url": "https://api.weather.gov/zones/forecast/PRZ008",
-        "location": "Northwest"
+        "url": "https://api.weather.gov/zones/forecast/PRZ004",
+        "location": "Eastern Interior"
     },
-    "PRZ009": {
-        "cities": [
-            "Adjuntas",
-            "Lares",
-            "Las Marias",
-            "Maricao",
-            "Sabana Grande",
-            "San Sebastian",
-            "Utuado"
-        ],
-        "url": "https://api.weather.gov/zones/forecast/PRZ009",
-        "location": "Western Interior"
-    },
-    "PRZ010": {
+    "Mayaguez and Vicinity": {
         "cities": [
             "Aguada",
             "Anasco",
@@ -132,7 +50,83 @@
         "url": "https://api.weather.gov/zones/forecast/PRZ010",
         "location": "Mayaguez and Vicinity"
     },
-    "PRZ011": {
+    "North Central": {
+        "cities": [
+            "Arecibo",
+            "Barceloneta",
+            "Dorado",
+            "Florida",
+            "Manati",
+            "Vega Alta",
+            "Vega Baja"
+        ],
+        "url": "https://api.weather.gov/zones/forecast/PRZ005",
+        "location": "North Central"
+    },
+    "Northeast": {
+        "cities": [
+            "Canovanas",
+            "Ceiba",
+            "Fajardo",
+            "Humacao",
+            "Loiza",
+            "Luquillo",
+            "Naguabo",
+            "Rio Grande"
+        ],
+        "url": "https://api.weather.gov/zones/forecast/PRZ002",
+        "location": "Northeast"
+    },
+    "Northwest": {
+        "cities": [
+            "Aguadilla",
+            "Camuy",
+            "Hatillo",
+            "Isabela",
+            "Quebradillas"
+        ],
+        "url": "https://api.weather.gov/zones/forecast/PRZ008",
+        "location": "Northwest"
+    },
+    "Ponce and Vicinity": {
+        "cities": [
+            "Guayanilla",
+            "Juana Diaz",
+            "Penuelas",
+            "Ponce",
+            "Santa Isabel",
+            "Yauco"
+        ],
+        "url": "https://api.weather.gov/zones/forecast/PRZ007",
+        "location": "Ponce and Vicinity"
+    },
+    "San Juan and Vicinity": {
+        "cities": [
+            "Bayamon",
+            "Carolina",
+            "Catano",
+            "Guaynabo",
+            "San Juan",
+            "Toa Alta",
+            "Toa Baja",
+            "Trujillo Alto"
+        ],
+        "url": "https://api.weather.gov/zones/forecast/PRZ001",
+        "location": "San Juan and Vicinity"
+    },
+    "Southeast": {
+        "cities": [
+            "Arroyo",
+            "Guayama",
+            "Maunabo",
+            "Patillas",
+            "Salinas",
+            "Yabucoa"
+        ],
+        "url": "https://api.weather.gov/zones/forecast/PRZ003",
+        "location": "Southeast"
+    },
+    "Southwest": {
         "cities": [
             "Cabo Rojo",
             "Guanica",
@@ -141,18 +135,24 @@
         "url": "https://api.weather.gov/zones/forecast/PRZ011",
         "location": "Southwest"
     },
-    "PRZ012": {
-        "cities": [
-            "Culebra"
-        ],
-        "url": "https://api.weather.gov/zones/forecast/PRZ012",
-        "location": "Culebra"
-    },
-    "PRZ013": {
+    "Vieques": {
         "cities": [
             "Vieques"
         ],
         "url": "https://api.weather.gov/zones/forecast/PRZ013",
         "location": "Vieques"
+    },
+    "Western Interior": {
+        "cities": [
+            "Adjuntas",
+            "Lares",
+            "Las Marias",
+            "Maricao",
+            "Sabana Grande",
+            "San Sebastian",
+            "Utuado"
+        ],
+        "url": "https://api.weather.gov/zones/forecast/PRZ009",
+        "location": "Western Interior"
     }
 }

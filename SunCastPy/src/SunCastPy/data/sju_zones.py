@@ -33,7 +33,8 @@ def group_zones(data: dict) -> dict:
             distinct[zone]["location"] = get_forecast_location_name(val["forecastZone"])
         else:
             distinct[zone]["cities"].append(city)
-    return dict(sorted(distinct.items()))
+
+    return {v["location"]: v for v in sorted(distinct.values(), key=lambda x: x["location"])}
 
 
 def main():
