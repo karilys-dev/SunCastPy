@@ -1,11 +1,12 @@
-import json
 import logging
 from pathlib import Path
 
 from SunCastPy.data import zones
+from SunCastPy.utils.export_file import export_json
 from SunCastPy.utils.logging_config import setup_logging
 from SunCastPy.utils.utils import (
     get_api_details,
+    get_forecast_location_name,
     get_hourly_forecast_url,
     get_hourly_forecast_zone_url,
 )
@@ -21,17 +22,27 @@ def get_all_zones() -> dict[str, str]:
     return data
 
 
-def export_zones_url(data, data_file) -> None:
-    with open(data_file, "w", encoding="utf-8") as file:
-        json.dump(data, file, indent=4)
-    logging.info("File was successfully updated.")
+def group_zones(data: dict) -> dict:
+    distinct: dict = {}
+    for city, val in data.items():
+        zone = val["forecastZone"].split("/")[-1]
+        if zone not in distinct.keys():
+            distinct[zone] = {}
+            distinct[zone]["cities"] = [city]
+            distinct[zone]["url"] = val["forecastZone"]
+            distinct[zone]["location"] = get_forecast_location_name(val["forecastZone"])
+        else:
+            distinct[zone]["cities"].append(city)
+    return dict(sorted(distinct.items()))
 
 
 def main():
     setup_logging()
-    data_path = Path(__file__).parent.joinpath("zones_url.json")
+    data_path = Path(__file__).parent
     data = get_all_zones()
-    export_zones_url(data=data, data_file=data_path)
+    export_json(data=data, data_file=data_path.joinpath("zones_url.json"))
+    grouped: dict = group_zones(data=data)
+    export_json(data=grouped, data_file=data_path.joinpath("zones_url_grouped.json"))
 
 
 if __name__ == "__main__":
