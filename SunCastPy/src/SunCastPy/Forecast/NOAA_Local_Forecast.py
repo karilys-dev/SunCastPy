@@ -7,6 +7,7 @@ from SunCastPy.Forecast.Base_Forecast import Forecast
 from SunCastPy.Forecast.Weekly_Forecast import WeeklyForecast
 from SunCastPy.utils.utils import (
     get_api_details,
+    get_forecast_location_name,
     get_hourly_forecast_url,
     get_hourly_forecast_zone_url,
     get_request,
@@ -29,9 +30,7 @@ class LocalWeather:
         self.location: str = ""
         if latitude is not None and longitude is not None:
             _details = get_api_details(latitude=latitude, longitude=longitude)
-            self.location = get_request(get_hourly_forecast_zone_url(_details))["properties"][
-                "name"
-            ]
+            self.location = get_forecast_location_name(get_hourly_forecast_zone_url(_details))
             _periods = get_hourly_forecast_url(_details)
         elif city:
             self.location = SJU_ZONES[city]["forecastZone"]

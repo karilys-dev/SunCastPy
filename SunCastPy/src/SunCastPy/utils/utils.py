@@ -79,3 +79,7 @@ def get_hourly_forecast_url(data: dict) -> str:
 
 def get_hourly_forecast_zone_url(data: dict) -> str:
     return data["properties"]["forecastZone"]
+
+
+def get_forecast_location_name(url) -> str:
+    return get_request(url=url)["properties"]["name"]
