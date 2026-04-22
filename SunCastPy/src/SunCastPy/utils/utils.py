@@ -1,5 +1,6 @@
 """Standardize procedures and have a consistent error message."""
 
+import json
 from datetime import datetime
 
 import requests
@@ -83,3 +84,8 @@ def get_hourly_forecast_zone_url(data: dict) -> str:
 
 def get_forecast_location_name(url) -> str:
     return get_request(url=url)["properties"]["name"]
+
+
+def get_json_data(json_file) -> dict[str, dict[str, str]]:
+    with open(json_file, mode="r", encoding="utf-8") as fp:
+        return json.load(fp)
