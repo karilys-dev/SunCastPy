@@ -21,7 +21,8 @@
 				"njpwerner.autodocstring",
 				"ms-python.pylint",
 				"github.vscode-github-actions",
-				"redhat.vscode-yaml"
+				"redhat.vscode-yaml",
+				"monosans.djlint"
 			],
 		}
 	},
