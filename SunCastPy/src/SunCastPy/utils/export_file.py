@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 
 
-def create_htlm(data: str, output_dir: Path, name: str) -> None:
+def create_html(data: str, output_dir: Path, name: str) -> None:
     if isinstance(output_dir, str):
         output_dir = Path(output_dir)
     output_dir.mkdir(exist_ok=True)

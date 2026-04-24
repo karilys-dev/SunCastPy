@@ -4,7 +4,7 @@ from SunCastPy.Forecast.Base_Forecast import Forecast
 from SunCastPy.Forecast.NOAA_Local_Forecast import LocalWeather
 from SunCastPy.utils.cli_args import parse_args
 from SunCastPy.utils.current_weather import filter_current_weather, print_current_weather
-from SunCastPy.utils.export_file import create_htlm
+from SunCastPy.utils.export_file import create_html
 from SunCastPy.utils.html_renderer import render_html
 from SunCastPy.utils.logging_config import setup_logging
 
@@ -33,7 +33,7 @@ def main(args=parse_args()):
 
     if args.group_by:
         grouped_weather = filter_current_weather(
-            result=current_weather,
+            data=current_weather,
             group_by=args.group_by,
             limit=args.limit,
         )
@@ -43,7 +43,7 @@ def main(args=parse_args()):
             location=current_weather.location,
             template="forecast.html.j2",
         )
-        create_htlm(data=html, output_dir=args.output, name="index.html")
+        create_html(data=html, output_dir=args.output, name="index.html")
         logger.info("Report saved to output directory.")
 
     else:
