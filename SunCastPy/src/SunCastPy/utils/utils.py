@@ -6,7 +6,7 @@ from datetime import datetime
 import requests
 
 
-def get_request(url: str, timeout: int = 5) -> dict:  # pragma: no cover
+def get_request(url: str, timeout: int = 15) -> dict:  # pragma: no cover
     """Run requests.get and return the json output
 
     Args:
