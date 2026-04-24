@@ -38,8 +38,12 @@ def main(args=parse_args()):
             limit=args.limit,
         )
         logger.info("Creating html report")
-        html = render_html(grouped_data=grouped_weather, location=current_weather.location)
-        create_htlm(data=html, output_dir=args.output)
+        html = render_html(
+            grouped_data=grouped_weather,
+            location=current_weather.location,
+            template="forecast.html.j2",
+        )
+        create_htlm(data=html, output_dir=args.output, name="index.html")
         logger.info("Report saved to output directory.")
 
     else:
