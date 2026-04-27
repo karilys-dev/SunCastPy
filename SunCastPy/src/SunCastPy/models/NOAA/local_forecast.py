@@ -3,8 +3,8 @@
 from collections import defaultdict
 
 from SunCastPy.data.zones_url import SJU_ZONES
-from SunCastPy.Forecast.Base_Forecast import Forecast
-from SunCastPy.Forecast.Weekly_Forecast import WeeklyForecast
+from SunCastPy.models.NOAA.base import Forecast
+from SunCastPy.models.NOAA.weekly_forecast import WeeklyForecast
 from SunCastPy.utils.utils import (
     get_api_details,
     get_forecast_location_name,
@@ -14,7 +14,7 @@ from SunCastPy.utils.utils import (
 )
 
 
-class LocalWeather:
+class LocalForecast:
     """Run an API call to NOAA given the coordinates to get the local weather"""
 
     def __init__(

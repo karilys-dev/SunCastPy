@@ -3,7 +3,7 @@
 from collections import defaultdict
 from datetime import datetime, timedelta
 
-from SunCastPy.Forecast.Base_Forecast import Forecast
+from SunCastPy.models.NOAA.base import Forecast
 from SunCastPy.utils.utils import format_date
 
 

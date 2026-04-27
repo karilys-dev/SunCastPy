@@ -1,4 +1,4 @@
-from SunCastPy.Forecast.NOAA_Local_Forecast import Forecast
+from SunCastPy.models.NOAA.local_forecast import Forecast
 
 EXPECTED_FLATTENED_FORECAST = [
     Forecast(

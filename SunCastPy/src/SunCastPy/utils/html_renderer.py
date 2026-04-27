@@ -3,7 +3,7 @@
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
-from SunCastPy.Forecast.Base_Forecast import Forecast
+from SunCastPy.models.NOAA.base import Forecast
 from SunCastPy.utils.utils import format_hour
 
 template_dir = Path(__file__).parent.parent / "templates"

@@ -3,7 +3,7 @@ from datetime import datetime
 
 import pytest
 
-# from SunCastPy.Forecast.NOAA_Local_Forecast import Forecast, LocalWeather
+# from SunCastPy.Forecast.NOAA_Local_Forecast import Forecast, LocalForecast
 from SunCastPy.utils import current_weather, utils
 
 logger = logging.getLogger(__name__)

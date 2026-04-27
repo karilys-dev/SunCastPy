@@ -4,7 +4,7 @@ import logging
 from pathlib import Path
 
 from SunCastPy.data.zones_url import SJU_ZONES_GROUPED
-from SunCastPy.Forecast.NOAA_Local_Forecast import LocalWeather
+from SunCastPy.models.NOAA.local_forecast import LocalForecast
 from SunCastPy.utils.current_weather import filter_current_weather
 from SunCastPy.utils.export_file import export_html
 from SunCastPy.utils.html_renderer import render_html, render_index
@@ -16,7 +16,7 @@ def get_forecast_all_cities_in_zone(
     zone_name: str,
     flatten: bool,
     limit: int,
-) -> dict[str, LocalWeather]:
+) -> dict[str, LocalForecast]:
     """Given a zone name get the forecast for all of the corresponding cities
 
     Args:
@@ -24,13 +24,13 @@ def get_forecast_all_cities_in_zone(
         flatten (bool): Group the timeframes when the values are similar. Defaults to True.
 
     Returns:
-        dict[str, LocalWeather]: Forecasts for all of the cities in the zone
+        dict[str, LocalForecast]: Forecasts for all of the cities in the zone
     """
     forecast_cities = {}
     logger.info(f"Initiating forecast retrieval for all cities in [{zone_name}]")
     for city in SJU_ZONES_GROUPED[zone_name]["cities"]:
         logger.info(f"Getting forecast for {city}")
-        current_data = LocalWeather(city=city, flatten=flatten)
+        current_data = LocalForecast(city=city, flatten=flatten)
         grouped_weather = filter_current_weather(
             data=current_data,
             group_by="date",

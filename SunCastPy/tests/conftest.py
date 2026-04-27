@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 from data.expected_forecast_flat import EXPECTED_FLATTENED_FORECAST
-from SunCastPy.Forecast.NOAA_Local_Forecast import LocalWeather
+from SunCastPy.models.NOAA.local_forecast import LocalForecast
 from SunCastPy.utils.logging_config import setup_logging
 
 
@@ -24,11 +24,11 @@ DATA_FORECAST = json.loads(
 @pytest.fixture
 def sample_data(mock_get_request, mock_city):
     data = {"expected": {}, "flattened": {}, "default": {}, "city": {}}
-    data["default"]["LocalWeather"] = LocalWeather(0, 0)
-    data["default"]["Forecast"] = data["default"]["LocalWeather"].forecast
-    data["flattened"]["LocalWeather"] = LocalWeather(0, 0, flatten=True)
-    data["flattened"]["Forecast"] = data["flattened"]["LocalWeather"].forecast
-    data["expected"]["LocalWeather"] = DATA_DETAILS
+    data["default"]["LocalForecast"] = LocalForecast(0, 0)
+    data["default"]["Forecast"] = data["default"]["LocalForecast"].forecast
+    data["flattened"]["LocalForecast"] = LocalForecast(0, 0, flatten=True)
+    data["flattened"]["Forecast"] = data["flattened"]["LocalForecast"].forecast
+    data["expected"]["LocalForecast"] = DATA_DETAILS
     data["expected"]["Forecast"] = DATA_FORECAST
     data["expected"]["ForecastFlat"] = EXPECTED_FLATTENED_FORECAST
     data["expected"]["group_by_dayname"] = {
@@ -48,8 +48,8 @@ def sample_data(mock_get_request, mock_city):
         "Scattered Showers And Thunderstorms": {"default": 42, "flattened": 7},
         "Chance Showers And Thunderstorms": {"default": 12, "flattened": 2},
     }
-    data["city"]["LocalWeather"] = LocalWeather(city="Test")
-    data["city"]["Forecast"] = data["city"]["LocalWeather"].forecast
+    data["city"]["LocalForecast"] = LocalForecast(city="Test")
+    data["city"]["Forecast"] = data["city"]["LocalForecast"].forecast
 
     return data
 
@@ -57,7 +57,7 @@ def sample_data(mock_get_request, mock_city):
 @pytest.fixture
 def mock_city(monkeypatch):
     monkeypatch.setattr(
-        "SunCastPy.Forecast.NOAA_Local_Forecast.SJU_ZONES",
+        "SunCastPy.models.NOAA.local_forecast.SJU_ZONES",
         {
             "Test": {
                 "latitude": 0,
@@ -91,7 +91,7 @@ def mock_get_request(monkeypatch):
             return {"loc": "00.0000,-11.1111"}
         raise ValueError(f"Unexpected URL: {url}")
 
-    monkeypatch.setattr("SunCastPy.Forecast.NOAA_Local_Forecast.get_request", fake_get_request)
+    monkeypatch.setattr("SunCastPy.models.NOAA.local_forecast.get_request", fake_get_request)
     monkeypatch.setattr("SunCastPy.utils.utils.get_request", fake_get_request)
 
 
@@ -107,4 +107,4 @@ def mock_datetime_today(monkeypatch, today_str):
         def today(cls):
             return today_str
 
-    monkeypatch.setattr("SunCastPy.Forecast.Weekly_Forecast.datetime", MockDateTime)
+    monkeypatch.setattr("SunCastPy.models.NOAA.weekly_forecast.datetime", MockDateTime)
