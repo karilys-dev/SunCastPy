@@ -4,7 +4,7 @@ from pathlib import Path
 from SunCastPy.Forecast.Base_Forecast import Forecast
 from SunCastPy.Forecast.NOAA_Local_Forecast import LocalWeather
 from SunCastPy.utils.current_weather import filter_current_weather, print_current_weather
-from SunCastPy.utils.export_file import create_html
+from SunCastPy.utils.export_file import export_html
 from SunCastPy.utils.html_renderer import render_html
 
 logger = logging.getLogger(__name__)
@@ -35,7 +35,7 @@ def report_forecast(
             location=location,
             template="forecast.html.j2",
         )
-        create_html(data=html, output_dir=output, name="index.html")
+        export_html(data=html, output_dir=output, name="index.html")
         logger.info("Report saved to output directory.")
 
     else:

@@ -4,7 +4,7 @@ from pathlib import Path
 from SunCastPy.data.zones_url import SJU_ZONES_GROUPED
 from SunCastPy.Forecast.NOAA_Local_Forecast import LocalWeather
 from SunCastPy.utils.current_weather import filter_current_weather
-from SunCastPy.utils.export_file import create_html
+from SunCastPy.utils.export_file import export_html
 from SunCastPy.utils.html_renderer import render_html, render_index
 
 logger = logging.getLogger(__name__)
@@ -50,11 +50,11 @@ def create_html_multi_city(data: dict, output_dir: Path):
         city_file = f"{city}.html"
         locations.append({"file": city_file, "name": city})
         html = render_html(grouped_data=grouped_weather, location=city, template="forecast.html.j2")
-        create_html(data=html, output_dir=output_dir, name=city_file)
+        export_html(data=html, output_dir=output_dir, name=city_file)
 
     index_html = render_index(locations=locations)
 
-    create_html(data=index_html, output_dir=output_dir, name="index.html")
+    export_html(data=index_html, output_dir=output_dir, name="index.html")
     logger.info("Created all reports for each city.")
 
 
