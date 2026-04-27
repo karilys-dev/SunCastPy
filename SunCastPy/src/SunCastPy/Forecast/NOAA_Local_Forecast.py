@@ -29,7 +29,7 @@ class LocalWeather:
         self.periods: list[dict] = [{}]
         self.location: str = ""
         if city:
-            self.location = SJU_ZONES[city]["forecastZone"]
+            self.location = city
             _periods = SJU_ZONES[city]["url"]
         elif latitude is not None and longitude is not None:
             _details = get_api_details(latitude=latitude, longitude=longitude)
