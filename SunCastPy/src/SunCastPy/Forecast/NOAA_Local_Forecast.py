@@ -28,13 +28,13 @@ class LocalWeather:
         _periods: str = ""
         self.periods: list[dict] = [{}]
         self.location: str = ""
-        if latitude is not None and longitude is not None:
+        if city:
+            self.location = SJU_ZONES[city]["forecastZone"]
+            _periods = SJU_ZONES[city]["url"]
+        elif latitude is not None and longitude is not None:
             _details = get_api_details(latitude=latitude, longitude=longitude)
             self.location = get_forecast_location_name(get_hourly_forecast_zone_url(_details))
             _periods = get_hourly_forecast_url(_details)
-        elif city:
-            self.location = SJU_ZONES[city]["forecastZone"]
-            _periods = SJU_ZONES[city]["url"]
         else:
             raise ValueError("Missing city or latitude and longitude")
         self.periods = get_request(_periods)["properties"]["periods"]
