@@ -2,6 +2,7 @@ import argparse
 from os import getenv
 from pathlib import Path
 
+from SunCastPy.data.zones_url import SJU_ZONES, SJU_ZONES_GROUPED
 from SunCastPy.utils.utils import get_current_coordinates
 
 
@@ -24,6 +25,21 @@ def weather_parser() -> argparse.ArgumentParser:
         required=lon_default is None,
         default=float(lon_default) if lon_default is not None else None,
         help=f"Longitude coordinate (float). Example: {lon_default}",
+    )
+
+    parser.add_argument(
+        "--zone",
+        type=str,
+        choices=SJU_ZONES_GROUPED.keys(),
+        default=None,
+        help="(optional) Create a report for all cities in a zone",
+    )
+    parser.add_argument(
+        "--city",
+        type=str,
+        choices=SJU_ZONES.keys(),
+        default=None,
+        help="(optional) Create a report for a single city without using coordinates",
     )
 
     parser.add_argument(
