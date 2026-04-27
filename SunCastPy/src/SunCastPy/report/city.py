@@ -1,3 +1,5 @@
+"""Module that creates a report for a city"""
+
 import logging
 from pathlib import Path
 
@@ -10,7 +12,15 @@ from SunCastPy.utils.html_renderer import render_html
 logger = logging.getLogger(__name__)
 
 
-def get_city_forecast(kwargs) -> LocalWeather:
+def get_city_forecast(kwargs: dict) -> LocalWeather:
+    """Get the forecast for the city
+
+    Args:
+        kwargs (dict): Values required for LocalWeather class
+
+    Returns:
+        LocalWeather: Local Weather for the specified city
+    """
     current_weather: LocalWeather | dict[str, list[Forecast]] = LocalWeather(**kwargs)
     logger.info(f"Forecast for {current_weather.location}")
     return current_weather
@@ -22,6 +32,15 @@ def report_forecast(
     output: Path | None = None,
     group_by: str | None = "",
 ):
+    """Create a report for the city.
+    If output is provided it will create html. Otherwise print to console.
+
+    Args:
+        data (LocalWeather): Data containing the weather info
+        limit (int): limit of days to show
+        output (Path | None, optional): Location to save html files. Defaults to None.
+        group_by (str | None, optional): Group the data.
+    """
     location: str = data.location
     if output:
         grouped_weather: dict[str, list[Forecast]] = filter_current_weather(
@@ -59,6 +78,14 @@ def main(
     output: Path | None = None,
     group_by: str | None = "",
 ):
+    """Create the report for the city
+
+    Args:
+        kwargs (dict): Values required for LocalWeather class
+        limit (int): limit of days to show
+        output (Path): Where will the html pages be saved
+        flatten (bool, optional): Join concurrent time slots.
+    """
 
     report_forecast(
         data=get_city_forecast(kwargs=kwargs),

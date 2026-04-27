@@ -50,10 +50,11 @@ def format_date(date: str | datetime, dayname=True) -> str:
     """
     if isinstance(date, str):
         date = datetime.fromisoformat(date)
+
     if dayname:
         return date.strftime("%A %Y-%m-%d")
-    else:
-        return date.strftime("%Y-%m-%d")
+
+    return date.strftime("%Y-%m-%d")
 
 
 def get_current_coordinates() -> dict[str, str]:
@@ -71,21 +72,34 @@ def get_current_coordinates() -> dict[str, str]:
 
 
 def get_api_details(latitude: float, longitude: float, **kwargs) -> dict[str, dict]:
+    """Get the details from NOAA given the coordinates
+
+    Args:
+        latitude (float): latitude
+        longitude (float): longitude
+
+    Returns:
+        dict[str, dict]: data from NOAA
+    """
     return get_request(f"https://api.weather.gov/points/{latitude},{longitude}", **kwargs)
 
 
 def get_hourly_forecast_url(data: dict) -> str:
+    """Get the url of the hourly forecast"""
     return data["properties"]["forecastHourly"]
 
 
 def get_hourly_forecast_zone_url(data: dict) -> str:
+    """Get the url of the forecast zone"""
     return data["properties"]["forecastZone"]
 
 
 def get_forecast_location_name(url) -> str:
+    """Get the name of the forecast location"""
     return get_request(url=url)["properties"]["name"]
 
 
 def get_json_data(json_file) -> dict[str, dict[str, str]]:
+    """Get the data from a json file"""
     with open(json_file, mode="r", encoding="utf-8") as fp:
         return json.load(fp)

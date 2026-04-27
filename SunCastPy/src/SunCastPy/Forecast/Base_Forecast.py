@@ -22,12 +22,21 @@ class Forecast(BaseModel):
     @model_validator(mode="before")
     @classmethod
     def flatten_data(cls, data):
+        """Function used with pydantic to get value from nested dict
+
+        Args:
+            data (pydantic): Raw data from input
+
+        Returns:
+            data: Formatted to move nested values to top
+        """
         pop = data.get("probabilityOfPrecipitation", {})
         data["probability_of_precipitation"] = pop.get("value")
         return data
 
     @property
     def day_name(self) -> str:
+        """Extract the day name from the data time"""
         return self.start_time.strftime("%A")
 
     def __str__(self) -> str:  # pragma: no cover

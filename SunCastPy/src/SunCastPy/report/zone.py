@@ -1,3 +1,5 @@
+"""Module that creates a report for a zone"""
+
 import logging
 from pathlib import Path
 
@@ -59,6 +61,14 @@ def create_html_multi_city(data: dict, output_dir: Path):
 
 
 def main(zone: str, output: Path, flatten: bool, limit: int) -> None:
+    """Create the report for the zone
+
+    Args:
+        zone (str): Name of the zone
+        output (Path): Where will the html pages be saved
+        flatten (bool, optional): Join concurrent time slots.
+        limit (int): limit of days to show
+    """
     forecast_data = get_forecast_all_cities_in_zone(
         zone_name=zone,
         flatten=flatten,

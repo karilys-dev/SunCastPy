@@ -1,3 +1,5 @@
+"""Module that provides functions for current weather"""
+
 import logging
 
 from SunCastPy.Forecast.Base_Forecast import Forecast

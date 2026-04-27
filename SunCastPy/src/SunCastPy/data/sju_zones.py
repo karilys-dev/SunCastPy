@@ -1,3 +1,5 @@
+"""Module that creates the json files used for getting NOAA cities and zones of Puerto Rico"""
+
 import logging
 from pathlib import Path
 
@@ -13,6 +15,11 @@ from SunCastPy.utils.utils import (
 
 
 def get_all_zones() -> dict[str, str]:
+    """Iterate over the list of cities and get the urls and zones
+
+    Returns:
+        dict[str, str]: Data used for creating the json file of cities and zones
+    """
     data: dict = zones.COORDINATES.copy()
     for city, kwargs in zones.COORDINATES.items():
         logging.info(f"Getting values for {city}")
@@ -23,6 +30,14 @@ def get_all_zones() -> dict[str, str]:
 
 
 def group_zones(data: dict) -> dict:
+    """Group each city into the same zone group
+
+    Args:
+        data (dict): output of get_all_zones
+
+    Returns:
+        dict: Cities grouped by zones
+    """
     distinct: dict = {}
     for city, val in data.items():
         zone = val["forecastZone"].split("/")[-1]
@@ -38,6 +53,7 @@ def group_zones(data: dict) -> dict:
 
 
 def main():
+    """Create the json files used for the zones in Puerto Rico"""
     setup_logging()
     data_path = Path(__file__).parent
     data = get_all_zones()
