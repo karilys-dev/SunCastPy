@@ -1,0 +1,12 @@
+repos:
+  - repo: https://github.com/psf/black
+    rev: 24.4.2
+    hooks:
+      - id: black
+        args: [ "SunCastPy/" ]
+
+  - repo: https://github.com/PyCQA/pylint
+    rev: v3.2.0
+    hooks:
+      - id: pylint
+        args: [ "SunCastPy/src" ]
