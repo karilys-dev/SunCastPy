@@ -6,5 +6,5 @@ echo "Creating html report"
 forecast \
     --group-by date \
     --output ${OUTPUT_DIR} \
-    --zone ${ZONE} \
+    --zone="${ZONE}" \
     ${LIMIT:+--limit $LIMIT} \
