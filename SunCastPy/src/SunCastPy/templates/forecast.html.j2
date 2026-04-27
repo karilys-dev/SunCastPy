@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="keywords" content="weather" />
+        <meta name="description" content="weather forecast" />
+    </head>
+    <head>
+        <title>SunCast Forecast</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background: #0f172a;
+                color: #e2e8f0;
+                padding: 20px;
+            }
+            h1 {
+                text-align: center;
+            }
+            .day {
+                margin-bottom: 20px;
+                padding: 15px;
+                border-radius: 10px;
+                background: #1e293b;
+            }
+            .forecast {
+                margin-left: 10px;
+                padding: 5px 0;
+                border-bottom: 1px solid #334155;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>🌤 SunCast Forecast</h1>
+        <h2 style="text-align: center;">{{ location }}</h2>
+        {% for day, forecasts in grouped.items() %}
+            <div class="day">
+                <h2>{{ day }}</h2>
+                <table>
+                    {% for f in forecasts %}
+                        <tr>
+                            <td>
+                                <img src="{{ f.image_url }}"
+                                     width="80"
+                                     height="80"
+                                     alt="{{ f.short_forecast }}">
+                            </td>
+                            <td>
+                                <div class="forecast">
+                                    <strong>{{ format_hour(f.start_time) }} - {{ format_hour(f.end_time) }}</strong>
+                                    <br>
+                                    {{ f.short_forecast }}
+                                    <br>
+                                    Temp: {{ f.temperature }}°{{ f.temperature_unit }}
+                                    <br>
+                                    Wind: {{ f.wind_speed }} {{ f.wind_direction }}
+                                    <br>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        {% endfor %}
+    </body>
+</html>

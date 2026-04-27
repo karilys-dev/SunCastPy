@@ -2,7 +2,10 @@ import argparse
 from os import getenv
 from pathlib import Path
 
+from SunCastPy.data.zones_url import SJU_ZONES, SJU_ZONES_GROUPED
 from SunCastPy.utils.utils import get_current_coordinates
+
+GROUP_BY_OPTIONS = ["forecast", "date"]
 
 
 def weather_parser() -> argparse.ArgumentParser:
@@ -27,6 +30,21 @@ def weather_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
+        "--zone",
+        type=str,
+        choices=SJU_ZONES_GROUPED.keys(),
+        default=None,
+        help="(optional) Create a report for all cities in a zone",
+    )
+    parser.add_argument(
+        "--city",
+        type=str,
+        choices=SJU_ZONES.keys(),
+        default=None,
+        help="(optional) Create a report for a single city without using coordinates",
+    )
+
+    parser.add_argument(
         "--flatten",
         action=argparse.BooleanOptionalAction,
         default=True,
@@ -37,7 +55,7 @@ def weather_parser() -> argparse.ArgumentParser:
         "--group-by",
         "-g",
         type=str,
-        choices=["forecast", "date"],
+        choices=GROUP_BY_OPTIONS,
         default=None,
         help="Optional grouping strategy: 'forecast' or 'date'",
     )

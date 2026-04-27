@@ -1,11 +1,12 @@
 """Standardize procedures and have a consistent error message."""
 
+import json
 from datetime import datetime
 
 import requests
 
 
-def get_request(url: str) -> dict:  # pragma: no cover
+def get_request(url: str, timeout: int = 15) -> dict:  # pragma: no cover
     """Run requests.get and return the json output
 
     Args:
@@ -18,7 +19,7 @@ def get_request(url: str) -> dict:  # pragma: no cover
         dict: Response of the API call
     """
 
-    response = requests.get(url=url, timeout=5)
+    response = requests.get(url=url, timeout=timeout)
     response.raise_for_status()
 
     return response.json()
@@ -67,3 +68,24 @@ def get_current_coordinates() -> dict[str, str]:
         "latitude": coordinates[0],
         "longitude": coordinates[1],
     }
+
+
+def get_api_details(latitude: float, longitude: float, **kwargs) -> dict[str, dict]:
+    return get_request(f"https://api.weather.gov/points/{latitude},{longitude}", **kwargs)
+
+
+def get_hourly_forecast_url(data: dict) -> str:
+    return data["properties"]["forecastHourly"]
+
+
+def get_hourly_forecast_zone_url(data: dict) -> str:
+    return data["properties"]["forecastZone"]
+
+
+def get_forecast_location_name(url) -> str:
+    return get_request(url=url)["properties"]["name"]
+
+
+def get_json_data(json_file) -> dict[str, dict[str, str]]:
+    with open(json_file, mode="r", encoding="utf-8") as fp:
+        return json.load(fp)

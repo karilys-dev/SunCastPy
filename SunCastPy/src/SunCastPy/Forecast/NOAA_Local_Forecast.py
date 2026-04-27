@@ -2,24 +2,45 @@
 
 from collections import defaultdict
 
+from SunCastPy.data.zones_url import SJU_ZONES
 from SunCastPy.Forecast.Base_Forecast import Forecast
 from SunCastPy.Forecast.Weekly_Forecast import WeeklyForecast
-from SunCastPy.utils.utils import get_request
+from SunCastPy.utils.utils import (
+    get_api_details,
+    get_forecast_location_name,
+    get_hourly_forecast_url,
+    get_hourly_forecast_zone_url,
+    get_request,
+)
 
 
 class LocalWeather:
     """Run an API call to NOAA given the coordinates to get the local weather"""
 
-    def __init__(self, latitude: float, longitude: float, flatten: bool = False) -> None:
-        _details: dict[str, dict[str, str]] = get_request(
-            f"https://api.weather.gov/points/{latitude},{longitude}"
-        )
-        _forecast: str = _details["properties"]["forecastHourly"]
-        self.periods: list[dict] = get_request(_forecast)["properties"]["periods"]
+    def __init__(
+        self,
+        latitude: float | None = None,
+        longitude: float | None = None,
+        city: str | None = None,
+        flatten: bool = False,
+    ) -> None:
+        _details: dict[str, dict] = {}
+        _periods: str = ""
+        self.periods: list[dict] = [{}]
+        self.location: str = ""
+        if city:
+            self.location = city
+            _periods = SJU_ZONES[city]["url"]
+        elif latitude is not None and longitude is not None:
+            _details = get_api_details(latitude=latitude, longitude=longitude)
+            self.location = get_forecast_location_name(get_hourly_forecast_zone_url(_details))
+            _periods = get_hourly_forecast_url(_details)
+        else:
+            raise ValueError("Missing city or latitude and longitude")
+        self.periods = get_request(_periods)["properties"]["periods"]
         self.forecast: list[Forecast] = [Forecast(**p) for p in self.periods]
         if flatten:
             self.forecast = self._summarize_time_slots()
-        self.location = get_request(_details["properties"]["forecastZone"])["properties"]["name"]
 
     def group_by_forecast(self) -> dict:
         """Group the weather periods by forecast name.

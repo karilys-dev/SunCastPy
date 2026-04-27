@@ -1,49 +1,39 @@
 import logging
 
-from SunCastPy.Forecast.Base_Forecast import Forecast
-from SunCastPy.Forecast.NOAA_Local_Forecast import LocalWeather
+from SunCastPy.report.city import main as city_report
+from SunCastPy.report.zone import main as zone_report
 from SunCastPy.utils.cli_args import parse_args
-from SunCastPy.utils.current_weather import filter_current_weather, print_current_weather
-from SunCastPy.utils.export_file import create_htlm
-from SunCastPy.utils.html_renderer import render_html
 from SunCastPy.utils.logging_config import setup_logging
 
-setup_logging()
-logger = logging.getLogger(__name__)
 
-
-def main(args=parse_args()):
+def main(args=parse_args(), log_level=logging.INFO):
     """Get the weather forecast and print to command line
 
     Args:
         args (argument parser, optional): Argument parser values. Defaults to parse_args().
     """
-    kwargs = {
-        "latitude": args.latitude,
-        "longitude": args.longitude,
-        "flatten": args.flatten,
-    }
-    logger.debug(f"Latitude: {args.latitude}")
-    logger.debug(f"Longitude: {args.longitude}")
-    logger.debug(f"Flatten: {args.flatten}")
-    logger.debug(f"Group By: {args.group_by}")
+    setup_logging(level=log_level)
+    logger = logging.getLogger(__name__)
 
-    current_weather: LocalWeather | dict[str, list[Forecast]] = LocalWeather(**kwargs)
-    logger.info(f"Forecast for {current_weather.location}")
-
-    if args.group_by:
-        grouped_weather = filter_current_weather(
-            result=current_weather,
-            group_by=args.group_by,
-            limit=args.limit,
-        )
-        logger.info("Creating html report")
-        html = render_html(grouped_data=grouped_weather, location=current_weather.location)
-        create_htlm(data=html, output_dir=args.output)
-        logger.info("Report saved to output directory.")
-
+    for arg, val in args.__dict__.items():
+        logger.debug(f"{arg}: {val}")
+    if args.zone:
+        if not args.output:
+            raise ValueError("Output is required when creating a report for a zone")
+        zone_report(zone=args.zone, output=args.output, flatten=args.flatten, limit=args.limit)
     else:
-        print_current_weather(current_weather=current_weather)
+        # City or coordinates
+        city_report(
+            limit=args.limit,
+            output=args.output,
+            group_by=args.group_by,
+            kwargs={
+                "latitude": args.latitude,
+                "longitude": args.longitude,
+                "city": args.city,
+                "flatten": args.flatten,
+            },
+        )
 
 
 if __name__ == "__main__":

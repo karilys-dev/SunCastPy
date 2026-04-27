@@ -3,12 +3,24 @@ name: Build and Deploy Forecast
 on:
     workflow_dispatch:
         inputs:
-            latitude:
-                description: "Latitude"
-                required: false
-            longitude:
-                description: "Longitude"
-                required: false
+            zone:
+                description: "Zone for the forecast. Run forecast -h for full list"
+                type: choice
+                options:
+                    - Central Interior
+                    - Culebra
+                    - Eastern Interior
+                    - Mayaguez and Vicinity
+                    - North Central
+                    - Northeast
+                    - Northwest
+                    - Ponce and Vicinity
+                    - San Juan and Vicinity
+                    - Southeast
+                    - Southwest
+                    - Vieques
+                    - Western Interior
+                default: "Mayaguez and Vicinity"
             limit:
                 description: "Limit {1-7}"
                 required: false
@@ -28,8 +40,7 @@ jobs:
             id-token: write
 
         env:
-            LATITUDE: ${{ github.event.inputs.latitude }}
-            LONGITUDE: ${{ github.event.inputs.longitude }}
+            ZONE: ${{ github.event.inputs.zone }}
             LIMIT: ${{ github.event.inputs.limit }}
             OUTPUT_DIR: ${{ github.event.inputs.output_dir }}
             FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
