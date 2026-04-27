@@ -6,14 +6,14 @@ from SunCastPy.Forecast.NOAA_Local_Forecast import LocalWeather
 from SunCastPy.utils.current_weather import filter_current_weather
 from SunCastPy.utils.export_file import create_html
 from SunCastPy.utils.html_renderer import render_html, render_index
-from SunCastPy.utils.logging_config import setup_logging
 
-setup_logging()
 logger = logging.getLogger(__name__)
 
 
 def get_forecast_all_cities_in_zone(
-    zone_name: str, flatten: bool = True
+    zone_name: str,
+    flatten: bool,
+    limit: int,
 ) -> dict[str, LocalWeather]:
     """Given a zone name get the forecast for all of the corresponding cities
 
@@ -32,7 +32,7 @@ def get_forecast_all_cities_in_zone(
         grouped_weather = filter_current_weather(
             data=current_data,
             group_by="date",
-            limit=3,
+            limit=limit,
         )
         forecast_cities[city] = grouped_weather
     return forecast_cities
@@ -58,6 +58,10 @@ def create_html_multi_city(data: dict, output_dir: Path):
     logger.info("Created all reports for each city.")
 
 
-def main(zone: str, output: Path) -> None:
-    forecast_data = get_forecast_all_cities_in_zone(zone)
+def main(zone: str, output: Path, flatten: bool, limit: int) -> None:
+    forecast_data = get_forecast_all_cities_in_zone(
+        zone_name=zone,
+        flatten=flatten,
+        limit=limit,
+    )
     create_html_multi_city(data=forecast_data, output_dir=output)
