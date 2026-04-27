@@ -37,7 +37,7 @@ class Forecast(BaseModel):
     @property
     def day_name(self) -> str:
         """Extract the day name from the data time"""
-        return self.start_time.strftime("%A")
+        return self.start_time.strftime("%A")  # pylint: disable=no-member
 
     def __str__(self) -> str:  # pragma: no cover
         return (

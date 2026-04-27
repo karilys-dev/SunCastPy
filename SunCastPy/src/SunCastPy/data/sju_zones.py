@@ -41,7 +41,7 @@ def group_zones(data: dict) -> dict:
     distinct: dict = {}
     for city, val in data.items():
         zone = val["forecastZone"].split("/")[-1]
-        if zone not in distinct.keys():
+        if zone not in distinct:
             distinct[zone] = {}
             distinct[zone]["cities"] = [city]
             distinct[zone]["url"] = val["forecastZone"]

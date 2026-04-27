@@ -7,6 +7,7 @@ from SunCastPy.models.NOAA.base import Forecast
 from SunCastPy.utils.utils import format_date
 
 
+# pylint: disable=too-many-instance-attributes
 class WeeklyForecast:
     """Class representing a forecast for each day of the week"""
 
