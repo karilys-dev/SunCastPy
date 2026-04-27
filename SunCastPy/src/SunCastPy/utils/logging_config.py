@@ -1,8 +1,15 @@
+"""Module that sets up the logger globally"""
+
 import logging
 import sys
 
 
 def setup_logging(level=logging.INFO):
+    """Create the logger
+
+    Args:
+        level (int, optional): Log level for the logger. Defaults to logging.INFO.
+    """
     root = logging.getLogger()
     root.setLevel(level)
 

@@ -1,3 +1,5 @@
+"""Module that defines the arguments for main"""
+
 import argparse
 from os import getenv
 from pathlib import Path
@@ -9,6 +11,11 @@ GROUP_BY_OPTIONS = ["forecast", "date"]
 
 
 def weather_parser() -> argparse.ArgumentParser:
+    """Argument parser for main.py to create the weather report
+
+    Returns:
+        argparse.ArgumentParser: Arguments required in main.py
+    """
     parser = argparse.ArgumentParser(description="Weather data processing CLI")
     coords = get_current_coordinates()
     lat_default = getenv("LATITUDE", coords["latitude"])
@@ -76,8 +83,16 @@ def weather_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def parse_args():
-    parser = weather_parser()
+def parse_args(parser: argparse.ArgumentParser = weather_parser()) -> argparse.Namespace:
+    """Parse the arguments of the weather app
+
+    Args:
+        parser (argparse.Namespace, optional): Arguments without parsing.
+
+    Returns:
+        argparse.Namespace: arguments
+    """
+
     return parser.parse_args()
 
 

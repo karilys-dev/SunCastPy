@@ -1,3 +1,5 @@
+"""Module that creates the Model of a Forecast Class"""
+
 from datetime import datetime
 
 from pydantic import BaseModel, Field, model_validator

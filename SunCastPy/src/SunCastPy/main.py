@@ -1,3 +1,5 @@
+"""Module that creates forecast report from command line"""
+
 import logging
 
 from SunCastPy.report.city import main as city_report
