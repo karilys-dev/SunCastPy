@@ -5,6 +5,8 @@ from pathlib import Path
 from SunCastPy.data.zones_url import SJU_ZONES, SJU_ZONES_GROUPED
 from SunCastPy.utils.utils import get_current_coordinates
 
+GROUP_BY_OPTIONS = ["forecast", "date"]
+
 
 def weather_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Weather data processing CLI")
@@ -53,7 +55,7 @@ def weather_parser() -> argparse.ArgumentParser:
         "--group-by",
         "-g",
         type=str,
-        choices=["forecast", "date"],
+        choices=GROUP_BY_OPTIONS,
         default=None,
         help="Optional grouping strategy: 'forecast' or 'date'",
     )

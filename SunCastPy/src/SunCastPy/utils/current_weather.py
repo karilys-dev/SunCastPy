@@ -2,13 +2,14 @@ import logging
 
 from SunCastPy.Forecast.Base_Forecast import Forecast
 from SunCastPy.Forecast.NOAA_Local_Forecast import LocalWeather
+from SunCastPy.utils.cli_args import GROUP_BY_OPTIONS
 
 logger = logging.getLogger(__name__)
 
 
 def filter_current_weather(
     data: LocalWeather, group_by: str, limit: int
-) -> dict[str, list[Forecast]] | LocalWeather:
+) -> dict[str, list[Forecast]]:
     """Filter the weather by forecast or date
 
     Args:
@@ -19,14 +20,14 @@ def filter_current_weather(
     Returns:
         dict[str, list[Forecast]] | LocalWeather: Grouped data
     """
+    if group_by not in GROUP_BY_OPTIONS:
+        logger.error("Did not group the data")
+        raise ValueError("No valid grouping method provided")
     match group_by:
         case "forecast":
             return data.group_by_forecast()
         case "date":
             return data.weekly().get_next_days(days=limit)
-        case _:
-            logger.warning("Did not group the data")
-            return data
 
 
 def print_current_weather(current_weather: LocalWeather | dict[str, list[Forecast]]) -> None:
