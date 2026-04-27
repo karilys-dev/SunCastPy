@@ -6,6 +6,5 @@ echo "Creating html report"
 forecast \
     --group-by date \
     --output ${OUTPUT_DIR} \
-    ${LATITUDE:+--latitude ${LATITUDE}} \
-    ${LONGITUDE:+--longitude ${LONGITUDE}} \
+    --zone ${ZONE} \
     ${LIMIT:+--limit $LIMIT} \
