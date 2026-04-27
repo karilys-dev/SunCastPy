@@ -14,7 +14,7 @@ dependencies = ["requests", "pydantic", 'jinja2']
 
 [project.optional-dependencies]
 dev = ["ruff", "mypy", "djlint"]
-tests = ["pytest", "pytest-cov", "pytest-html"]
+tests = ["pytest", "pytest-cov", "pytest-html", "pylint"]
 
 [project.scripts]
 forecast = "SunCastPy.main:main"
@@ -61,9 +61,10 @@ enable = [
     "missing-class-docstring",
     "missing-function-docstring",
 ]
+disable = ["logging-fstring-interpolation", "import-error"]
 
 [tool.pylint.format]
-max-line-length = 88
+# max-line-length = 100
 
 [tool.mypy]
 python_version = "3.11"
