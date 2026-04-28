@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      REPORTS_DIR: reports
+      REPORTS_DIR: ${{ github.workspace }}/SunCastPy/reports
 
     steps:
       - name: Checkout
