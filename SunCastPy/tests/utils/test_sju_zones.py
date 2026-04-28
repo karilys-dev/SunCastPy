@@ -1,5 +1,7 @@
+# pylint: disable=redefined-outer-name
 import pytest
-from SunCastPy.data.sju_zones import group_zones
+
+from SunCastPy.data.sju_zones import get_all_zones, group_zones
 from SunCastPy.data.zones_url import SJU_ZONES
 
 expected = {
@@ -43,3 +45,10 @@ def test_group_zone_attributes(attribute, data_group_zones):
 )
 def test_zone_has_city(zone, data_group_zones):
     assert expected[zone] in data_group_zones[zone]["cities"]
+
+
+def test_get_all_zones(mock_city, mock_city_url, sju_data):
+    result = get_all_zones()
+    assert "Test" in result
+    assert result["Test"]["url"] == sju_data["properties"]["forecastHourly"]
+    assert result["Test"]["forecastZone"] == sju_data["properties"]["forecastZone"]
