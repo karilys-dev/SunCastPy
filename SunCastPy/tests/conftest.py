@@ -1,3 +1,5 @@
+# pylint: disable=redefined-outer-name,unused-argument
+
 # Importing the Pytest library
 import json
 from datetime import datetime
@@ -5,8 +7,11 @@ from pathlib import Path
 
 import pytest
 from data.expected_forecast_flat import EXPECTED_FLATTENED_FORECAST
+
 from SunCastPy.models.NOAA.local_forecast import LocalForecast
 from SunCastPy.utils.logging_config import setup_logging
+
+TEST_DATA_DIR = Path(__file__).parent.joinpath("data")
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -14,22 +19,31 @@ def configure_logging():
     setup_logging()
 
 
-TEST_DATA_DIR = Path(__file__).parent.joinpath("data")
-DATA_DETAILS = json.loads(TEST_DATA_DIR.joinpath("NOAA_SJU.json").read_text(encoding="utf-8"))
-DATA_FORECAST = json.loads(
-    TEST_DATA_DIR.joinpath("NOAA_SJU_forecastHourly.json").read_text(encoding="utf-8")
-)
+@pytest.fixture()
+def sju_forecast():
+    return json.loads(
+        TEST_DATA_DIR.joinpath("NOAA_SJU_forecastHourly.json").read_text(
+            encoding="utf-8"
+        )
+    )
 
 
 @pytest.fixture
-def sample_data(mock_get_request, mock_city):
+def sju_data():
+    return json.loads(
+        TEST_DATA_DIR.joinpath("NOAA_SJU.json").read_text(encoding="utf-8")
+    )
+
+
+@pytest.fixture
+def sample_data(mock_get_request, mock_city, sju_data, sju_forecast):
     data = {"expected": {}, "flattened": {}, "default": {}, "city": {}}
     data["default"]["LocalForecast"] = LocalForecast(0, 0)
     data["default"]["Forecast"] = data["default"]["LocalForecast"].forecast
     data["flattened"]["LocalForecast"] = LocalForecast(0, 0, flatten=True)
     data["flattened"]["Forecast"] = data["flattened"]["LocalForecast"].forecast
-    data["expected"]["LocalForecast"] = DATA_DETAILS
-    data["expected"]["Forecast"] = DATA_FORECAST
+    data["expected"]["LocalForecast"] = sju_data
+    data["expected"]["Forecast"] = sju_forecast
     data["expected"]["ForecastFlat"] = EXPECTED_FLATTENED_FORECAST
     data["expected"]["group_by_dayname"] = {
         "Sunday 2026-03-22": {"default": 8, "flattened": 3},
@@ -55,22 +69,32 @@ def sample_data(mock_get_request, mock_city):
 
 
 @pytest.fixture
-def mock_city(monkeypatch):
+def mock_city(monkeypatch, sju_data):
+    fake_city = {
+        "Test": {
+            "latitude": 0,
+            "longitude": 0,
+            "url": sju_data["properties"]["forecastHourly"],
+            "forecastZone": sju_data["properties"]["forecastZone"],
+        }
+    }
+
+    monkeypatch.setattr("SunCastPy.models.NOAA.local_forecast.SJU_ZONES", fake_city)
+    monkeypatch.setattr("SunCastPy.data.zones.COORDINATES", fake_city)
+
+
+@pytest.fixture
+def mock_city_url(monkeypatch, sju_data):
+    def mock_get_api_details(**kwargs):
+        return sju_data
+
     monkeypatch.setattr(
-        "SunCastPy.models.NOAA.local_forecast.SJU_ZONES",
-        {
-            "Test": {
-                "latitude": 0,
-                "longitude": 0,
-                "url": DATA_DETAILS["properties"]["forecastHourly"],
-                "forecastZone": DATA_DETAILS["properties"]["forecastZone"],
-            }
-        },
+        "SunCastPy.data.sju_zones.get_api_details", mock_get_api_details
     )
 
 
 @pytest.fixture
-def mock_get_request(monkeypatch):
+def mock_get_request(monkeypatch, sju_data, sju_forecast):
     """Mock test data using sample from San Juan 2026-03-22
 
     Raises:
@@ -82,16 +106,18 @@ def mock_get_request(monkeypatch):
 
     def fake_get_request(url: str):
         if url == "https://api.weather.gov/points/0,0":
-            return DATA_DETAILS
-        elif DATA_DETAILS["properties"]["forecastHourly"] in url:
-            return DATA_FORECAST
-        elif DATA_DETAILS["properties"]["forecastZone"] in url:
+            return sju_data
+        if sju_data["properties"]["forecastHourly"] in url:
+            return sju_forecast
+        if sju_data["properties"]["forecastZone"] in url:
             return {"properties": {"name": "San Juan and Vicinity"}}
-        elif url == "https://ipinfo.io":
+        if url == "https://ipinfo.io":
             return {"loc": "00.0000,-11.1111"}
         raise ValueError(f"Unexpected URL: {url}")
 
-    monkeypatch.setattr("SunCastPy.models.NOAA.local_forecast.get_request", fake_get_request)
+    monkeypatch.setattr(
+        "SunCastPy.models.NOAA.local_forecast.get_request", fake_get_request
+    )
     monkeypatch.setattr("SunCastPy.utils.utils.get_request", fake_get_request)
 
 
