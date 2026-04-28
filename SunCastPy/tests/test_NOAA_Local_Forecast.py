@@ -3,6 +3,7 @@ import logging
 from datetime import datetime
 
 import pytest
+
 from SunCastPy.models.NOAA.base import Forecast
 from SunCastPy.models.NOAA.local_forecast import LocalForecast
 from SunCastPy.models.NOAA.weekly_forecast import WeeklyForecast
@@ -51,9 +52,9 @@ class Test_LocalForecast:
                     "end_time",
                     "probability_of_precipitation",
                 ]:
-                    assert getattr(expected, key) == getattr(result[index], key), (
-                        f"Expected {getattr(expected, key)} got {getattr(result[index], key)}"
-                    )
+                    truth = getattr(expected, key)
+                    got = getattr(result[index], key)
+                    assert truth == got, f"Expected {truth} got {got}"
 
     @pytest.mark.parametrize(
         ("data_type"),
@@ -71,6 +72,10 @@ class Test_LocalForecast:
             assert isinstance(grouped[forecast], list)
             assert isinstance(grouped[forecast][0], Forecast)
             assert len(grouped[forecast]) == expected[forecast][data_type]
+
+    def test_raises_error(self):
+        with pytest.raises(ValueError, match="Missing city or latitude and longitude"):
+            LocalForecast()
 
 
 class Test_Forecast:
@@ -94,7 +99,9 @@ class Test_Forecast:
     )
     def test_has_attributes(self, sample_data, param_name, dict_key):
         class_data: Forecast = sample_data["default"]["Forecast"][0]
-        expected_data: dict = sample_data["expected"]["Forecast"]["properties"]["periods"][0]
+        expected_data: dict = sample_data["expected"]["Forecast"]["properties"][
+            "periods"
+        ][0]
         if param_name == "probability_of_precipitation":
             value = int(expected_data[dict_key]["value"])
         elif param_name in ["start_time", "end_time"]:
