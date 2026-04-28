@@ -83,7 +83,9 @@ def weather_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def parse_args(parser: argparse.ArgumentParser = weather_parser()) -> argparse.Namespace:
+def parse_args(
+    parser: argparse.ArgumentParser = weather_parser(),
+) -> argparse.Namespace:  # pragma: no cover
     """Parse the arguments of the weather app
 
     Args:
