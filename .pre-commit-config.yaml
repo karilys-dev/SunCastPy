@@ -10,4 +10,5 @@ repos:
     rev: v3.2.0
     hooks:
       - id: pylint
-        args: [ "SunCastPy/src" ]
+        pass_filenames: false
+        entry: bash -c "cd SunCastPy && pylint src"
