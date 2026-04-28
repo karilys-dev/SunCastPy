@@ -44,5 +44,7 @@ class Test_Utils:
 class Test_Current_Weather:
     @pytest.mark.skip(reason="Not yet implemented")
     def test_placeholder(self, sample_data):
-        current_weather.filter_current_weather(sample_data["default"], group_by="none", limit=1)
+        current_weather.filter_current_weather(
+            sample_data["default"], group_by="none", limit=1
+        )
         assert False
