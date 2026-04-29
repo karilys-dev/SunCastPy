@@ -1,0 +1,14 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.4
+    hooks:
+      - id: ruff
+        args: [ "--fix" ]
+      - id: ruff-format
+
+  - repo: https://github.com/PyCQA/pylint
+    rev: v3.2.0
+    hooks:
+      - id: pylint
+        pass_filenames: false
+        entry: bash -c "cd SunCastPy && pylint src"

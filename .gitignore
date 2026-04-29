@@ -213,3 +213,4 @@ tmp/
 results/
 reports/
 artifacts/
+.DS_Store

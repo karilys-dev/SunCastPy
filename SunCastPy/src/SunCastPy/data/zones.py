@@ -1,3 +1,5 @@
+"""List of municipalities with coordinates"""
+
 COORDINATES = {
     "Adjuntas": {
         "latitude": 18.1633,

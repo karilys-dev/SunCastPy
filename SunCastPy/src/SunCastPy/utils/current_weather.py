@@ -1,24 +1,26 @@
+"""Module that provides functions for current weather"""
+
 import logging
 
-from SunCastPy.Forecast.Base_Forecast import Forecast
-from SunCastPy.Forecast.NOAA_Local_Forecast import LocalWeather
+from SunCastPy.models.NOAA.base import Forecast
+from SunCastPy.models.NOAA.local_forecast import LocalForecast
 from SunCastPy.utils.cli_args import GROUP_BY_OPTIONS
 
 logger = logging.getLogger(__name__)
 
 
 def filter_current_weather(
-    data: LocalWeather, group_by: str, limit: int
+    data: LocalForecast, group_by: str, limit: int
 ) -> dict[str, list[Forecast]]:
     """Filter the weather by forecast or date
 
     Args:
-        data (LocalWeather): data to group
+        data (LocalForecast): data to group
         group_by (str): [forecast, date]
         limit (int): limit of days to show
 
     Returns:
-        dict[str, list[Forecast]] | LocalWeather: Grouped data
+        dict[str, list[Forecast]] | LocalForecast: Grouped data
     """
     if group_by not in GROUP_BY_OPTIONS:
         logger.error("Did not group the data")
@@ -30,13 +32,13 @@ def filter_current_weather(
             return data.weekly().get_next_days(days=limit)
 
 
-def print_current_weather(current_weather: LocalWeather | dict[str, list[Forecast]]) -> None:
+def print_current_weather(current_weather: LocalForecast | dict[str, list[Forecast]]) -> None:
     """Use the logger to show the weather data
 
     Args:
-        current_weather (LocalWeather | dict[str, list[Forecast]]): Data to print
+        current_weather (LocalForecast | dict[str, list[Forecast]]): Data to print
     """
-    if isinstance(current_weather, LocalWeather):
+    if isinstance(current_weather, LocalForecast):
         for forecast in current_weather.forecast:
             logger.info(forecast)
 

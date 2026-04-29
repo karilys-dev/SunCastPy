@@ -13,8 +13,8 @@ authors = [{ name = "Karilys Collazo", email = "karilys.learn@gmail.com" }]
 dependencies = ["requests", "pydantic", 'jinja2']
 
 [project.optional-dependencies]
-dev = ["ruff", "mypy", "djlint"]
-tests = ["pytest", "pytest-cov", "pytest-html"]
+dev = ["ruff", "mypy", "djlint", "pre-commit"]
+tests = ["pytest", "pytest-cov", "pytest-html", "pylint"]
 
 [project.scripts]
 forecast = "SunCastPy.main:main"
@@ -33,6 +33,7 @@ SunCastPy = ["templates/*.j2", "data/*"]
 # [tool.setuptools.dynamic]
 # version = { attr = "app.__version__" }
 [tool.pytest.ini_options]
+testpaths = ["tests"]
 addopts = """
     --cov=SunCastPy
     --cov-report=term-missing
@@ -44,28 +45,42 @@ addopts = """
     -vv
 """
 
-testpaths = ["tests"]
-
 [tool.coverage.run]
 source = ["src"]
 omit = ["*/conftest.py", "*/test/*", "*/tests/*", "logging_config.py"]
 
 [tool.coverage.report]
 omit = ["*/conftest.py", "*/test/*", "*/tests/*"]
+exclude_lines = ["pragma: no cover", "def main", "if __name__ == .__main__.:"]
+
 [tool.pylint.main]
 disable = []
 
-[tool.pylint.messages_control]
+[tool.pylint."messages control"]
 enable = [
     "missing-module-docstring",
     "missing-class-docstring",
     "missing-function-docstring",
 ]
+disable = [
+    "logging-fstring-interpolation",
+    "logging-format-interpolation",
+    "import-error",
+]
 
-[tool.pylint.format]
-max-line-length = 88
 
 [tool.mypy]
 python_version = "3.11"
 strict = true
 ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F"]
+# ["E", "F", "D"] Disabling D doc strings first line must end in .
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"

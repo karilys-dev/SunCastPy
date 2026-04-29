@@ -2,13 +2,13 @@
 from datetime import datetime
 
 import pytest
-from SunCastPy.Forecast.Base_Forecast import Forecast
-from SunCastPy.Forecast.NOAA_Local_Forecast import LocalWeather
-from SunCastPy.Forecast.Weekly_Forecast import WeeklyForecast
+from SunCastPy.models.NOAA.base import Forecast
+from SunCastPy.models.NOAA.local_forecast import LocalForecast
+from SunCastPy.models.NOAA.weekly_forecast import WeeklyForecast
 from SunCastPy.utils.utils import format_date
 
 
-class Test_Weekly_Forecast:
+class Test_weekly_forecast:
     @pytest.mark.parametrize(
         ("data_type"),
         (
@@ -18,7 +18,7 @@ class Test_Weekly_Forecast:
     )
     def test_group_by_dayname(self, sample_data, data_type, mock_datetime_today, today_str):
 
-        data: LocalWeather = sample_data[data_type]["LocalWeather"]
+        data: LocalForecast = sample_data[data_type]["LocalForecast"]
         weekly_object: WeeklyForecast = data.weekly()
         grouped: dict = weekly_object.weekly
         expected = sample_data["expected"]["group_by_dayname"]
@@ -44,12 +44,12 @@ class Test_Weekly_Forecast:
                     assert weekly_object.today == grouped[day]
 
     def test_get_next_days_limit(self, sample_data, mock_datetime_today, today_str):
-        data: LocalWeather = sample_data["default"]["LocalWeather"]
+        data: LocalForecast = sample_data["default"]["LocalForecast"]
         with pytest.raises(ValueError, match="Number of days is more than data contents"):
             data.weekly().get_next_days(days=10)
 
     def test_get_next_days(self, sample_data, mock_datetime_today, today_str):
-        data: LocalWeather = sample_data["default"]["LocalWeather"]
+        data: LocalForecast = sample_data["default"]["LocalForecast"]
         assert len(data.weekly().weekly) == 7 + 1
         limit = 3
         shortened_value = data.weekly().get_next_days(limit)

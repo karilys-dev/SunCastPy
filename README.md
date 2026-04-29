@@ -38,3 +38,10 @@ This project uses VSCode DevContainers to create a consistent development enviro
 // .devcontainer/devcontainer.json
 "updateRemoteUserUID": true
 ```
+
+## Forecast
+- A forecast report can be created using github actions and it will show up as a github page
+
+## GitHub Actions
+- Run on Pull Request
+- Create Forecast Report

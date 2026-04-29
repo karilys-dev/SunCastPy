@@ -1,7 +1,9 @@
+"""Module that creates html reports using jinja2"""
+
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
-from SunCastPy.Forecast.Base_Forecast import Forecast
+from SunCastPy.models.NOAA.base import Forecast
 from SunCastPy.utils.utils import format_hour
 
 template_dir = Path(__file__).parent.parent / "templates"
@@ -10,7 +12,14 @@ env = Environment(loader=FileSystemLoader(template_dir), autoescape=True)
 
 
 def render_index(locations: list[dict]) -> str:
+    """Create the index.html page when using zones report
 
+    Args:
+        locations (list[dict]): Names of the cities where child pages are created.
+
+    Returns:
+        str: data for the html file
+    """
     template = env.get_template("index.html.j2")
     return template.render(locations=locations)
 

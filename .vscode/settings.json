@@ -5,8 +5,8 @@
     },
     "[python]": {
         "editor.codeActionsOnSave": {
-            "source.fixAll": "explicit",
-            "source.organizeImports": "explicit"
+            "source.fixAll": "always",
+            "source.organizeImports": "always"
         },
         "editor.defaultFormatter": "charliermarsh.ruff",
         "editor.formatOnSave": true,
@@ -20,16 +20,15 @@
     "mypy-type-checker.args": [
         "--ignore-missing-imports=True"
     ],
-    "pylint.args": [
-        "--disable=import-error,    w1203"
-    ],
     "pylint.enabled": true,
+    "python.defaultInterpreterPath": "/home/devuser/.venv/bin/python",
+    "python.linting.pylintPath": "/home/devuser/.venv/bin/pylint",
     "python.linting.mypyEnabled": true,
     "python.testing.cwd": "${workspaceFolder}/SunCastPy",
     "python.testing.pytestArgs": [],
     "python.testing.pytestEnabled": true,
     "python.testing.unittestEnabled": false,
-    "ruff.lineLength": 100,
+    // "ruff.lineLength": 88,
     "python-envs.pythonProjects": [
         {
             "path": ".",
@@ -37,4 +36,13 @@
             "packageManager": "ms-python.python:pip"
         }
     ],
+    "terminal.integrated.env.linux": {
+        "LC_ALL": "C",
+        "LANG": "C"
+    },
+    "python.formatting.provider": "none",
+    "python.linting.enabled": false,
+    "pylint.args": [
+        "--rcfile=${workspaceFolder}/SunCastPy/pyproject.toml"
+    ]
 }

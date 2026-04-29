@@ -1,3 +1,5 @@
+"""Module that returns the data of Puerto Rico zones"""
+
 from pathlib import Path
 
 from SunCastPy.utils.utils import get_json_data

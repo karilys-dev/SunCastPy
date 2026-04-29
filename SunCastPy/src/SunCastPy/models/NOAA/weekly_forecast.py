@@ -1,11 +1,16 @@
+"""Module providing a class to create WeeklyForecast."""
+
 from collections import defaultdict
 from datetime import datetime, timedelta
 
-from SunCastPy.Forecast.Base_Forecast import Forecast
+from SunCastPy.models.NOAA.base import Forecast
 from SunCastPy.utils.utils import format_date
 
 
+# pylint: disable=too-many-instance-attributes
 class WeeklyForecast:
+    """Class representing a forecast for each day of the week"""
+
     def __init__(self, forecast_list: list[Forecast]) -> None:
         self.weekly: dict = self.group_by_date(forecast_list=forecast_list)
         # Initialize all days (important for autocomplete + safety)

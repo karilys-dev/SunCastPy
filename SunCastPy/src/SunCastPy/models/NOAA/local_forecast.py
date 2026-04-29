@@ -3,8 +3,8 @@
 from collections import defaultdict
 
 from SunCastPy.data.zones_url import SJU_ZONES
-from SunCastPy.Forecast.Base_Forecast import Forecast
-from SunCastPy.Forecast.Weekly_Forecast import WeeklyForecast
+from SunCastPy.models.NOAA.base import Forecast
+from SunCastPy.models.NOAA.weekly_forecast import WeeklyForecast
 from SunCastPy.utils.utils import (
     get_api_details,
     get_forecast_location_name,
@@ -14,7 +14,7 @@ from SunCastPy.utils.utils import (
 )
 
 
-class LocalWeather:
+class LocalForecast:
     """Run an API call to NOAA given the coordinates to get the local weather"""
 
     def __init__(
@@ -33,7 +33,9 @@ class LocalWeather:
             _periods = SJU_ZONES[city]["url"]
         elif latitude is not None and longitude is not None:
             _details = get_api_details(latitude=latitude, longitude=longitude)
-            self.location = get_forecast_location_name(get_hourly_forecast_zone_url(_details))
+            self.location = get_forecast_location_name(
+                get_hourly_forecast_zone_url(_details)
+            )
             _periods = get_hourly_forecast_url(_details)
         else:
             raise ValueError("Missing city or latitude and longitude")
@@ -42,7 +44,7 @@ class LocalWeather:
         if flatten:
             self.forecast = self._summarize_time_slots()
 
-    def group_by_forecast(self) -> dict:
+    def group_by_forecast(self) -> dict[str, list[Forecast]]:
         """Group the weather periods by forecast name.
 
         Args:
@@ -73,7 +75,7 @@ class LocalWeather:
         Returns:
             dict: Data with flattened time periods
         """
-        # Start with an empty list to avoid having to check the first element in the loop
+        # Start with an empty list to avoid having to check the first element
         result: list[Forecast] = []
 
         for current in self.forecast:
@@ -89,7 +91,8 @@ class LocalWeather:
                 if result[-1].day_name != current_date:
                     result.append(current)
                 elif (
-                    result[-1].probability_of_precipitation == current.probability_of_precipitation
+                    result[-1].probability_of_precipitation
+                    == current.probability_of_precipitation
                 ):
                     if result[-1].end_time == current.start_time:
                         result[-1].end_time = current.end_time

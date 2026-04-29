@@ -1,10 +1,11 @@
+# pylint: disable=unused-argument
 import logging
 from datetime import datetime
 
 import pytest
 
-# from SunCastPy.Forecast.NOAA_Local_Forecast import Forecast, LocalWeather
-from SunCastPy.utils import current_weather, utils
+# from SunCastPy.Forecast.NOAA_Local_Forecast import Forecast, LocalForecast
+from SunCastPy.utils import utils
 
 logger = logging.getLogger(__name__)
 
@@ -39,10 +40,3 @@ class Test_Utils:
         data = utils.get_current_coordinates()
         assert data["latitude"] == "00.0000"
         assert data["longitude"] == "-11.1111"
-
-
-class Test_Current_Weather:
-    @pytest.mark.skip(reason="Not yet implemented")
-    def test_placeholder(self, sample_data):
-        current_weather.filter_current_weather(sample_data["default"], group_by="none", limit=1)
-        assert False

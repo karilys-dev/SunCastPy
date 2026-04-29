@@ -10,3 +10,5 @@ python -m venv "$HOME/.venv"
 
 git config --global user.email ${USER_EMAIL}
 git config --global user.name ${USER_NAME}
+
+$HOME/.venv/bin/pre-commit install
