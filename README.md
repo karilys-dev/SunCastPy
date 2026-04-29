@@ -41,3 +41,7 @@ This project uses VSCode DevContainers to create a consistent development enviro
 
 ## Forecast
 - A forecast report can be created using github actions and it will show up as a github page
+
+## GitHub Actions
+- Run on Pull Request
+- Create forecast report
