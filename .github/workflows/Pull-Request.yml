@@ -16,6 +16,7 @@ jobs:
 
     env:
       REPORTS_DIR: ${{ github.workspace }}/SunCastPy/reports
+      INSPECTING: ${{ github.workspace }}
 
     steps:
       - name: Checkout
@@ -45,6 +46,7 @@ jobs:
       - name: debugging
         run: |
           echo $REPORTS_DIR
+          echo $INSPECTING
           ls -lahR
           
       - name: Upload test reports
