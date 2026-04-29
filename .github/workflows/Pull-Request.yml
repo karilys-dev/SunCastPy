@@ -2,6 +2,7 @@ name: Pull Request
 
 on:
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -41,7 +42,11 @@ jobs:
             --self-contained-html \
             -vv
         continue-on-error: true
-
+      - name: debugging
+        run: |
+          echo $REPORTS_DIR
+          ls -lahR
+          
       - name: Upload test reports
         uses: actions/upload-artifact@v4
         with:
