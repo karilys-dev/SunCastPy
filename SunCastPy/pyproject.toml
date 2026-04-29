@@ -35,7 +35,7 @@ SunCastPy = ["templates/*.j2", "data/*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = """
-    --cov=src/SunCastPy
+    --cov=SunCastPy
     --cov-report=term-missing
     --cov-fail-under=90
     --self-contained-html
@@ -48,8 +48,11 @@ addopts = """
 """
 
 [tool.coverage.run]
-source = ["src/SunCastPy"]
+source = ["SunCastPy"]
 omit = ["*/conftest.py", "*/test/*", "*/tests/*", "logging_config.py"]
+
+[tool.coverage.paths]
+source = ["src/SunCastPy", "*/site-packages/SunCastPy"]
 
 [tool.coverage.report]
 omit = ["*/conftest.py", "*/test/*", "*/tests/*"]
