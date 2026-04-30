@@ -13,9 +13,13 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./SunCastPy
     env:
       REPORTS_DIR: ${{ github.workspace }}/SunCastPy/reports
+      SCRIPTS_DIR: ${{ github.workspace }}/scripts
 
     steps:
       - name: Checkout
@@ -28,12 +32,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          bash ./scripts/github/install-project.sh [tests]
+          bash ${SCRIPTS_DIR}/github/install-project.sh [tests]
 
       - name: Run tests + generate reports
         id: pytest
         run: |
-          cd SunCastPy/
           mkdir -p $REPORTS_DIR
 
           pytest 
