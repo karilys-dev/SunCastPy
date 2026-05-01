@@ -56,10 +56,10 @@ jobs:
           path: ${{ env.REPORTS_DIR }}/junit.xml
           reporter: java-junit
 
-      - name: Pytest Coverage Comment
-        uses: MishaKav/pytest-coverage-comment@v1.7.2
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
         with:
-          pytest-coverage-path: ${{ env.REPORTS_DIR }}/coverage.xml
+          files: ${{ env.REPORTS_DIR }}/coverage.xml
 
       - name: Comment PR with report link (on failure)
         if: steps.pytest.outcome == 'failure'
