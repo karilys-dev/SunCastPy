@@ -13,10 +13,10 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./SunCastPy
+    # defaults:
+    #   run:
+    #     shell: bash
+    #     working-directory: ./SunCastPy
     env:
       REPORTS_DIR: ${{ github.workspace }}/SunCastPy/reports
       SCRIPTS_DIR: ${{ github.workspace }}/scripts
@@ -41,6 +41,7 @@ jobs:
 
           pytest 
         continue-on-error: true
+        working-directory: ./SunCastPy
 
       - name: Upload test reports
         uses: actions/upload-artifact@v4
