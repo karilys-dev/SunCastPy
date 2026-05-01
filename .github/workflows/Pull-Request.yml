@@ -13,10 +13,6 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-    # defaults:
-    #   run:
-    #     shell: bash
-    #     working-directory: ./SunCastPy
     env:
       REPORTS_DIR: ${{ github.workspace }}/SunCastPy/reports
       SCRIPTS_DIR: ${{ github.workspace }}/scripts
@@ -39,9 +35,8 @@ jobs:
         run: |
           mkdir -p $REPORTS_DIR
 
-          pytest 
+          pytest SunCastPy/tests/
         continue-on-error: true
-        working-directory: ./SunCastPy
 
       - name: Upload test reports
         uses: actions/upload-artifact@v4
@@ -59,7 +54,7 @@ jobs:
 
       - name: Move coverage to root
         run: |
-          mv ${{ env.REPORTS_DIR }}/coverage.xml coverage.xml
+          cp coverage.xml ${{ env.REPORTS_DIR }}/coverage.xml 
           cat coverage.xml
         working-directory: ${{ github.workspace }}
       - name: Debug paths
