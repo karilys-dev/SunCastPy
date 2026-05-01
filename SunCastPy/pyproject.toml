@@ -36,12 +36,12 @@ SunCastPy = ["templates/*.j2", "data/*"]
 testpaths = ["tests"]
 addopts = """
     --cov=SunCastPy
-    --cov-report=term
+    --cov-report=term-missing
     --cov-fail-under=90
     --self-contained-html
-    --cov-report=html:coverage
     --html=reports/pytest-report.html
-    --cov-report=xml:coverage.xml
+    --cov-report=html:reports/coverage
+    -cov-report=xml:reports/coverage.xml
     --junitxml=reports/junit.xml
     -p no:cacheprovider
     -vv

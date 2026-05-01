@@ -12,9 +12,12 @@ permissions:
 
 jobs:
   test:
+    defaults:
+      run:
+        working-directory: SunCastPy
     runs-on: ubuntu-latest
     env:
-      REPORTS_DIR: ${{ github.workspace }}/reports
+      REPORTS_DIR: ${{ github.workspace }}/SunCastPy/reports
       SCRIPTS_DIR: ${{ github.workspace }}/scripts
 
     steps:
@@ -35,7 +38,7 @@ jobs:
         run: |
           mkdir -p $REPORTS_DIR
 
-          pytest SunCastPy/tests/
+          pytest 
           ls -lahR
         continue-on-error: true
 
@@ -44,7 +47,6 @@ jobs:
         with:
           name: test-reports
           path: ${{ env.REPORTS_DIR }}/
-        continue-on-error: false
 
       - name: Publish test summary to PR
         uses: dorny/test-reporter@v1
@@ -54,20 +56,10 @@ jobs:
           path: ${{ env.REPORTS_DIR }}/junit.xml
           reporter: java-junit
 
-      - name: Move coverage to root
+      - name: Add coverage to summary
         run: |
-          cp coverage.xml ${{ env.REPORTS_DIR }}/coverage.xml 
-          cp -r coverage ${{ env.REPORTS_DIR }}/coverage
-          cat coverage.xml
-        working-directory: ${{ github.workspace }}
-      - name: Debug paths
-        run: |
-          pwd
-          ls -R
-      - name: Coverage comment
-        uses: MishaKav/pytest-coverage-comment@v1
-        with:
-          pytest-coverage-path: coverage.xml
+          echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
+          coverage report >> $GITHUB_STEP_SUMMARY
 
       - name: Comment PR with report link (on failure)
         if: steps.pytest.outcome == 'failure'
