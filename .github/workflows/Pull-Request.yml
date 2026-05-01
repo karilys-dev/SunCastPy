@@ -36,7 +36,7 @@ jobs:
           mkdir -p $REPORTS_DIR
 
           pytest SunCastPy/tests/
-          ls -lah R
+          ls -lahR
         continue-on-error: true
 
       - name: Upload test reports
