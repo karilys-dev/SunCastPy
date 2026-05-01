@@ -61,7 +61,10 @@ jobs:
           cp ${{ env.REPORTS_DIR }}/coverage.xml coverage.xml
           cat coverage.xml
         working-directory: ${{ github.workspace }}
-
+      - name: Debug paths
+        run: |
+          pwd
+          ls -R
       - name: Coverage comment
         uses: MishaKav/pytest-coverage-comment@v1
         with:
