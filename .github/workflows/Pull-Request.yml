@@ -36,6 +36,7 @@ jobs:
           mkdir -p $REPORTS_DIR
 
           pytest SunCastPy/tests/
+          ls -lah R
         continue-on-error: true
 
       - name: Upload test reports
@@ -43,6 +44,7 @@ jobs:
         with:
           name: test-reports
           path: ${{ env.REPORTS_DIR }}/
+        continue-on-error: false
 
       - name: Publish test summary to PR
         uses: dorny/test-reporter@v1
