@@ -67,7 +67,7 @@ jobs:
         with:
           name: Coverage Report
           path: ${{ env.REPORTS_DIR }}/coverage.xml
-          reporter: cobertura
+          reporter: java-junit
 
       - name: Comment PR with report link (on failure)
         if: steps.pytest.outcome == 'failure'
