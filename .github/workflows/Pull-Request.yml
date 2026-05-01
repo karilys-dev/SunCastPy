@@ -56,10 +56,18 @@ jobs:
           path: ${{ env.REPORTS_DIR }}/junit.xml
           reporter: java-junit
 
-      - name: Add coverage to summary
-        run: |
-          echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
-          coverage report >> $GITHUB_STEP_SUMMARY
+      # - name: Add coverage to summary
+      #   run: |
+      #     echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
+      #     coverage report >> $GITHUB_STEP_SUMMARY
+
+      - name: Publish coverage report to PR
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Coverage Report
+          path: ${{ env.REPORTS_DIR }}/coverage.xml
+          reporter: cobertura
 
       - name: Comment PR with report link (on failure)
         if: steps.pytest.outcome == 'failure'
