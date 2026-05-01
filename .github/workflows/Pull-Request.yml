@@ -56,10 +56,15 @@ jobs:
           path: ${{ env.REPORTS_DIR }}/junit.xml
           reporter: java-junit
 
-      - name: Upload coverage
-        uses: codecov/codecov-action@v4
+      - name: Move coverage to root
+        run: |
+          cp ${{ env.REPORTS_DIR }}/coverage.xml coverage.xml
+        working-directory: ${{ github.workspace }}
+
+      - name: Coverage comment
+        uses: MishaKav/pytest-coverage-comment@v1
         with:
-          files: ${{ env.REPORTS_DIR }}/coverage.xml
+          pytest-coverage-path: coverage.xml
 
       - name: Comment PR with report link (on failure)
         if: steps.pytest.outcome == 'failure'
