@@ -39,7 +39,7 @@ addopts = """
     --cov-report=term
     --cov-fail-under=90
     --self-contained-html
-    --cov-report=html:reports/coverage
+    --cov-report=html:coverage
     --html=reports/pytest-report.html
     --cov-report=xml:coverage.xml
     --junitxml=reports/junit.xml
