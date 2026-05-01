@@ -66,30 +66,51 @@ jobs:
         with:
           script: |
             const fs = require('fs');
+            const xml2js = require('xml2js');
 
-            const data = JSON.parse(fs.readFileSync('reports/coverage.json'));
+            const xml = fs.readFileSync('reports/coverage.xml', 'utf8');
 
-            let table = `| File | Coverage | Missing |
-            |------|----------|---------|\n`;
+            xml2js.parseString(xml, async (err, result) => {
+              if (err) throw err;
 
-            for (const [file, info] of Object.entries(data.files)) {
-              const pct = info.summary.percent_covered.toFixed(1);
-              const missing = info.summary.missing_lines;
-              table += `| ${file} | ${pct}% | ${missing} |\n`;
-            }
+              const packages = result.coverage.packages[0].package;
+              let rows = [];
 
-            await github.rest.checks.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              name: "Coverage Report",
-              head_sha: context.sha,
-              status: "completed",
-              conclusion: "success",
-              output: {
-                title: "Coverage Results",
-                summary: "Per-file coverage",
-                text: table
+              for (const pkg of packages) {
+                const classes = pkg.classes[0].class;
+
+                for (const cls of classes) {
+                  const file = cls.$.filename;
+                  const lineRate = parseFloat(cls.$['line-rate']);
+                  const percent = (lineRate * 100).toFixed(1);
+
+                  rows.push({ file, percent });
+                }
               }
+
+              // sort lowest coverage first
+              rows.sort((a, b) => a.percent - b.percent);
+
+              let table = `| File | Coverage |
+            |------|----------|\n`;
+
+              for (const r of rows) {
+                table += `| ${r.file} | ${r.percent}% |\n`;
+              }
+
+              await github.rest.checks.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: "Coverage Report",
+                head_sha: context.sha,
+                status: "completed",
+                conclusion: "success",
+                output: {
+                  title: "Coverage Results",
+                  summary: "Per-file coverage",
+                  text: table
+                }
+              });
             });
 
       - name: Comment PR with report link (on failure)
