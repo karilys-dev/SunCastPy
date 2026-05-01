@@ -60,6 +60,11 @@ jobs:
       #   run: |
       #     echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
       #     coverage report >> $GITHUB_STEP_SUMMARY
+      - name: Setup Node
+        uses: actions/setup-node@v4
+
+      - name: Install script deps
+        run: npm install xml2js @actions/core @actions/github
 
       - name: Publish coverage check
         uses: actions/github-script@v7
