@@ -57,6 +57,7 @@ jobs:
       - name: Move coverage to root
         run: |
           cp coverage.xml ${{ env.REPORTS_DIR }}/coverage.xml 
+          cp -r ${{ env.REPORTS_DIR }}/coverage .
           cat coverage.xml
         working-directory: ${{ github.workspace }}
       - name: Debug paths
