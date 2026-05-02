@@ -42,6 +42,11 @@ jobs:
           ls -lahR
         continue-on-error: true
 
+      - name: Debug contents
+        id: list_content
+        run: |
+          ls -lahR
+
       - name: Upload test reports
         uses: actions/upload-artifact@v4
         with:
@@ -60,63 +65,10 @@ jobs:
       #   run: |
       #     echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
       #     coverage report >> $GITHUB_STEP_SUMMARY
-      - name: Setup Node
-        uses: actions/setup-node@v4
-
-      - name: Install script deps
-        run: npm install xml2js @actions/core @actions/github
-
-      - name: Publish coverage check
-        uses: actions/github-script@v7
+      - name: Run coverage check
+        uses: karilys-dev/python-coverage-check-action@v1
         with:
-          script: |
-            const fs = require('fs');
-            const xml2js = require('xml2js');
-
-            const xml = fs.readFileSync('reports/coverage.xml', 'utf8');
-
-            xml2js.parseString(xml, async (err, result) => {
-              if (err) throw err;
-
-              const packages = result.coverage.packages[0].package;
-              let rows = [];
-
-              for (const pkg of packages) {
-                const classes = pkg.classes[0].class;
-
-                for (const cls of classes) {
-                  const file = cls.$.filename;
-                  const lineRate = parseFloat(cls.$['line-rate']);
-                  const percent = (lineRate * 100).toFixed(1);
-
-                  rows.push({ file, percent });
-                }
-              }
-
-              // sort lowest coverage first
-              rows.sort((a, b) => a.percent - b.percent);
-
-              let table = `| File | Coverage |
-            |------|----------|\n`;
-
-              for (const r of rows) {
-                table += `| ${r.file} | ${r.percent}% |\n`;
-              }
-
-              await github.rest.checks.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                name: "Coverage Report",
-                head_sha: context.sha,
-                status: "completed",
-                conclusion: "success",
-                output: {
-                  title: "Coverage Results",
-                  summary: "Per-file coverage",
-                  text: table
-                }
-              });
-            });
+          working-directory: SunCastPy
 
       - name: Comment PR with report link (on failure)
         if: steps.pytest.outcome == 'failure'
