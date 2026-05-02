@@ -61,11 +61,6 @@ jobs:
           path: ${{ env.REPORTS_DIR }}/junit.xml
           reporter: java-junit
 
-      # - name: Add coverage to summary
-      #   run: |
-      #     echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
-      #     coverage report >> $GITHUB_STEP_SUMMARY
-
       - name: Run coverage check
         uses: karilys-dev/python-coverage-check-action@v1
         with:
