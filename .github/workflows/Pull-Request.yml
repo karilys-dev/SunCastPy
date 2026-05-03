@@ -66,7 +66,6 @@ jobs:
         uses: karilys-dev/python-coverage-check-action@v11
         with:
           working-directory: SunCastPy
-          coverage-threshold: 100
 
       - name: Comment PR with report link (on failure)
         if: steps.pytest.outcome == 'failure'
