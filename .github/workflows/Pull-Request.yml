@@ -63,7 +63,7 @@ jobs:
           reporter: java-junit
 
       - name: Run coverage check
-        uses: karilys-dev/python-coverage-check-action@v3
+        uses: karilys-dev/python-coverage-check-action@v4
         with:
           working-directory: SunCastPy
 
