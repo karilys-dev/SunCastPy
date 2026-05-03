@@ -16,6 +16,7 @@ jobs:
       run:
         working-directory: SunCastPy
     runs-on: ubuntu-latest
+
     env:
       REPORTS_DIR: ${{ github.workspace }}/SunCastPy/reports
       SCRIPTS_DIR: ${{ github.workspace }}/scripts
