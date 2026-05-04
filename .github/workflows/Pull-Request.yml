@@ -12,10 +12,10 @@ permissions:
 
 jobs:
   test:
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: SunCastPy
-    runs-on: ubuntu-latest
 
     env:
       REPORTS_DIR: ${{ github.workspace }}/SunCastPy/reports
@@ -38,21 +38,16 @@ jobs:
         id: pytest
         run: |
           mkdir -p $REPORTS_DIR
-
           pytest 
-          ls -lahR
         continue-on-error: true
-
-      - name: Debug contents
-        id: list_content
-        run: |
-          ls -lahR
 
       - name: Upload test reports
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: test-reports
           path: ${{ env.REPORTS_DIR }}/
+          retention-days: 3
 
       - name: Publish test summary to PR
         uses: dorny/test-reporter@v1
@@ -64,31 +59,10 @@ jobs:
 
       - name: Run coverage check
         uses: karilys-dev/python-coverage-check-action@v11
+        if: always()
         with:
           working-directory: SunCastPy
 
-      - name: Comment PR with report link (on failure)
-        if: steps.pytest.outcome == 'failure'
-        uses: actions/github-script@v7
-        with:
-          script: |+
-            const runId = context.runId;
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-
-            const artifactUrl = `https://github.com/${owner}/${repo}/actions/runs/${runId}`;
-
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner,
-              repo,
-              body: `❌ **Tests failed**
-                📄 Download full HTML report:
-                👉 ${artifactUrl}
-                
-                Artifact name: \`test-reports\``
-                            });
-                            
       - name: Fail job if tests failed
         if: steps.pytest.outcome == 'failure'
         run: exit 1
