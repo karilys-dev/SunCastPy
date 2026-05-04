@@ -19,7 +19,7 @@ env:
   SCRIPTS_DIR: ${{ github.workspace }}/scripts
 
 jobs:
-  setup:
+  pytest:
     runs-on: ubuntu-latest
     steps:
       # Setup
