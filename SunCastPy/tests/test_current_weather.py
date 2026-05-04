@@ -38,8 +38,8 @@ def test_group_by_dayname(sample_data, mock_datetime_today, today_str):
 def test_print_LocalForecast(
     group_by, caplog, sample_data, mock_datetime_today, expected_day
 ):
-    if group_by == "forecast":
-        pytest.skip("Not yet implemented")
+    # if group_by == "forecast":
+    #     pytest.skip("Not yet implemented")
     data = sample_data["default"]["LocalForecast"]
     first_forecast = data.forecast[0]
     data.forecast = [first_forecast]
