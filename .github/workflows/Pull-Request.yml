@@ -52,7 +52,7 @@ jobs:
 
       # Pytest Coverage
       - name: Run coverage check
-        uses: karilys-dev/python-coverage-check-action@v11
+        uses: karilys-dev/python-coverage-check-action@v1
         if: always()
         with:
           working-directory: SunCastPy
