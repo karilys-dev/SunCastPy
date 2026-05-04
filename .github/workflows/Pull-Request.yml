@@ -10,9 +10,6 @@ permissions:
   actions: read
   checks: write
 
-# x-job-defaults: &job-defaults
-#   runs-on: ubuntu-latest
-
 defaults:
   run:
     working-directory: SunCastPy
@@ -25,6 +22,7 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     steps:
+      # Setup
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -36,16 +34,15 @@ jobs:
       - name: Install dependencies
         run: |
           bash ${SCRIPTS_DIR}/github/install-project.sh [tests]
-  pytest:
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
+
+      # Pytest
       - name: Run tests + generate reports
         id: pytest
         run: |
           mkdir -p $REPORTS_DIR
           pytest 
         continue-on-error: true
+
       - name: Publish test summary to PR
         uses: dorny/test-reporter@v1
         if: always()
@@ -53,23 +50,15 @@ jobs:
           name: Pytest Results
           path: ${{ env.REPORTS_DIR }}/junit.xml
           reporter: java-junit
-      - name: Fail job if tests failed
-        if: steps.pytest.outcome == 'failure'
-        run: exit 1
-  coverage:
-    runs-on: ubuntu-latest
-    needs: pytest
-    steps:
+
+      # Pytest Coverage
       - name: Run coverage check
         uses: karilys-dev/python-coverage-check-action@v11
         if: always()
         with:
           working-directory: SunCastPy
 
-  post:
-    runs-on: ubuntu-latest
-    needs: coverage
-    steps:
+      # Post Actions
       - name: Upload test reports
         uses: actions/upload-artifact@v4
         if: always()
@@ -77,3 +66,7 @@ jobs:
           name: test-reports
           path: ${{ env.REPORTS_DIR }}/
           retention-days: 3
+
+      - name: Fail job if tests failed
+        if: steps.pytest.outcome == 'failure'
+        run: exit 1
