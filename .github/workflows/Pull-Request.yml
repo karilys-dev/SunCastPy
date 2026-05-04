@@ -31,16 +31,15 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install dependencies
+      - name: Install dependencies and setup working environment
         run: |
           bash ${SCRIPTS_DIR}/github/install-project.sh [tests]
+          mkdir -p $REPORTS_DIR
 
       # Pytest
       - name: Run tests + generate reports
         id: pytest
-        run: |
-          mkdir -p $REPORTS_DIR
-          pytest 
+        run: pytest
         continue-on-error: true
 
       - name: Publish test summary to PR
@@ -59,13 +58,13 @@ jobs:
           working-directory: SunCastPy
 
       # Post Actions
-      - name: Upload test reports
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: test-reports
-          path: ${{ env.REPORTS_DIR }}/
-          retention-days: 3
+      # - name: Upload test reports
+      #   uses: actions/upload-artifact@v4
+      #   if: always()
+      #   with:
+      #     name: test-reports
+      #     path: ${{ env.REPORTS_DIR }}/
+      #     retention-days: 3
 
       - name: Fail job if tests failed
         if: steps.pytest.outcome == 'failure'
