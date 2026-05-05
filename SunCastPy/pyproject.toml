@@ -41,13 +41,22 @@ addopts = """
     --cov-report=html:reports/coverage
     --html=reports/pytest-report.html
     --self-contained-html
+    --junitxml=reports/junit.xml
     -p no:cacheprovider
     -vv
 """
 
 [tool.coverage.run]
-source = ["src"]
+source = ["SunCastPy"]
 omit = ["*/conftest.py", "*/test/*", "*/tests/*", "logging_config.py"]
+
+[tool.coverage.paths]
+source = [
+    "SunCastPy",
+    "src/SunCastPy",
+    "SunCastPy/src/SunCastPy",
+    "*/site-packages/SunCastPy",
+]
 
 [tool.coverage.report]
 omit = ["*/conftest.py", "*/test/*", "*/tests/*"]
