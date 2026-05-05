@@ -1,6 +1,7 @@
 """Get the weather forecast by coordinates from the NOAA API"""
 
 from collections import defaultdict
+from datetime import datetime, time, timedelta
 
 from SunCastPy.data.zones_url import SJU_ZONES
 from SunCastPy.models.NOAA.forecast import Forecast
@@ -14,6 +15,7 @@ from SunCastPy.utils.utils import (
 )
 
 
+# pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-arguments
 class LocalForecast:
     """Run an API call to NOAA given the coordinates to get the local weather"""
 
@@ -23,6 +25,7 @@ class LocalForecast:
         longitude: float | None = None,
         city: str | None = None,
         flatten: bool = False,
+        limit: int = 7,
     ) -> None:
         _details: dict[str, dict] = {}
         _periods: str = ""
@@ -39,8 +42,12 @@ class LocalForecast:
             _periods = get_hourly_forecast_url(_details)
         else:
             raise ValueError("Missing city or latitude and longitude")
+        if limit not in range(1, 7 + 1):
+            raise ValueError("Invalid number of days to limit the forecast.")
+
         self.periods = get_request(_periods)["properties"]["periods"]
         self.forecast: list[Forecast] = [Forecast(**p) for p in self.periods]
+        self.forecast = self._limit_forecast(limit=limit)
         if flatten:
             self.forecast = self._summarize_time_slots()
 
@@ -64,6 +71,24 @@ class LocalForecast:
     def weekly(self) -> WeeklyForecast:
         """Return a WeeklyForecast view of the data."""
         return WeeklyForecast(self.forecast)
+
+    def _limit_forecast(self, limit) -> list[Forecast]:
+        start_time = self.forecast[0].start_time
+        tz = start_time.tzinfo
+
+        # Get future date in SAME timezone
+        future_date = (datetime.now(tz) + timedelta(days=limit)).date()
+
+        # Build end-of-day WITH timezone
+        deadline = datetime.combine(future_date, time.max, tzinfo=tz)
+
+        tmp = []
+        for item in self.forecast:
+            target_date = item.start_time
+            if start_time <= target_date < deadline:
+                tmp.append(item)
+
+        return tmp
 
     def _summarize_time_slots(self) -> list[Forecast]:
         """Join concurrent time slots to tell when the forecast will change.
