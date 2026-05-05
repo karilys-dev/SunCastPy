@@ -3,7 +3,7 @@
 from collections import defaultdict
 
 from SunCastPy.data.zones_url import SJU_ZONES
-from SunCastPy.models.NOAA.base import Forecast
+from SunCastPy.models.NOAA.forecast import Forecast
 from SunCastPy.models.NOAA.weekly_forecast import WeeklyForecast
 from SunCastPy.utils.utils import (
     get_api_details,

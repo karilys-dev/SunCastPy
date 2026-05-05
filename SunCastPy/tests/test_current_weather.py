@@ -1,6 +1,6 @@
 import pytest
 
-from SunCastPy.models.NOAA.local_forecast import LocalForecast
+from SunCastPy.models.NOAA.base_local_forecast import LocalForecast
 from SunCastPy.models.NOAA.weekly_forecast import Forecast
 from SunCastPy.utils.cli_args import GROUP_BY_OPTIONS
 from SunCastPy.utils.current_weather import (

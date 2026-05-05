@@ -2,8 +2,8 @@
 
 import logging
 
-from SunCastPy.models.NOAA.base import Forecast
-from SunCastPy.models.NOAA.local_forecast import LocalForecast
+from SunCastPy.models.NOAA.base_local_forecast import LocalForecast
+from SunCastPy.models.NOAA.forecast import Forecast
 from SunCastPy.utils.cli_args import GROUP_BY_OPTIONS
 
 logger = logging.getLogger(__name__)
@@ -32,7 +32,9 @@ def filter_current_weather(
             return data.weekly().get_next_days(days=limit)
 
 
-def print_current_weather(current_weather: LocalForecast | dict[str, list[Forecast]]) -> None:
+def print_current_weather(
+    current_weather: LocalForecast | dict[str, list[Forecast]],
+) -> None:
     """Use the logger to show the weather data
 
     Args:

@@ -3,9 +3,12 @@
 import logging
 from pathlib import Path
 
-from SunCastPy.models.NOAA.base import Forecast
-from SunCastPy.models.NOAA.local_forecast import LocalForecast
-from SunCastPy.utils.current_weather import filter_current_weather, print_current_weather
+from SunCastPy.models.NOAA.base_local_forecast import LocalForecast
+from SunCastPy.models.NOAA.forecast import Forecast
+from SunCastPy.utils.current_weather import (
+    filter_current_weather,
+    print_current_weather,
+)
 from SunCastPy.utils.export_file import export_html
 from SunCastPy.utils.html_renderer import render_html
 
@@ -61,7 +64,9 @@ def report_forecast(
         new_data: LocalForecast | dict[str, list[Forecast]] = data
         if limit:
             if group_by != "date":
-                logger.warning("Limit was selected but the group by needed to be changed to date.")
+                logger.warning(
+                    "Limit was selected but the group by needed to be changed to date."
+                )
             group_by = "date"
         if group_by:
             new_data = filter_current_weather(

@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 from data.expected_forecast_flat import EXPECTED_FLATTENED_FORECAST
 
-from SunCastPy.models.NOAA.local_forecast import LocalForecast
+from SunCastPy.models.NOAA.base_local_forecast import LocalForecast
 from SunCastPy.utils.logging_config import setup_logging
 
 TEST_DATA_DIR = Path(__file__).parent.joinpath("data")
@@ -79,7 +79,9 @@ def mock_city(monkeypatch, sju_data):
         }
     }
 
-    monkeypatch.setattr("SunCastPy.models.NOAA.local_forecast.SJU_ZONES", fake_city)
+    monkeypatch.setattr(
+        "SunCastPy.models.NOAA.base_local_forecast.SJU_ZONES", fake_city
+    )
     monkeypatch.setattr("SunCastPy.data.zones.COORDINATES", fake_city)
 
 
@@ -116,7 +118,7 @@ def mock_get_request(monkeypatch, sju_data, sju_forecast):
         raise ValueError(f"Unexpected URL: {url}")
 
     monkeypatch.setattr(
-        "SunCastPy.models.NOAA.local_forecast.get_request", fake_get_request
+        "SunCastPy.models.NOAA.base_local_forecast.get_request", fake_get_request
     )
     monkeypatch.setattr("SunCastPy.utils.utils.get_request", fake_get_request)
 

@@ -4,8 +4,8 @@ from datetime import datetime
 
 import pytest
 
-from SunCastPy.models.NOAA.base import Forecast
-from SunCastPy.models.NOAA.local_forecast import LocalForecast
+from SunCastPy.models.NOAA.base_local_forecast import LocalForecast
+from SunCastPy.models.NOAA.forecast import Forecast
 from SunCastPy.models.NOAA.weekly_forecast import WeeklyForecast
 
 logger = logging.getLogger(__name__)

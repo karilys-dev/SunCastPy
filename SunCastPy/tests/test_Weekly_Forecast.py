@@ -2,8 +2,9 @@
 from datetime import datetime
 
 import pytest
-from SunCastPy.models.NOAA.base import Forecast
-from SunCastPy.models.NOAA.local_forecast import LocalForecast
+
+from SunCastPy.models.NOAA.base_local_forecast import LocalForecast
+from SunCastPy.models.NOAA.forecast import Forecast
 from SunCastPy.models.NOAA.weekly_forecast import WeeklyForecast
 from SunCastPy.utils.utils import format_date
 
@@ -16,8 +17,9 @@ class Test_weekly_forecast:
             pytest.param("flattened", id="flattened_output"),
         ),
     )
-    def test_group_by_dayname(self, sample_data, data_type, mock_datetime_today, today_str):
-
+    def test_group_by_dayname(
+        self, sample_data, data_type, mock_datetime_today, today_str
+    ):
         data: LocalForecast = sample_data[data_type]["LocalForecast"]
         weekly_object: WeeklyForecast = data.weekly()
         grouped: dict = weekly_object.weekly
@@ -36,7 +38,8 @@ class Test_weekly_forecast:
             assert isinstance(grouped[day][0], Forecast)
             assert len(grouped[day]) == expected[day][data_type]
 
-            # The test data has 2 values from Sunday ensure the second doesn't overwrite current
+            # The test data has 2 values from Sunday
+            # ensure the second doesn't overwrite current
             if day != duplicate_dayname:
                 dayname = datetime.strptime(day, "%A %Y-%m-%d").strftime("%A").lower()
                 assert getattr(weekly_object, dayname) == grouped[day]
@@ -45,7 +48,9 @@ class Test_weekly_forecast:
 
     def test_get_next_days_limit(self, sample_data, mock_datetime_today, today_str):
         data: LocalForecast = sample_data["default"]["LocalForecast"]
-        with pytest.raises(ValueError, match="Number of days is more than data contents"):
+        with pytest.raises(
+            ValueError, match="Number of days is more than data contents"
+        ):
             data.weekly().get_next_days(days=10)
 
     def test_get_next_days(self, sample_data, mock_datetime_today, today_str):
