@@ -24,11 +24,7 @@ on:
             limit:
                 description: "Limit {1-7}"
                 required: false
-                default: "1"
-            output_dir:
-                description: "Output directory"
-                required: false
-                default: "output"
+                default: "7"
 
 jobs:
     build:
@@ -42,7 +38,7 @@ jobs:
         env:
             ZONE: ${{ github.event.inputs.zone }}
             LIMIT: ${{ github.event.inputs.limit }}
-            OUTPUT_DIR: ${{ github.event.inputs.output_dir }}
+            OUTPUT_DIR: ${{ github.workspace }}/output
             FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
         steps:
             - name: Checkout
