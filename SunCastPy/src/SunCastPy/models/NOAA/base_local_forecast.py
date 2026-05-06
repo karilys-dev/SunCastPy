@@ -51,6 +51,24 @@ class LocalForecast:
         if flatten:
             self.forecast = self._summarize_time_slots()
 
+    def group_by(self, group_by: str) -> dict[str, list[Forecast]]:
+        """Filter the weather by forecast or date
+
+        Args:
+            data (LocalForecast): data to group
+            group_by (str): [forecast, date]
+
+        Returns:
+            dict[str, list[Forecast]] | LocalForecast: Grouped data
+        """
+        match group_by:
+            case "forecast":
+                return self.group_by_forecast()
+            case "date":
+                return self.group_by_date().weekly
+            case _:
+                raise ValueError("No valid grouping method provided")
+
     def group_by_forecast(self) -> dict[str, list[Forecast]]:
         """Group the weather periods by forecast name.
 
@@ -68,7 +86,7 @@ class LocalForecast:
 
         return dict(result)
 
-    def weekly(self) -> WeeklyForecast:
+    def group_by_date(self) -> WeeklyForecast:
         """Return a WeeklyForecast view of the data."""
         return WeeklyForecast(self.forecast)
 

@@ -5,7 +5,6 @@ from pathlib import Path
 
 from SunCastPy.data.zones_url import SJU_ZONES_GROUPED
 from SunCastPy.models.NOAA.base_local_forecast import LocalForecast
-from SunCastPy.utils.current_weather import filter_current_weather
 from SunCastPy.utils.export_file import export_html
 from SunCastPy.utils.html_renderer import render_html, render_index
 
@@ -36,11 +35,7 @@ def get_forecast_all_cities_in_zone(
             flatten=flatten,
             limit=limit,
         )
-        grouped_weather = filter_current_weather(
-            data=current_data,
-            group_by="date",
-        )
-        forecast_cities[city] = grouped_weather
+        forecast_cities[city] = current_data.group_by("date")
     return forecast_cities
 
 

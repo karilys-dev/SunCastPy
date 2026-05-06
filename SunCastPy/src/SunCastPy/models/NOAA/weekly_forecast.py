@@ -12,7 +12,7 @@ class WeeklyForecast:
     """Class representing a forecast for each day of the week"""
 
     def __init__(self, forecast_list: list[Forecast]) -> None:
-        self.weekly: dict = self.group_by_date(forecast_list=forecast_list)
+        self.weekly: dict[str, list[Forecast]] = self.group_by_date(forecast_list)
         # Initialize all days (important for autocomplete + safety)
         self.sunday = None
         self.monday = None
