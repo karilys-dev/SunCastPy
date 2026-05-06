@@ -1,13 +1,13 @@
 """Module providing a class to create WeeklyForecast."""
 
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from SunCastPy.models.NOAA.forecast import Forecast
 from SunCastPy.utils.utils import format_date
 
 
-# pylint: disable=too-many-instance-attributes
+# pylint: disable=too-many-instance-attributes,too-few-public-methods
 class WeeklyForecast:
     """Class representing a forecast for each day of the week"""
 
@@ -29,25 +29,6 @@ class WeeklyForecast:
                 setattr(self, day, value)
                 if format_date(datetime.today()) == key:
                     setattr(self, "today", value)
-
-    def get_next_days(self, days: int) -> dict[str, list[Forecast]]:
-        """Limit the forecast to the next input days
-
-        Args:
-            days (int): Days to limit the forecast
-
-        Returns:
-            dict[str, Forecast]: Dictionary of forecast list with limited days
-        """
-        current_day: datetime = datetime.today()
-        result: dict[str, list[Forecast]] = {}
-        if days > len(self.weekly.keys()):
-            raise ValueError("Number of days is more than data contents")
-        for i in range(days):
-            day = current_day + timedelta(days=i)
-            key = format_date(day)
-            result[key] = self.weekly[key]
-        return result
 
     def group_by_date(self, forecast_list: list[Forecast]) -> dict:
         """Group the forecast by day of the week

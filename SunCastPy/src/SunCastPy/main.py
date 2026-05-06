@@ -12,7 +12,7 @@ def main(args=parse_args(), log_level=logging.INFO):
     """Get the weather forecast and print to command line
 
     Args:
-        args (argument parser, optional): Argument parser values. Defaults to parse_args().
+        args (argument parser, optional): Argument parser values.
     """
     setup_logging(level=log_level)
     logger = logging.getLogger(__name__)
@@ -22,14 +22,16 @@ def main(args=parse_args(), log_level=logging.INFO):
     if args.zone:
         if not args.output:
             raise ValueError("Output is required when creating a report for a zone")
-        zone_report(zone=args.zone, output=args.output, flatten=args.flatten, limit=args.limit)
+        zone_report(
+            zone=args.zone, output=args.output, flatten=args.flatten, limit=args.limit
+        )
     else:
         # City or coordinates
         city_report(
-            limit=args.limit,
             output=args.output,
             group_by=args.group_by,
             kwargs={
+                "limit": args.limit,
                 "latitude": args.latitude,
                 "longitude": args.longitude,
                 "city": args.city,

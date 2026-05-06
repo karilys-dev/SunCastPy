@@ -47,7 +47,7 @@ class LocalForecast:
 
         self.periods = get_request(_periods)["properties"]["periods"]
         self.forecast: list[Forecast] = [Forecast(**p) for p in self.periods]
-        self.forecast = self._limit_forecast(limit=limit)
+        self.forecast = self.limit_forecast(limit=limit)
         if flatten:
             self.forecast = self._summarize_time_slots()
 
@@ -72,7 +72,17 @@ class LocalForecast:
         """Return a WeeklyForecast view of the data."""
         return WeeklyForecast(self.forecast)
 
-    def _limit_forecast(self, limit) -> list[Forecast]:
+    def limit_forecast(self, limit: int) -> list[Forecast]:
+        """Limit the forecast to the next input days.
+
+        Args:
+            limit (int): Days to limit the forecast
+
+        Returns:
+            list[Forecast]: Forecast list with limited days
+        """
+        # Count starts at 0
+        limit -= 1
         start_time = self.forecast[0].start_time
         tz = start_time.tzinfo
 

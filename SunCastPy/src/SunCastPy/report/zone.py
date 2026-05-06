@@ -21,7 +21,8 @@ def get_forecast_all_cities_in_zone(
 
     Args:
         zone_name (str): Name of the zone
-        flatten (bool): Group the timeframes when the values are similar.
+        flatten (bool): Group the timeframes when the values are similar
+        limit (int): limit of days to show
 
     Returns:
         dict[str, LocalForecast]: Forecasts for all of the cities in the zone
@@ -30,11 +31,14 @@ def get_forecast_all_cities_in_zone(
     logger.info(f"Initiating forecast retrieval for all cities in [{zone_name}]")
     for city in SJU_ZONES_GROUPED[zone_name]["cities"]:
         logger.info(f"Getting forecast for {city}")
-        current_data = LocalForecast(city=city, flatten=flatten)
+        current_data = LocalForecast(
+            city=city,
+            flatten=flatten,
+            limit=limit,
+        )
         grouped_weather = filter_current_weather(
             data=current_data,
             group_by="date",
-            limit=limit,
         )
         forecast_cities[city] = grouped_weather
     return forecast_cities
