@@ -14,10 +14,10 @@ def expected_day(today_str):
     return format_date(today_str, dayname=False)
 
 
-def test_group_by_dayname(sample_data, mock_datetime_today, today_str):
+def test_group_by_dayname(test_data, mock_datetime_today, today_str):
     name_key = format_date(today_str)
     limit: int = 3
-    data: LocalForecast = sample_data["default"]["LocalForecast"]
+    data: LocalForecast = test_data["default"]["LocalForecast"]
     data.forecast = data.limit_forecast(limit=limit)
     tmp = data.group_by(group_by="date")
     assert len(tmp) == limit
@@ -31,11 +31,11 @@ def test_group_by_dayname(sample_data, mock_datetime_today, today_str):
     [None] + GROUP_BY_OPTIONS,
 )
 def test_print_LocalForecast(
-    group_by, caplog, sample_data, mock_datetime_today, expected_day
+    group_by, caplog, test_data, mock_datetime_today, expected_day
 ):
     if group_by == "forecast":
         pytest.skip("Not yet implemented")
-    data = sample_data["default"]["LocalForecast"]
+    data = test_data["default"]["LocalForecast"]
     first_forecast = data.forecast[0]
     data.forecast = [first_forecast]
     if group_by:

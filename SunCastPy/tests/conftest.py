@@ -35,17 +35,28 @@ def sju_data():
     )
 
 
+def _get_sample_data(kwargs):
+    data = LocalForecast(0, 0, **kwargs)
+    return {"LocalForecast": data, "Forecast": data.forecast}
+
+
 @pytest.fixture
-def sample_data(mock_get_request, mock_city, sju_data, sju_forecast):
+def test_data(mock_get_request, mock_city, sju_data, sju_forecast):
     data = {"expected": {}, "flattened": {}, "default": {}, "city": {}}
-    data["default"]["LocalForecast"] = LocalForecast(0, 0)
-    data["default"]["Forecast"] = data["default"]["LocalForecast"].forecast
-    data["flattened"]["LocalForecast"] = LocalForecast(0, 0, flatten=True)
-    data["flattened"]["Forecast"] = data["flattened"]["LocalForecast"].forecast
-    data["expected"]["LocalForecast"] = sju_data
-    data["expected"]["Forecast"] = sju_forecast
-    data["expected"]["ForecastFlat"] = EXPECTED_FLATTENED_FORECAST
-    data["expected"]["group_by_dayname"] = {
+
+    data["default"] = _get_sample_data({"flatten": False})
+    data["flattened"] = _get_sample_data({"flatten": True})
+    data["city"] = _get_sample_data({"city": "Test"})
+    return data
+
+
+@pytest.fixture
+def expected_data(mock_get_request, mock_city, sju_data, sju_forecast):
+    data = {}
+    data["LocalForecast"] = sju_data
+    data["Forecast"] = sju_forecast
+    data["ForecastFlat"] = EXPECTED_FLATTENED_FORECAST
+    data["group_by_dayname"] = {
         "Sunday 2026-03-22": {"default": 8, "flattened": 3},
         "Monday 2026-03-23": {"default": 24, "flattened": 6},
         "Tuesday 2026-03-24": {"default": 24, "flattened": 4},
@@ -55,15 +66,13 @@ def sample_data(mock_get_request, mock_city, sju_data, sju_forecast):
         "Saturday 2026-03-28": {"default": 24, "flattened": 3},
         "Sunday 2026-03-29": {"default": 4, "flattened": 1},
     }
-    data["expected"]["group_by_forecast"] = {
+    data["group_by_forecast"] = {
         "Chance Rain Showers": {"default": 29, "flattened": 6},
         "Scattered Rain Showers": {"default": 70, "flattened": 9},
         "Isolated Rain Showers": {"default": 3, "flattened": 1},
         "Scattered Showers And Thunderstorms": {"default": 42, "flattened": 7},
         "Chance Showers And Thunderstorms": {"default": 12, "flattened": 2},
     }
-    data["city"]["LocalForecast"] = LocalForecast(city="Test")
-    data["city"]["Forecast"] = data["city"]["LocalForecast"].forecast
 
     return data
 

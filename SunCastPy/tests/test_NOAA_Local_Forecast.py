@@ -18,8 +18,8 @@ class Test_LocalForecast:
         ("source", "attribute"),
         itertools.product(sources, attributes),
     )
-    def test_has_attributes(self, sample_data, source, attribute):
-        data: LocalForecast = sample_data[source]["LocalForecast"]
+    def test_has_attributes(self, test_data, source, attribute):
+        data: LocalForecast = test_data[source]["LocalForecast"]
         match attribute:
             case "forecast":
                 assert isinstance(data.forecast, list)
@@ -28,9 +28,9 @@ class Test_LocalForecast:
                 assert isinstance(getattr(data, attribute), list)
                 assert isinstance(getattr(data, attribute)[0], dict)
 
-    def test_flattened_data(self, sample_data):
-        result: list[Forecast] = sample_data["flattened"]["Forecast"]
-        expected_data = sample_data["expected"]["ForecastFlat"]
+    def test_flattened_data(self, test_data, expected_data):
+        result: list[Forecast] = test_data["flattened"]["Forecast"]
+        expected_data = expected_data["ForecastFlat"]
 
         for index, expected in enumerate(expected_data):
             for key, _ in expected.model_dump().items():
@@ -51,10 +51,10 @@ class Test_LocalForecast:
             pytest.param("flattened", id="flattened_output"),
         ),
     )
-    def test_group_by_forecast(self, sample_data, data_type):
-        data: LocalForecast = sample_data[data_type]["LocalForecast"]
+    def test_group_by_forecast(self, test_data, data_type, expected_data):
+        data: LocalForecast = test_data[data_type]["LocalForecast"]
         grouped = data.group_by_forecast()
-        expected = sample_data["expected"]["group_by_forecast"]
+        expected = expected_data["group_by_forecast"]
         assert list(grouped.keys()) == list(expected.keys())
         for forecast in grouped.keys():
             assert isinstance(grouped[forecast], list)
@@ -85,11 +85,9 @@ class Test_Forecast:
             ),
         ),
     )
-    def test_has_attributes(self, sample_data, param_name, dict_key):
-        class_data: Forecast = sample_data["default"]["Forecast"][0]
-        expected_data: dict = sample_data["expected"]["Forecast"]["properties"][
-            "periods"
-        ][0]
+    def test_has_attributes(self, test_data, param_name, dict_key, expected_data):
+        class_data: Forecast = test_data["default"]["Forecast"][0]
+        expected_data: dict = expected_data["Forecast"]["properties"]["periods"][0]
         if param_name == "probability_of_precipitation":
             value = int(expected_data[dict_key]["value"])
         elif param_name in ["start_time", "end_time"]:
