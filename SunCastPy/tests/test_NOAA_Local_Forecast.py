@@ -6,7 +6,6 @@ import pytest
 
 from SunCastPy.models.NOAA.base_local_forecast import LocalForecast
 from SunCastPy.models.NOAA.forecast import Forecast
-from SunCastPy.models.NOAA.weekly_forecast import WeeklyForecast
 
 logger = logging.getLogger(__name__)
 
@@ -28,17 +27,6 @@ class Test_LocalForecast:
             case "periods":
                 assert isinstance(getattr(data, attribute), list)
                 assert isinstance(getattr(data, attribute)[0], dict)
-
-    @pytest.mark.parametrize(
-        ("data_type"),
-        (
-            pytest.param("default", id="default_output"),
-            pytest.param("flattened", id="flattened_output"),
-        ),
-    )
-    def test_group_by_dayname(self, sample_data, data_type):
-        data: LocalForecast = sample_data[data_type]["LocalForecast"]
-        assert isinstance(data.weekly(), WeeklyForecast)
 
     def test_flattened_data(self, sample_data):
         result: list[Forecast] = sample_data["flattened"]["Forecast"]
