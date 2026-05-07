@@ -47,6 +47,7 @@ def test_data(mock_get_request, mock_city, sju_data, sju_forecast):
     data["default"] = _get_sample_data({"flatten": False})
     data["flattened"] = _get_sample_data({"flatten": True})
     data["city"] = _get_sample_data({"city": "Test"})
+    data["limit_3"] = _get_sample_data({"city": "Test", "limit": 3})
     return data
 
 
@@ -73,7 +74,6 @@ def expected_data(mock_get_request, mock_city, sju_data, sju_forecast):
         "Scattered Showers And Thunderstorms": {"default": 42, "flattened": 7},
         "Chance Showers And Thunderstorms": {"default": 12, "flattened": 2},
     }
-
     return data
 
 

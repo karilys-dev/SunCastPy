@@ -17,13 +17,14 @@ def expected_day(today_str):
 def test_group_by_dayname(test_data, mock_datetime_today, today_str):
     name_key = format_date(today_str)
     limit: int = 3
-    data: LocalForecast = test_data["default"]["LocalForecast"]
-    data.forecast = data.limit_forecast(limit=limit)
-    tmp = data.group_by(group_by="date")
-    assert len(tmp) == limit
-    assert name_key in tmp
-    assert isinstance(tmp[name_key], list)
-    assert isinstance(tmp[name_key][0], Forecast)
+    data: LocalForecast = test_data["limit_3"]["LocalForecast"]
+    default_data = test_data["default"]["LocalForecast"]
+    grouped_data = data.group_by(group_by="date")
+    assert len(grouped_data) == limit
+    assert name_key in grouped_data
+    assert isinstance(grouped_data[name_key], list)
+    assert isinstance(grouped_data[name_key][0], Forecast)
+    assert data.forecast == default_data.limit_forecast(limit=limit)
 
 
 @pytest.mark.parametrize(
