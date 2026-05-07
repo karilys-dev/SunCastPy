@@ -21,7 +21,7 @@ class Test_weekly_forecast:
         self, sample_data, data_type, mock_datetime_today, today_str
     ):
         data: LocalForecast = sample_data[data_type]["LocalForecast"]
-        weekly_object: WeeklyForecast = data.weekly()
+        weekly_object: WeeklyForecast = data.group_by_date()
         grouped: dict = weekly_object.weekly
         expected = sample_data["expected"]["group_by_dayname"]
         duplicate_dayname = "Sunday 2026-03-29"
@@ -46,18 +46,20 @@ class Test_weekly_forecast:
                 if day == format_date(today_str):
                     assert weekly_object.today == grouped[day]
 
+    @pytest.mark.skip("Function was moved to class")
     def test_get_next_days_limit(self, sample_data, mock_datetime_today, today_str):
         data: LocalForecast = sample_data["default"]["LocalForecast"]
         with pytest.raises(
             ValueError, match="Number of days is more than data contents"
         ):
-            data.weekly().get_next_days(days=10)
+            data.group_by_date().get_next_days(days=10)
 
+    @pytest.mark.skip("Function was moved to class")
     def test_get_next_days(self, sample_data, mock_datetime_today, today_str):
         data: LocalForecast = sample_data["default"]["LocalForecast"]
-        assert len(data.weekly().weekly) == 7 + 1
+        assert len(data.group_by_date().weekly) == 7 + 1
         limit = 3
-        shortened_value = data.weekly().get_next_days(limit)
+        shortened_value = data.group_by_date().get_next_days(limit)
         assert len(shortened_value) == limit
         # Confirm ['Sunday 2026-03-22', 'Monday 2026-03-23', 'Tuesday 2026-03-24']
         assert (

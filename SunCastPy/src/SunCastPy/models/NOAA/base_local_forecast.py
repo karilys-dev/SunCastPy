@@ -25,10 +25,11 @@ class LocalForecast:
         longitude: float | None = None,
         city: str | None = None,
         flatten: bool = False,
-        limit: int = 7,
+        limit: int = 8,
     ) -> None:
         _details: dict[str, dict] = {}
         _periods: str = ""
+        _max_limit = 9
         self.periods: list[dict] = [{}]
         self.location: str = ""
         if city:
@@ -42,7 +43,7 @@ class LocalForecast:
             _periods = get_hourly_forecast_url(_details)
         else:
             raise ValueError("Missing city or latitude and longitude")
-        if limit not in range(1, 7 + 1):
+        if limit not in range(1, _max_limit):
             raise ValueError("Invalid number of days to limit the forecast.")
 
         self.periods = get_request(_periods)["properties"]["periods"]
@@ -105,7 +106,7 @@ class LocalForecast:
         tz = start_time.tzinfo
 
         # Get future date in SAME timezone
-        future_date = (datetime.now(tz) + timedelta(days=limit)).date()
+        future_date = (start_time + timedelta(days=limit)).date()
 
         # Build end-of-day WITH timezone
         deadline = datetime.combine(future_date, time.max, tzinfo=tz)
