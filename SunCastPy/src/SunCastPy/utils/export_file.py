@@ -15,6 +15,7 @@ def export_html(data: str, output_dir: Path, name: str) -> None:
         output_dir (Path): Location where the file will be saved
         name (str): Name of the html file
     """
+    output_dir.mkdir(parents=True, exist_ok=True)
     data_file = Path(output_dir).joinpath(name)
 
     with open(data_file, "w", encoding="utf-8") as file:
