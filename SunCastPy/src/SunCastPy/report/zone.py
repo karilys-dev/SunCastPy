@@ -4,8 +4,7 @@ import logging
 from pathlib import Path
 
 from SunCastPy.data.zones_url import SJU_ZONES_GROUPED
-from SunCastPy.models.NOAA.local_forecast import LocalForecast
-from SunCastPy.utils.current_weather import filter_current_weather
+from SunCastPy.models.NOAA.base_local_forecast import LocalForecast
 from SunCastPy.utils.export_file import export_html
 from SunCastPy.utils.html_renderer import render_html, render_index
 
@@ -21,7 +20,8 @@ def get_forecast_all_cities_in_zone(
 
     Args:
         zone_name (str): Name of the zone
-        flatten (bool): Group the timeframes when the values are similar. Defaults to True.
+        flatten (bool): Group the timeframes when the values are similar
+        limit (int): limit of days to show
 
     Returns:
         dict[str, LocalForecast]: Forecasts for all of the cities in the zone
@@ -30,13 +30,12 @@ def get_forecast_all_cities_in_zone(
     logger.info(f"Initiating forecast retrieval for all cities in [{zone_name}]")
     for city in SJU_ZONES_GROUPED[zone_name]["cities"]:
         logger.info(f"Getting forecast for {city}")
-        current_data = LocalForecast(city=city, flatten=flatten)
-        grouped_weather = filter_current_weather(
-            data=current_data,
-            group_by="date",
+        current_data = LocalForecast(
+            city=city,
+            flatten=flatten,
             limit=limit,
         )
-        forecast_cities[city] = grouped_weather
+        forecast_cities[city] = current_data.group_by("date")
     return forecast_cities
 
 
@@ -51,7 +50,9 @@ def create_html_multi_city(data: dict, output_dir: Path):
     for city, grouped_weather in data.items():
         city_file = f"{city}.html"
         locations.append({"file": city_file, "name": city})
-        html = render_html(grouped_data=grouped_weather, location=city, template="forecast.html.j2")
+        html = render_html(
+            grouped_data=grouped_weather, location=city, template="forecast.html.j2"
+        )
         export_html(data=html, output_dir=output_dir, name=city_file)
 
     index_html = render_index(locations=locations)

@@ -4,9 +4,10 @@ from datetime import datetime
 
 import pytest
 
-from SunCastPy.models.NOAA.base import Forecast
-from SunCastPy.models.NOAA.local_forecast import LocalForecast
-from SunCastPy.models.NOAA.weekly_forecast import WeeklyForecast
+from SunCastPy.models.NOAA.base_local_forecast import LocalForecast
+from SunCastPy.models.NOAA.forecast import Forecast
+from SunCastPy.utils.cli_args import GROUP_BY_OPTIONS
+from SunCastPy.utils.utils import format_date
 
 logger = logging.getLogger(__name__)
 
@@ -19,8 +20,8 @@ class Test_LocalForecast:
         ("source", "attribute"),
         itertools.product(sources, attributes),
     )
-    def test_has_attributes(self, sample_data, source, attribute):
-        data: LocalForecast = sample_data[source]["LocalForecast"]
+    def test_has_attributes(self, test_data, source, attribute):
+        data: LocalForecast = test_data[source]["LocalForecast"]
         match attribute:
             case "forecast":
                 assert isinstance(data.forecast, list)
@@ -29,20 +30,9 @@ class Test_LocalForecast:
                 assert isinstance(getattr(data, attribute), list)
                 assert isinstance(getattr(data, attribute)[0], dict)
 
-    @pytest.mark.parametrize(
-        ("data_type"),
-        (
-            pytest.param("default", id="default_output"),
-            pytest.param("flattened", id="flattened_output"),
-        ),
-    )
-    def test_group_by_dayname(self, sample_data, data_type):
-        data: LocalForecast = sample_data[data_type]["LocalForecast"]
-        assert isinstance(data.weekly(), WeeklyForecast)
-
-    def test_flattened_data(self, sample_data):
-        result: list[Forecast] = sample_data["flattened"]["Forecast"]
-        expected_data = sample_data["expected"]["ForecastFlat"]
+    def test_flattened_data(self, test_data, expected_data):
+        result: list[Forecast] = test_data["flattened"]["Forecast"]
+        expected_data = expected_data["ForecastFlat"]
 
         for index, expected in enumerate(expected_data):
             for key, _ in expected.model_dump().items():
@@ -63,19 +53,52 @@ class Test_LocalForecast:
             pytest.param("flattened", id="flattened_output"),
         ),
     )
-    def test_group_by_forecast(self, sample_data, data_type):
-        data: LocalForecast = sample_data[data_type]["LocalForecast"]
+    def test_group_by_forecast(self, test_data, data_type, expected_data):
+        data: LocalForecast = test_data[data_type]["LocalForecast"]
         grouped = data.group_by_forecast()
-        expected = sample_data["expected"]["group_by_forecast"]
+        expected = expected_data["group_by_forecast"]
         assert list(grouped.keys()) == list(expected.keys())
         for forecast in grouped.keys():
             assert isinstance(grouped[forecast], list)
             assert isinstance(grouped[forecast][0], Forecast)
             assert len(grouped[forecast]) == expected[forecast][data_type]
 
-    def test_raises_error(self):
+    def test_group_by_dayname(
+        self, test_data, mock_datetime_today, today_str, expected_data
+    ):
+        name_key = format_date(today_str)
+        limit: int = 3
+        data: LocalForecast = test_data["limit_3"]["LocalForecast"]
+        default_data = test_data["default"]["LocalForecast"]
+        grouped_data = data.group_by(group_by="date")
+        assert len(grouped_data) == limit
+        assert name_key in grouped_data
+        assert isinstance(grouped_data[name_key], list)
+        assert isinstance(grouped_data[name_key][0], Forecast)
+        assert data.forecast == default_data.limit_forecast(limit=limit)
+        # Confirm ['Sunday 2026-03-22', 'Monday 2026-03-23', 'Tuesday 2026-03-24']
+        assert (
+            list(grouped_data.keys())[:limit]
+            == list(expected_data["group_by_dayname"].keys())[:limit]
+        )
+
+    @pytest.mark.parametrize("arg", GROUP_BY_OPTIONS)
+    def test_all_cli_args_defined(self, arg, test_data):
+        assert isinstance(test_data["default"]["LocalForecast"].group_by(arg), dict)
+
+    def test_invalid_group_by(self, test_data):
+        with pytest.raises(ValueError, match="No valid grouping method provided"):
+            test_data["default"]["LocalForecast"].group_by("invalid")
+
+    def test_missing_city_or_coordinate(self):
         with pytest.raises(ValueError, match="Missing city or latitude and longitude"):
             LocalForecast()
+
+    def test_get_next_days_limit(self, test_data, mock_datetime_today, today_str):
+        data: LocalForecast = test_data["default"]["LocalForecast"]
+        err_msg = "Invalid number of days to limit the forecast."
+        with pytest.raises(ValueError, match=err_msg):
+            data.limit_forecast(10)
 
 
 class Test_Forecast:
@@ -97,11 +120,9 @@ class Test_Forecast:
             ),
         ),
     )
-    def test_has_attributes(self, sample_data, param_name, dict_key):
-        class_data: Forecast = sample_data["default"]["Forecast"][0]
-        expected_data: dict = sample_data["expected"]["Forecast"]["properties"][
-            "periods"
-        ][0]
+    def test_has_attributes(self, test_data, param_name, dict_key, expected_data):
+        class_data: Forecast = test_data["default"]["Forecast"][0]
+        expected_data: dict = expected_data["Forecast"]["properties"]["periods"][0]
         if param_name == "probability_of_precipitation":
             value = int(expected_data[dict_key]["value"])
         elif param_name in ["start_time", "end_time"]:

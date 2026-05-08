@@ -3,7 +3,8 @@
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
-from SunCastPy.models.NOAA.base import Forecast
+
+from SunCastPy.models.NOAA.forecast import Forecast
 from SunCastPy.utils.utils import format_hour
 
 template_dir = Path(__file__).parent.parent / "templates"
@@ -24,7 +25,9 @@ def render_index(locations: list[dict]) -> str:
     return template.render(locations=locations)
 
 
-def render_html(grouped_data: dict[str, list[Forecast]], location: str, template: str) -> str:
+def render_html(
+    grouped_data: dict[str, list[Forecast]], location: str, template: str
+) -> str:
     """Create html page using the jinja2 template and data
 
     Args:
@@ -37,4 +40,6 @@ def render_html(grouped_data: dict[str, list[Forecast]], location: str, template
 
     template = env.get_template(template)
 
-    return template.render(grouped=grouped_data, format_hour=format_hour, location=location)
+    return template.render(
+        grouped=grouped_data, format_hour=format_hour, location=location
+    )

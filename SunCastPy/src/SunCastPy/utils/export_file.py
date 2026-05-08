@@ -4,12 +4,7 @@ import json
 import logging
 from pathlib import Path
 
-
-def _convert_path(path_name: Path | str) -> Path:
-    """Verify if its a Path object otherwise convert it."""
-    if not isinstance(path_name, Path):
-        return Path(path_name)
-    return path_name
+logger = logging.getLogger(__name__)
 
 
 def export_html(data: str, output_dir: Path, name: str) -> None:
@@ -20,10 +15,11 @@ def export_html(data: str, output_dir: Path, name: str) -> None:
         output_dir (Path): Location where the file will be saved
         name (str): Name of the html file
     """
-    output_dir = _convert_path(output_dir)
-    output_dir.mkdir(exist_ok=True, parents=True)
+    data_file = Path(output_dir).joinpath(name)
 
-    (output_dir / name).write_text(data)
+    with open(data_file, "w", encoding="utf-8") as file:
+        file.write(data)
+    logger.info("File was successfully exported.")
 
 
 def export_json(data: dict, output_dir: Path, name: str) -> None:
@@ -33,8 +29,8 @@ def export_json(data: dict, output_dir: Path, name: str) -> None:
         data (dict): Contents of the json file
         data_file (Path): Name and full path to json file
     """
-    data_file = _convert_path(output_dir).joinpath(name)
+    data_file = Path(output_dir).joinpath(name)
 
     with open(data_file, "w", encoding="utf-8") as file:
         json.dump(data, file, indent=4)  # noqa: F821
-    logging.info("File was successfully updated.")
+    logger.info("File was successfully exported.")

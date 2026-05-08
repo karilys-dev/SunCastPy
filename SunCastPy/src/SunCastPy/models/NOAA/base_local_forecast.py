@@ -1,10 +1,12 @@
 """Get the weather forecast by coordinates from the NOAA API"""
 
 from collections import defaultdict
+from datetime import datetime, time, timedelta
 
 from SunCastPy.data.zones_url import SJU_ZONES
-from SunCastPy.models.NOAA.base import Forecast
+from SunCastPy.models.NOAA.forecast import Forecast
 from SunCastPy.models.NOAA.weekly_forecast import WeeklyForecast
+from SunCastPy.utils.cli_args import GROUP_BY_OPTIONS
 from SunCastPy.utils.utils import (
     get_api_details,
     get_forecast_location_name,
@@ -14,6 +16,7 @@ from SunCastPy.utils.utils import (
 )
 
 
+# pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-arguments
 class LocalForecast:
     """Run an API call to NOAA given the coordinates to get the local weather"""
 
@@ -23,6 +26,7 @@ class LocalForecast:
         longitude: float | None = None,
         city: str | None = None,
         flatten: bool = False,
+        limit: int = 8,
     ) -> None:
         _details: dict[str, dict] = {}
         _periods: str = ""
@@ -39,10 +43,30 @@ class LocalForecast:
             _periods = get_hourly_forecast_url(_details)
         else:
             raise ValueError("Missing city or latitude and longitude")
+
         self.periods = get_request(_periods)["properties"]["periods"]
         self.forecast: list[Forecast] = [Forecast(**p) for p in self.periods]
+        self.forecast = self.limit_forecast(limit=limit)
         if flatten:
             self.forecast = self._summarize_time_slots()
+
+    def group_by(self, group_by: str) -> dict[str, list[Forecast]]:
+        """Filter the weather by forecast or date
+
+        Args:
+            data (LocalForecast): data to group
+            group_by (str): [forecast, date]
+
+        Returns:
+            dict[str, list[Forecast]] | LocalForecast: Grouped data
+        """
+        if group_by not in GROUP_BY_OPTIONS:
+            raise ValueError("No valid grouping method provided")
+        match group_by:
+            case "forecast":
+                return self.group_by_forecast()
+            case "date":
+                return self.group_by_date().weekly
 
     def group_by_forecast(self) -> dict[str, list[Forecast]]:
         """Group the weather periods by forecast name.
@@ -61,9 +85,41 @@ class LocalForecast:
 
         return dict(result)
 
-    def weekly(self) -> WeeklyForecast:
+    def group_by_date(self) -> WeeklyForecast:
         """Return a WeeklyForecast view of the data."""
         return WeeklyForecast(self.forecast)
+
+    def limit_forecast(self, limit: int) -> list[Forecast]:
+        """Limit the forecast to the next input days.
+
+        Args:
+            limit (int): Days to limit the forecast
+
+        Returns:
+            list[Forecast]: Forecast list with limited days
+        """
+        _max_limit = 9
+
+        if limit not in range(1, _max_limit):
+            raise ValueError("Invalid number of days to limit the forecast.")
+        # Count starts at 0
+        limit -= 1
+        start_time = self.forecast[0].start_time
+        tz = start_time.tzinfo
+
+        # Get future date in SAME timezone
+        future_date = (start_time + timedelta(days=limit)).date()
+
+        # Build end-of-day WITH timezone
+        deadline = datetime.combine(future_date, time.max, tzinfo=tz)
+
+        tmp = []
+        for item in self.forecast:
+            target_date = item.start_time
+            if start_time <= target_date < deadline:
+                tmp.append(item)
+
+        return tmp
 
     def _summarize_time_slots(self) -> list[Forecast]:
         """Join concurrent time slots to tell when the forecast will change.

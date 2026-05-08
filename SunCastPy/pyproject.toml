@@ -44,6 +44,8 @@ addopts = """
     --junitxml=reports/junit.xml
     -p no:cacheprovider
     -vv
+    -s 
+    --log-cli-level=INFO
 """
 
 [tool.coverage.run]
