@@ -4,7 +4,7 @@ from pathlib import Path
 from SunCastPy.utils import export_file
 
 
-def test_json_export(tmp_path):
+def test_export_json(tmp_path):
     json_data = {"temp": 80, "location": "PR", "periods": [1, 2, 3]}
     output_file = tmp_path / "example.json"
 
