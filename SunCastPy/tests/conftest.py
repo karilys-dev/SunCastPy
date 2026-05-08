@@ -10,6 +10,7 @@ from data.expected_forecast_flat import EXPECTED_FLATTENED_FORECAST
 
 from SunCastPy.models.NOAA.base_local_forecast import LocalForecast
 from SunCastPy.utils.logging_config import setup_logging
+from SunCastPy.utils.utils import format_date
 
 TEST_DATA_DIR = Path(__file__).parent.joinpath("data")
 
@@ -135,6 +136,11 @@ def mock_get_request(monkeypatch, sju_data, sju_forecast):
 @pytest.fixture
 def today_str():
     return datetime(2026, 3, 22)
+
+
+@pytest.fixture
+def expected_day(today_str):
+    return format_date(today_str, dayname=False)
 
 
 @pytest.fixture

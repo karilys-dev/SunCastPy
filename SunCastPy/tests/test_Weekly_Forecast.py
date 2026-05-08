@@ -17,7 +17,7 @@ class Test_weekly_forecast:
             pytest.param("flattened", id="flattened_output"),
         ),
     )
-    def test_group_by_dayname(
+    def test_weekly_forecast_object(
         self, test_data, data_type, mock_datetime_today, today_str, expected_data
     ):
         data: LocalForecast = test_data[data_type]["LocalForecast"]
@@ -45,26 +45,3 @@ class Test_weekly_forecast:
                 assert getattr(weekly_object, dayname) == grouped[day]
                 if day == format_date(today_str):
                     assert weekly_object.today == grouped[day]
-
-    @pytest.mark.skip("Function was moved to class")
-    def test_get_next_days_limit(self, test_data, mock_datetime_today, today_str):
-        data: LocalForecast = test_data["default"]["LocalForecast"]
-        with pytest.raises(
-            ValueError, match="Number of days is more than data contents"
-        ):
-            data.group_by_date().get_next_days(days=10)
-
-    @pytest.mark.skip("Function was moved to class")
-    def test_get_next_days(
-        self, test_data, mock_datetime_today, today_str, expected_data
-    ):
-        data: LocalForecast = test_data["default"]["LocalForecast"]
-        assert len(data.group_by_date().weekly) == 7 + 1
-        limit = 3
-        shortened_value = data.group_by_date().get_next_days(limit)
-        assert len(shortened_value) == limit
-        # Confirm ['Sunday 2026-03-22', 'Monday 2026-03-23', 'Tuesday 2026-03-24']
-        assert (
-            list(shortened_value.keys())[:limit]
-            == list(expected_data["group_by_dayname"].keys())[:limit]
-        )

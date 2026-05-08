@@ -6,6 +6,8 @@ import pytest
 
 from SunCastPy.models.NOAA.base_local_forecast import LocalForecast
 from SunCastPy.models.NOAA.forecast import Forecast
+from SunCastPy.utils.cli_args import GROUP_BY_OPTIONS
+from SunCastPy.utils.utils import format_date
 
 logger = logging.getLogger(__name__)
 
@@ -61,9 +63,42 @@ class Test_LocalForecast:
             assert isinstance(grouped[forecast][0], Forecast)
             assert len(grouped[forecast]) == expected[forecast][data_type]
 
-    def test_raises_error(self):
+    def test_group_by_dayname(
+        self, test_data, mock_datetime_today, today_str, expected_data
+    ):
+        name_key = format_date(today_str)
+        limit: int = 3
+        data: LocalForecast = test_data["limit_3"]["LocalForecast"]
+        default_data = test_data["default"]["LocalForecast"]
+        grouped_data = data.group_by(group_by="date")
+        assert len(grouped_data) == limit
+        assert name_key in grouped_data
+        assert isinstance(grouped_data[name_key], list)
+        assert isinstance(grouped_data[name_key][0], Forecast)
+        assert data.forecast == default_data.limit_forecast(limit=limit)
+        # Confirm ['Sunday 2026-03-22', 'Monday 2026-03-23', 'Tuesday 2026-03-24']
+        assert (
+            list(grouped_data.keys())[:limit]
+            == list(expected_data["group_by_dayname"].keys())[:limit]
+        )
+
+    @pytest.mark.parametrize("arg", GROUP_BY_OPTIONS)
+    def test_all_cli_args_defined(self, arg, test_data):
+        assert isinstance(test_data["default"]["LocalForecast"].group_by(arg), dict)
+
+    def test_invalid_group_by(self, test_data):
+        with pytest.raises(ValueError, match="No valid grouping method provided"):
+            test_data["default"]["LocalForecast"].group_by("invalid")
+
+    def test_missing_city_or_coordinate(self):
         with pytest.raises(ValueError, match="Missing city or latitude and longitude"):
             LocalForecast()
+
+    def test_get_next_days_limit(self, test_data, mock_datetime_today, today_str):
+        data: LocalForecast = test_data["default"]["LocalForecast"]
+        err_msg = "Invalid number of days to limit the forecast."
+        with pytest.raises(ValueError, match=err_msg):
+            data.limit_forecast(10)
 
 
 class Test_Forecast:
