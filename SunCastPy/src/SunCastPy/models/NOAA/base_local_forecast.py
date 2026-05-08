@@ -6,6 +6,7 @@ from datetime import datetime, time, timedelta
 from SunCastPy.data.zones_url import SJU_ZONES
 from SunCastPy.models.NOAA.forecast import Forecast
 from SunCastPy.models.NOAA.weekly_forecast import WeeklyForecast
+from SunCastPy.utils.cli_args import GROUP_BY_OPTIONS
 from SunCastPy.utils.utils import (
     get_api_details,
     get_forecast_location_name,
@@ -29,7 +30,6 @@ class LocalForecast:
     ) -> None:
         _details: dict[str, dict] = {}
         _periods: str = ""
-        _max_limit = 9
         self.periods: list[dict] = [{}]
         self.location: str = ""
         if city:
@@ -43,8 +43,6 @@ class LocalForecast:
             _periods = get_hourly_forecast_url(_details)
         else:
             raise ValueError("Missing city or latitude and longitude")
-        if limit not in range(1, _max_limit):
-            raise ValueError("Invalid number of days to limit the forecast.")
 
         self.periods = get_request(_periods)["properties"]["periods"]
         self.forecast: list[Forecast] = [Forecast(**p) for p in self.periods]
@@ -62,13 +60,13 @@ class LocalForecast:
         Returns:
             dict[str, list[Forecast]] | LocalForecast: Grouped data
         """
+        if group_by not in GROUP_BY_OPTIONS:
+            raise ValueError("No valid grouping method provided")
         match group_by:
             case "forecast":
                 return self.group_by_forecast()
             case "date":
                 return self.group_by_date().weekly
-            case _:
-                raise ValueError("No valid grouping method provided")
 
     def group_by_forecast(self) -> dict[str, list[Forecast]]:
         """Group the weather periods by forecast name.
@@ -100,6 +98,10 @@ class LocalForecast:
         Returns:
             list[Forecast]: Forecast list with limited days
         """
+        _max_limit = 9
+
+        if limit not in range(1, _max_limit):
+            raise ValueError("Invalid number of days to limit the forecast.")
         # Count starts at 0
         limit -= 1
         start_time = self.forecast[0].start_time
