@@ -22,6 +22,6 @@ def print_current_weather(
 
     elif isinstance(current_weather, dict):
         for key, val in current_weather.items():
-            logging.info(key)
+            logger.info(key)
             for item in val:
-                logging.info(item)
+                logger.info(item)

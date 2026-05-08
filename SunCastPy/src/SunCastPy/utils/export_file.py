@@ -4,6 +4,8 @@ import json
 import logging
 from pathlib import Path
 
+logger = logging.getLogger(__name__)
+
 
 def export_html(data: str, output_dir: Path, name: str) -> None:
     """Export data as html
@@ -17,7 +19,7 @@ def export_html(data: str, output_dir: Path, name: str) -> None:
 
     with open(data_file, "w", encoding="utf-8") as file:
         file.write(data)
-    logging.info("File was successfully exported.")
+    logger.info("File was successfully exported.")
 
 
 def export_json(data: dict, output_dir: Path, name: str) -> None:
@@ -31,4 +33,4 @@ def export_json(data: dict, output_dir: Path, name: str) -> None:
 
     with open(data_file, "w", encoding="utf-8") as file:
         json.dump(data, file, indent=4)  # noqa: F821
-    logging.info("File was successfully exported.")
+    logger.info("File was successfully exported.")

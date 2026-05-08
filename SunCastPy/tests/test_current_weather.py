@@ -1,9 +1,13 @@
+import logging
+
 import pytest
+
+from SunCastPy.utils.cli_args import GROUP_BY_OPTIONS
 from SunCastPy.utils.current_weather import (
     print_current_weather,
 )
 
-from SunCastPy.utils.cli_args import GROUP_BY_OPTIONS
+logger = logging.getLogger(__name__)
 
 
 @pytest.mark.parametrize(
