@@ -7,6 +7,7 @@ from pathlib import Path
 
 import pytest
 from data.expected_forecast_flat import EXPECTED_FLATTENED_FORECAST
+from data.grouped_url import MOCK_GROUPED_URL
 
 from SunCastPy.models.NOAA.base_local_forecast import LocalForecast
 from SunCastPy.utils.logging_config import setup_logging
@@ -125,6 +126,8 @@ def mock_get_request(monkeypatch, sju_data, sju_forecast):
             return {"properties": {"name": "San Juan and Vicinity"}}
         if url == "https://ipinfo.io":
             return {"loc": "00.0000,-11.1111"}
+        if url in MOCK_GROUPED_URL.keys():
+            return {"properties": {"name": MOCK_GROUPED_URL.get(url)}}
         raise ValueError(f"Unexpected URL: {url}")
 
     monkeypatch.setattr(
