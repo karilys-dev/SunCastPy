@@ -21,8 +21,8 @@ expected = {
 }
 
 
-@pytest.fixture(scope="module")
-def data_group_zones() -> dict:
+@pytest.fixture()
+def data_group_zones(mock_get_request) -> dict:
     return group_zones(SJU_ZONES)
 
 
