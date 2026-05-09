@@ -22,7 +22,8 @@
 				"ms-python.pylint",
 				"github.vscode-github-actions",
 				"redhat.vscode-yaml",
-				"monosans.djlint"
+				"monosans.djlint",
+				"d-biehl.robotcode"
 			],
 		}
 	},
