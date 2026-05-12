@@ -1,34 +1,59 @@
 *** Settings ***
 Library             OperatingSystem
+# Library    Browser
 Library             resources/tempdir.py
 Resource            resources/keywords.robot
-Variables           resources/variables.py
 
-Suite Setup         Create Output Directory
+Suite Setup         Generate Test Site
 Suite Teardown      Cleanup Output Directory
 
 
 *** Variables ***
-${OUTPUT_DIR}       NONE
+${OUTPUT_DIR}           NONE
+
+@{CLI_ARGS}
+...                     --group-by
+...                     date
+...                     --zone
+...                     ${ZONE}
+
+@{EXPECTED_FILES}
+...                     index.html
+...                     Bayamon.html
+...                     Carolina.html
+...                     Catano.html
+...                     Guaynabo.html
+...                     San Juan.html
+...                     Toa Alta.html
+...                     Toa Baja.html
+...                     Trujillo Alto.html
+
+@{EXPECTED_BUTTONS}
+...                     Hourly Forecast
+...                     Marine Forecast
 
 
 *** Test Cases ***
-CLI Generates Index HTML
-    ${result}=    Generate Forecast Site    ${OUTPUT_DIR}
-
-    Should Be Equal As Integers    ${result.rc}    0
-
-    ${index_file}=    Join Path
+Generated Files Exist
+    Verify Expected Files Exist
     ...    ${OUTPUT_DIR}
-    ...    ${OUTPUT_FILENAME}
+    ...    @{EXPECTED_FILES}
 
-    File Should Exist    ${index_file}
+Generated Pages Are Not Empty
+    Verify Pages Are Not Empty
+    ...    ${OUTPUT_DIR}
+    ...    @{EXPECTED_FILES}
 
 
 *** Keywords ***
-Create Output Directory
+Generate Test Site
     ${temp_dir}=    Create Temp Dir
+
     Set Suite Variable    ${OUTPUT_DIR}    ${temp_dir}
+
+    Generate Forecast Site
+    ...    ${OUTPUT_DIR}
+    ...    @{CLI_ARGS}
 
 Cleanup Output Directory
     Cleanup Temp Dir    ${OUTPUT_DIR}
