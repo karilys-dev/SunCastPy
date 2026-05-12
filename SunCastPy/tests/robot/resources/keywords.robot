@@ -6,14 +6,14 @@ Variables       ${CURDIR}/variables.py
 
 *** Keywords ***
 Generate Forecast Site
-    [Arguments]    ${output_dir}
+    [Documentation]    Run the create forecast command line function with different inputs
+    [Arguments]
+    ...    ${output_dir}
+    ...    @{cli_args}
 
     ${result}=    Run Process
     ...    forecast
-    ...    --group-by
-    ...    date
-    ...    --zone
-    ...    ${ZONE}
+    ...    @{cli_args}
     ...    --output
     ...    ${output_dir}
     ...    shell=False
@@ -26,4 +26,39 @@ Generate Forecast Site
     Log To Console    \n========== STDERR ==========
     Log To Console    ${result.stderr}
 
-    RETURN    ${result}
+    # RETURN    ${result}
+    Should Be Equal As Integers    ${result.rc}    0
+
+Verify Expected Files Exist
+    [Documentation]    Iterate over a list of files and confirm exists
+    [Arguments]
+    ...    ${output_dir}
+    ...    @{expected_files}
+
+    FOR    ${file}    IN    @{expected_files}
+        ${full_path}=    Join Path
+        ...    ${output_dir}
+        ...    ${file}
+
+        File Should Exist    ${full_path}
+    END
+
+Verify Pages Are Not Empty
+    [Documentation]    Verify that the files are not empty
+    [Arguments]
+    ...    ${output_dir}
+    ...    @{expected_files}
+
+    FOR    ${file}    IN    @{expected_files}
+        ${full_path}=    Join Path
+        ...    ${output_dir}
+        ...    ${file}
+
+        ${content}=    Get File    ${full_path}
+
+        Should Not Be Empty    ${content}
+
+        Should Not Contain    ${content}    Traceback
+        Should Not Contain    ${content}    undefined
+        Should Not Contain    ${content}    None
+    END
