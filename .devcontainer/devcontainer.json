@@ -5,7 +5,7 @@
 	"workspaceFolder": "/workspace",
 	"remoteUser": "devuser",
 	"updateRemoteUserUID": true,
-	"postCreateCommand": "bash ./scripts/docker-postCreateCommand.sh",
+	"onCreateCommand": "bash ./scripts/docker-postCreateCommand.sh",
 	"customizations": {
 		"vscode": {
 			"extensions": [
