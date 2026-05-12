@@ -1,5 +1,6 @@
+ARG STAGE=base
 # Use official slim Python image
-FROM python:3.12-slim
+FROM python:3.12-slim AS base
 
 # Prevent Python from writing pyc files & enable stdout logging
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -34,6 +35,20 @@ RUN groupadd --gid $USER_GID $USERNAME \
     && mkdir -p /workspace \
     && chown -R $USERNAME:$USERNAME /workspace
 
+FROM base as robot-browser
+ARG ROBOT=false
+
+# This step only executes if ROBOT is explicitly set to 'true'
+RUN if [ "$ROBOT" = "true" ] ; then \
+        apt-get update \
+        && apt-get install -y --no-install-recommends \
+            nodejs \
+            npm \
+        && apt-get clean \
+        && rm -rf /var/lib/apt/lists/* ; \
+    fi
+
+FROM ${STAGE} as final
 # Switch to non-root user
 USER $USERNAME
 WORKDIR /workspace
