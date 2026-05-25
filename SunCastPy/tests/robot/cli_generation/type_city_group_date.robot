@@ -1,6 +1,5 @@
 *** Settings ***
 Library             OperatingSystem
-# Library    Browser
 Library             ${CURDIR}/../resources/tempdir.py
 Resource            ${CURDIR}/../resources/keywords.robot
 
@@ -14,23 +13,11 @@ ${OUTPUT_DIR}           NONE
 @{CLI_ARGS}
 ...                     --group-by
 ...                     date
-...                     --zone
-...                     ${ZONE}
+...                     --city
+...                     San Juan
 
 @{EXPECTED_FILES}
 ...                     index.html
-...                     Bayamon.html
-...                     Carolina.html
-...                     Catano.html
-...                     Guaynabo.html
-...                     San Juan.html
-...                     Toa Alta.html
-...                     Toa Baja.html
-...                     Trujillo Alto.html
-
-@{EXPECTED_BUTTONS}
-...                     Hourly Forecast
-...                     Marine Forecast
 
 
 *** Test Cases ***
@@ -39,6 +26,11 @@ Generated Files Exist
     Verify Expected Files Exist
     ...    ${OUTPUT_DIR}
     ...    @{EXPECTED_FILES}
+
+Verify File Count Is Exactly One
+    [Documentation]    Verify File Count Is Exactly One
+    ${file_count}=    Count Files In Directory    ${OUTPUT_DIR}
+    Should Be Equal As Integers    ${file_count}    1
 
 Generated Pages Are Not Empty
     [Documentation]    Generated Pages Are Not Empty

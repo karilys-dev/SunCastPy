@@ -63,6 +63,7 @@ Verify Pages Are Not Empty
     END
 
 Generate Test Site
+    [Documentation]    Used for setup to create the temp dir and run cli with args
     ${temp_dir}=    Create Temp Dir
 
     Set Suite Variable    ${OUTPUT_DIR}    ${temp_dir}
