@@ -1,11 +1,11 @@
 *** Settings ***
 Library             OperatingSystem
 # Library    Browser
-Library             resources/tempdir.py
-Resource            resources/keywords.robot
+Library             ${CURDIR}/../resources/tempdir.py
+Resource            ${CURDIR}/../resources/keywords.robot
 
 Suite Setup         Generate Test Site
-Suite Teardown      Cleanup Output Directory
+Suite Teardown      Cleanup Temp Dir    ${OUTPUT_DIR}
 
 
 *** Variables ***
@@ -43,17 +43,3 @@ Generated Pages Are Not Empty
     Verify Pages Are Not Empty
     ...    ${OUTPUT_DIR}
     ...    @{EXPECTED_FILES}
-
-
-*** Keywords ***
-Generate Test Site
-    ${temp_dir}=    Create Temp Dir
-
-    Set Suite Variable    ${OUTPUT_DIR}    ${temp_dir}
-
-    Generate Forecast Site
-    ...    ${OUTPUT_DIR}
-    ...    @{CLI_ARGS}
-
-Cleanup Output Directory
-    Cleanup Temp Dir    ${OUTPUT_DIR}

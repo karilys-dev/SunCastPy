@@ -1,6 +1,7 @@
 *** Settings ***
 Library         Process
 Library         OperatingSystem
+Library         ${CURDIR}/tempdir.py
 Variables       ${CURDIR}/variables.py
 
 
@@ -60,3 +61,12 @@ Verify Pages Are Not Empty
         Should Not Contain    ${content}    undefined
         Should Not Contain    ${content}    None
     END
+
+Generate Test Site
+    ${temp_dir}=    Create Temp Dir
+
+    Set Suite Variable    ${OUTPUT_DIR}    ${temp_dir}
+
+    Generate Forecast Site
+    ...    ${OUTPUT_DIR}
+    ...    @{CLI_ARGS}
