@@ -17,8 +17,6 @@ Generate Forecast Site
     ...    --output
     ...    ${output_dir}
     ...    shell=False
-    ...    stdout=STDOUT
-    ...    stderr=STDERR
 
     Log To Console    \n========== STDOUT ==========
     Log To Console    ${result.stdout}
