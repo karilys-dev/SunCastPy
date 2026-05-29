@@ -65,51 +65,27 @@ Verify Pages Are Not Empty
     END
 
 Generate Test Site
-    [Documentation]    Used for setup to create the temp dir and run cli with args
+    [Documentation]    Create the temp dir and run cli with args
+    [Arguments]    @{cli_args}
     ${temp_dir}=    Create Temp Dir
 
-    Set Suite Variable    ${OUTPUT_DIR}    ${temp_dir}
-
     Generate Forecast Site
+    ...    ${temp_dir}
+    ...    @{cli_args}
+
+    RETURN    ${temp_dir}
+
+Single Forecast Report
+    [Documentation]    Run a set of tests when it expects a single page to be created
+    [Arguments]    @{EXPECTED_FILES}
+
+    Verify Expected Files Exist
     ...    ${OUTPUT_DIR}
-    ...    @{CLI_ARGS}
+    ...    @{EXPECTED_FILES}
 
-Open Generated Site
-    ${options}=    Evaluate
-    ...    sys.modules['selenium.webdriver'].ChromeOptions()
-    ...    sys, selenium.webdriver
+    ${file_count}=    Count Files In Directory    ${OUTPUT_DIR}
+    Should Be Equal As Integers    ${file_count}    1
 
-    ${service}=    Evaluate
-    ...    sys.modules['selenium.webdriver.chrome.service'].Service(executable_path=r"/usr/bin/chromedriver")
-    ...    sys, selenium.webdriver.chrome.service
-
-    ${headless}=    Set Variable    --headless=new
-    ${nosandbox}=    Set Variable    --no-sandbox
-    ${disable}=    Set Variable    --disable-dev-shm-usage
-
-    Call Method    ${options}    add_argument    ${headless}
-    Call Method    ${options}    add_argument    ${nosandbox}
-    Call Method    ${options}    add_argument    ${disable}
-
-    Create Webdriver
-    ...    Chrome
-    ...    options=${options}
-    ...    service=${service}
-
-    Go To    file://${OUTPUT_DIR}/index.html
-
-Capture Full Page Snapshot
-    Open Generated Site
-
-    Set Window Size    1600    5000
-
-    ${test_name}=    Set Variable    ${SUITE NAME}
-    ${safe_name}=    Replace String    ${test_name}    ${SPACE}    _
-
-    Capture Page Screenshot    ./screenshots/${safe_name}.png
-
-    Close Browser
-
-Browser Teardown
-    Capture Full Page Snapshot
-    Cleanup Temp Dir    ${OUTPUT_DIR}
+    Verify Pages Are Not Empty
+    ...    ${OUTPUT_DIR}
+    ...    @{EXPECTED_FILES}
