@@ -2,7 +2,9 @@
 Library         Process
 Library         OperatingSystem
 Library         ${CURDIR}/tempdir.py
+Library         SeleniumLibrary
 Variables       ${CURDIR}/variables.py
+Library         String
 
 
 *** Keywords ***
@@ -71,3 +73,43 @@ Generate Test Site
     Generate Forecast Site
     ...    ${OUTPUT_DIR}
     ...    @{CLI_ARGS}
+
+Open Generated Site
+    ${options}=    Evaluate
+    ...    sys.modules['selenium.webdriver'].ChromeOptions()
+    ...    sys, selenium.webdriver
+
+    ${service}=    Evaluate
+    ...    sys.modules['selenium.webdriver.chrome.service'].Service(executable_path=r"/usr/bin/chromedriver")
+    ...    sys, selenium.webdriver.chrome.service
+
+    ${headless}=    Set Variable    --headless=new
+    ${nosandbox}=    Set Variable    --no-sandbox
+    ${disable}=    Set Variable    --disable-dev-shm-usage
+
+    Call Method    ${options}    add_argument    ${headless}
+    Call Method    ${options}    add_argument    ${nosandbox}
+    Call Method    ${options}    add_argument    ${disable}
+
+    Create Webdriver
+    ...    Chrome
+    ...    options=${options}
+    ...    service=${service}
+
+    Go To    file://${OUTPUT_DIR}/index.html
+
+Capture Full Page Snapshot
+    Open Generated Site
+
+    Set Window Size    1600    5000
+
+    ${test_name}=    Set Variable    ${SUITE NAME}
+    ${safe_name}=    Replace String    ${test_name}    ${SPACE}    _
+
+    Capture Page Screenshot    ./screenshots/${safe_name}.png
+
+    Close Browser
+
+Browser Teardown
+    Capture Full Page Snapshot
+    Cleanup Temp Dir    ${OUTPUT_DIR}

@@ -2,7 +2,7 @@
 Resource            ${CURDIR}/../resources/keywords.robot
 
 Suite Setup         Generate Test Site
-Suite Teardown      Cleanup Temp Dir    ${OUTPUT_DIR}
+Suite Teardown      Browser Teardown
 
 
 *** Variables ***
@@ -15,7 +15,6 @@ ${OUTPUT_DIR}           NONE
 ...                     ${ZONE}
 
 @{EXPECTED_FILES}
-...                     index.html
 ...                     Bayamon.html
 ...                     Carolina.html
 ...                     Catano.html
@@ -25,10 +24,6 @@ ${OUTPUT_DIR}           NONE
 ...                     Toa Baja.html
 ...                     Trujillo Alto.html
 
-@{EXPECTED_BUTTONS}
-...                     Hourly Forecast
-...                     Marine Forecast
-
 
 *** Test Cases ***
 Generated Files Exist
@@ -36,9 +31,24 @@ Generated Files Exist
     Verify Expected Files Exist
     ...    ${OUTPUT_DIR}
     ...    @{EXPECTED_FILES}
+    Verify Expected Files Exist
+    ...    ${OUTPUT_DIR}
+    ...    index.html
 
 Generated Pages Are Not Empty
     [Documentation]    Generated Pages Are Not Empty
     Verify Pages Are Not Empty
     ...    ${OUTPUT_DIR}
     ...    @{EXPECTED_FILES}
+
+Validate Generated Index
+    [Documentation]    Verify that the landing page has buttons for each of the cities in the zone
+    Open Generated Site
+
+    Page Should Contain    Forecast
+    FOR    ${button}    IN    @{EXPECTED_FILES}
+        ${button_name}=    Remove String    ${button}    .html
+        Page Should Contain    ${button_name}
+    END
+
+    Close Browser

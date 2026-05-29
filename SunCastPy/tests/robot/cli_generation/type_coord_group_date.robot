@@ -2,7 +2,7 @@
 Resource            ${CURDIR}/../resources/keywords.robot
 
 Suite Setup         Generate Test Site
-Suite Teardown      Cleanup Temp Dir    ${OUTPUT_DIR}
+Suite Teardown      Browser Teardown
 
 
 *** Variables ***
@@ -15,6 +15,7 @@ ${OUTPUT_DIR}           NONE
 ...                     18.441459
 ...                     --longitude
 ...                     -65.999504
+...                     --limit=3
 @{EXPECTED_FILES}
 ...                     index.html
 

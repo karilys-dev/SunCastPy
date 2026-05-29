@@ -2,7 +2,7 @@
 Resource            ${CURDIR}/../resources/keywords.robot
 
 Suite Setup         Generate Test Site
-Suite Teardown      Cleanup Temp Dir    ${OUTPUT_DIR}
+Suite Teardown      Browser Teardown
 
 
 *** Variables ***
