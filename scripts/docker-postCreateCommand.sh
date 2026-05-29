@@ -7,7 +7,7 @@ echo "export PATH=${SCRIPTS_DIR}:"'$HOME/.venv/bin:$HOME/.local/bin:$PATH' >> ~/
 python -m venv "$HOME/.venv"
 
 "$HOME/.venv/bin/pip" install --upgrade pip
-"$HOME/.venv/bin/pip" install -e SunCastPy[tests,dev,test-robot]
+"$HOME/.venv/bin/pip" install -e SunCastPy[tests,dev]
 
 git config --global user.email ${USER_EMAIL}
 git config --global user.name ${USER_NAME}
