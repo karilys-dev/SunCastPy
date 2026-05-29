@@ -15,8 +15,7 @@ dependencies = ["requests", "pydantic", 'jinja2']
 [project.optional-dependencies]
 dev = ["ruff", "mypy", "djlint", "pre-commit", "robotframework-robocop"]
 tests = ["pytest", "pytest-cov", "pytest-html", "pylint"]
-test-robot = ["robotframework"]
-test-robot-adv = ["robotframework-browser"]
+test-robot = ["robotframework", 'robotframework-seleniumlibrary']
 
 [project.scripts]
 forecast = "SunCastPy.main:main"
