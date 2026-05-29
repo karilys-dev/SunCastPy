@@ -1,7 +1,8 @@
 *** Settings ***
 Resource            ${CURDIR}/../resources/keywords.robot
+Resource            ${CURDIR}/../resources/cli_generation_setup.robot
 
-Suite Setup         Generate Test Site
+Suite Setup         Browser Setup    @{CLI_ARGS}
 Suite Teardown      Browser Teardown
 
 

@@ -12,11 +12,10 @@ ${OUTPUT_DIR}           NONE
 @{CLI_ARGS}
 ...                     --group-by
 ...                     date
-...                     --latitude
-...                     18.441459
-...                     --longitude
-...                     -65.999504
-...                     --limit=3
+...                     --city
+...                     San Juan
+...                     --no-flatten
+
 @{EXPECTED_FILES}
 ...                     index.html
 

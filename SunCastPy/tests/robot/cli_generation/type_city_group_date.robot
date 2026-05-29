@@ -1,7 +1,8 @@
 *** Settings ***
 Resource            ${CURDIR}/../resources/keywords.robot
+Resource            ${CURDIR}/../resources/cli_generation_setup.robot
 
-Suite Setup         Generate Test Site
+Suite Setup         Browser Setup    @{CLI_ARGS}
 Suite Teardown      Browser Teardown
 
 
@@ -19,19 +20,5 @@ ${OUTPUT_DIR}           NONE
 
 
 *** Test Cases ***
-Generated Files Exist
-    [Documentation]     Confirm that the expected file was created
-    Verify Expected Files Exist
-    ...    ${OUTPUT_DIR}
-    ...    @{EXPECTED_FILES}
-
-Verify File Count Is Exactly One
-    [Documentation]    Verify File Count Is Exactly One
-    ${file_count}=    Count Files In Directory    ${OUTPUT_DIR}
-    Should Be Equal As Integers    ${file_count}    1
-
-Generated Pages Are Not Empty
-    [Documentation]    Generated Pages Are Not Empty
-    Verify Pages Are Not Empty
-    ...    ${OUTPUT_DIR}
-    ...    @{EXPECTED_FILES}
+Verify Report Creation
+    Single Forecast Report    @{EXPECTED_FILES}
