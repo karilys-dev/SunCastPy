@@ -1,7 +1,4 @@
 *** Settings ***
-Library             OperatingSystem
-# Library    Browser
-Library             ${CURDIR}/../resources/tempdir.py
 Resource            ${CURDIR}/../resources/keywords.robot
 
 Suite Setup         Generate Test Site
