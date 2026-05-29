@@ -9,7 +9,8 @@
             "command": "${workspaceFolder}/scripts/github/create-forecast-report.sh && code -r ${env:OUTPUT_DIR}/index.html",
             "options": {
                 "env": {
-                    "LIMIT": "3"
+                    "LIMIT": "3",
+                    "ZONE": "${env:ZONE}"
                 },
                 "shell": {
                     "executable": "/bin/bash",
