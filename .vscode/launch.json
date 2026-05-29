@@ -12,12 +12,28 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "Main",
+            "name": "type_coord_group_date",
             "type": "debugpy",
             "request": "launch",
-            "program": "${file}",
+            "module": "SunCastPy.main",
             "console": "integratedTerminal",
-            "args": "--flatten --group-by=date"
-        }
+            "args": "--flatten --group-by=date --limit=3"
+        },
+        {
+            "name": "type_city_group_date",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "SunCastPy.main",
+            "console": "integratedTerminal",
+            "args": "--flatten --group-by=date --limit=3 --city=${env:CITY}"
+        },
+        {
+            "name": "type_zone_group_date",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "SunCastPy.main",
+            "console": "integratedTerminal",
+            "args": "--flatten --limit=1 --zone='${env:ZONE}' --output=${workspaceFolder}/artifacts/debug/zone"
+        },
     ]
 }
