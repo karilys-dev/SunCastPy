@@ -4,7 +4,7 @@ FROM python:3.12-slim
 # Prevent Python from writing pyc files & enable stdout logging
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
-
+ARG ROBOT_FRAMEWORK=false
 # Install system dependencies (example: curl)
 # Clean up apt cache to reduce vulnerabilities and image size (Trivy-friendly)
 RUN apt-get update \
@@ -15,6 +15,7 @@ RUN apt-get update \
     && sed -i 's/^# *en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
     && locale-gen \
     && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 \
+    && if [ "$ROBOT_FRAMEWORK" = "true" ]; then apt-get install -y chromium chromium-driver; fi \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
