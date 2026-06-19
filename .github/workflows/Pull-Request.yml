@@ -15,7 +15,7 @@ defaults:
     working-directory: SunCastPy
 
 env:
-  REPORTS_DIR: ${{ github.workspace }}/SunCastPy/reports
+  OUTPUT_DIR: ${{ github.workspace }}/SunCastPy/reports
   SCRIPTS_DIR: ${{ github.workspace }}/scripts
 
 jobs:
@@ -34,7 +34,7 @@ jobs:
       - name: Install dependencies and setup working environment
         run: |
           bash ${SCRIPTS_DIR}/github/install-project.sh [tests]
-          mkdir -p $REPORTS_DIR
+          mkdir -p $OUTPUT_DIR
 
       # Pytest
       - name: Run tests + generate reports
@@ -47,7 +47,7 @@ jobs:
         if: always()
         with:
           name: Pytest Results
-          path: ${{ env.REPORTS_DIR }}/junit.xml
+          path: ${{ env.OUTPUT_DIR }}/junit.xml
           reporter: java-junit
 
       # Pytest Coverage
@@ -57,13 +57,19 @@ jobs:
         with:
           working-directory: SunCastPy
 
+      # Robot Framework
+      - name: Run robot framework
+        id: robot-framework
+        run: ${{ env.SCRIPTS_DIR }}/ci-cd/run-robot.sh
+        continue-on-error: false
+
       # Post Actions
       # - name: Upload test reports
       #   uses: actions/upload-artifact@v4
       #   if: always()
       #   with:
       #     name: test-reports
-      #     path: ${{ env.REPORTS_DIR }}/
+      #     path: ${{ env.OUTPUT_DIR }}/
       #     retention-days: 3
 
       - name: Fail job if tests failed
