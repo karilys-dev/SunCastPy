@@ -82,9 +82,12 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Setup robot-framework
+        run: ${{ env.SCRIPTS_DIR }}/ci-cd/run-robot.sh -i
+
       - name: Run robot framework
         id: robot-framework
-        run: ${{ env.SCRIPTS_DIR }}/ci-cd/run-robot.sh
+        run: ${{ env.SCRIPTS_DIR }}/ci-cd/run-robot.sh -r
         continue-on-error: false
 
       - name: Upload test reports
