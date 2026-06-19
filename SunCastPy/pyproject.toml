@@ -13,9 +13,13 @@ authors = [{ name = "Karilys Collazo", email = "karilys.learn@gmail.com" }]
 dependencies = ["requests", "pydantic", 'jinja2']
 
 [project.optional-dependencies]
-dev = ["ruff", "mypy", "djlint", "pre-commit", "robotframework-robocop"]
+dev = ["ruff", "mypy", "djlint", "pre-commit"]
 tests = ["pytest", "pytest-cov", "pytest-html", "pylint"]
-test-robot = ["robotframework", 'robotframework-seleniumlibrary']
+test-robot = [
+    "robotframework",
+    "robotframework-seleniumlibrary",
+    "robotframework-robocop",
+]
 
 [project.scripts]
 forecast = "SunCastPy.main:main"
