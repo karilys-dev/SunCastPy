@@ -57,21 +57,40 @@ jobs:
         with:
           working-directory: SunCastPy
 
-      # Robot Framework
+      # Post Actions
+      - name: Upload test reports
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-reports
+          path: ${{ env.OUTPUT_DIR }}/
+          retention-days: 3
+
+      - name: Fail job if tests failed
+        if: steps.pytest.outcome == 'failure'
+        run: exit 1
+
+  robot:
+    runs-on: ubuntu-latest
+    steps:
+      # Setup
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
       - name: Run robot framework
         id: robot-framework
         run: ${{ env.SCRIPTS_DIR }}/ci-cd/run-robot.sh
         continue-on-error: false
 
-      # Post Actions
-      # - name: Upload test reports
-      #   uses: actions/upload-artifact@v4
-      #   if: always()
-      #   with:
-      #     name: test-reports
-      #     path: ${{ env.OUTPUT_DIR }}/
-      #     retention-days: 3
-
-      - name: Fail job if tests failed
-        if: steps.pytest.outcome == 'failure'
-        run: exit 1
+      - name: Upload test reports
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-reports
+          path: ${{ env.OUTPUT_DIR }}/
+          retention-days: 3
