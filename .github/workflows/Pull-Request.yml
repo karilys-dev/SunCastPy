@@ -94,9 +94,11 @@ jobs:
         if: always()
         uses: mikepenz/action-junit-report@v5
         with:
+          check_name: Robot-Framework Report
           report_paths: ${{ env.OUTPUT_DIR }}/robot/xunit.xml
           include_passed: true
           detailed_summary: true
+          require_tests: true
 
       - name: Upload test reports
         uses: actions/upload-artifact@v4
