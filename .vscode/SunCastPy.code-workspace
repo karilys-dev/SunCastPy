@@ -4,9 +4,6 @@
 			"path": ".."
 		},
 		{
-			"path": "../SunCastPy/tests/robot"
-		},
-		{
 			"path": "/tmp/artifacts"
 		}
 	],
