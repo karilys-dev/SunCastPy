@@ -2,6 +2,9 @@
 	"folders": [
 		{
 			"path": ".."
+		},
+		{
+			"path": "/tmp/artifacts"
 		}
 	],
 	"settings": {

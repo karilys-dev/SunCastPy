@@ -39,6 +39,15 @@ This project uses VSCode DevContainers to create a consistent development enviro
 "updateRemoteUserUID": true
 ```
 
+### Robot Framework
+- Robot Framework is used for testing the generated forecast pages and creating a visual report with screenshots. 
+- Since this option is not always used locally and the image size can be larger; the docker image needs to be built and docker-compose.yml should use that new image.
+    ```
+    docker build --tag weather:robot --build-arg ROBOT_FRAMEWORK=true .
+    ```
+- To run the tests in the devcontainer with the custom script run these from command line:
+    - install deps with `robot-run.sh -i`
+    - run with `robot-run.sh -r` 
 ## Forecast
 - A forecast report can be created using github actions and it will show up as a github page
 

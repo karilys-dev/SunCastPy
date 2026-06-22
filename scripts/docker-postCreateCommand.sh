@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -eEuo pipefail
 
-echo 'export PATH=$HOME/.venv/bin:$HOME/.local/bin:$PATH' >> ~/.bashrc
+SCRIPTS_DIR="$( realpath $(dirname "${BASH_SOURCE[0]}") )/ci-cd"
+echo "export PATH=${SCRIPTS_DIR}:"'$HOME/.venv/bin:$HOME/.local/bin:$PATH' >> ~/.bashrc
 
 python -m venv "$HOME/.venv"
 
