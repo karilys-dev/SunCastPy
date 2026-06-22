@@ -22,6 +22,7 @@ run(){
   robot \
       --outputdir=${ARTIFACTS} \
       --loglevel=TRACE \
+      --xunit=xunit.xml \
       . 
 }
 

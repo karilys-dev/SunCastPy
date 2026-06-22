@@ -90,6 +90,12 @@ jobs:
         run: ${{ env.SCRIPTS_DIR }}/ci-cd/run-robot.sh -r
         continue-on-error: false
 
+      - name: Publish Test Results
+        if: always()
+        uses: mikepenz/action-junit-report@v5
+        with:
+          report_paths: ${{ env.OUTPUT_DIR }}/xunit.xml
+
       - name: Upload test reports
         uses: actions/upload-artifact@v4
         if: failure()
