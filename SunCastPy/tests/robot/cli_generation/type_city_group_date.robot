@@ -1,6 +1,7 @@
 *** Settings ***
 Resource            ${CURDIR}/../resources/keywords.robot
 Resource            ${CURDIR}/../resources/cli_generation_setup.robot
+Variables           ${CURDIR}/../resources/variables.py
 
 Suite Setup         Browser Setup    @{CLI_ARGS}
 Suite Teardown      Browser Teardown
@@ -13,10 +14,10 @@ ${OUTPUT_DIR}           NONE
 ...                     --group-by
 ...                     date
 ...                     --city
-...                     San Juan
+...                     ${DEFAULT_CITY}
 
 @{EXPECTED_FILES}
-...                     index.html
+...                     ${DEFAULT_HTML_FILE}
 
 
 *** Test Cases ***

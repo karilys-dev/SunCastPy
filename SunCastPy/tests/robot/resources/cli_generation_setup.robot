@@ -1,6 +1,7 @@
 *** Settings ***
-Resource    ${CURDIR}/keywords.robot
-Resource    ${CURDIR}/cli_generation_browser.robot
+Resource        ${CURDIR}/keywords.robot
+Resource        ${CURDIR}/cli_generation_browser.robot
+Variables       ${CURDIR}/../resources/variables.py
 
 
 *** Keywords ***
@@ -12,6 +13,6 @@ Browser Setup
 
 Browser Teardown
     [Documentation]    Close down the browser test by taking a screenshot and removing generated files
-    [Arguments]    ${page}=index.html
+    [Arguments]    ${page}=${DEFAULT_HTML_FILE}
     Capture Full Page Snapshot    ${page}
     Cleanup Temp Dir    ${OUTPUT_DIR}

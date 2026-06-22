@@ -34,7 +34,7 @@ Generated Files Exist
     ...    @{EXPECTED_FILES}
     Verify Expected Files Exist
     ...    ${OUTPUT_DIR}
-    ...    index.html
+    ...    ${DEFAULT_HTML_FILE}
 
 Generated Pages Are Not Empty
     [Documentation]    Generated Pages Are Not Empty

@@ -1,11 +1,12 @@
 *** Settings ***
-Resource    ${CURDIR}/keywords.robot
+Resource        ${CURDIR}/keywords.robot
+Variables       ${CURDIR}/../resources/variables.py
 
 
 *** Keywords ***
 Open Generated Site
     [Documentation]    Use selenium to open the webpages and run tests
-    [Arguments]    ${page}=index.html    ${output_dir}=${OUTPUT_DIR}
+    [Arguments]    ${page}=${DEFAULT_HTML_FILE}    ${output_dir}=${OUTPUT_DIR}
     ${options}=    Evaluate
     ...    sys.modules['selenium.webdriver'].ChromeOptions()
     ...    sys, selenium.webdriver
@@ -32,7 +33,7 @@ Open Generated Site
 Capture Full Page Snapshot
     [Documentation]     Take a screenshot of the index.html to include in the report
     [Tags]    image
-    [Arguments]    ${page}=index.html
+    [Arguments]    ${page}=${DEFAULT_HTML_FILE}
     Open Generated Site    ${page}
 
     Set Window Size    1600    5000

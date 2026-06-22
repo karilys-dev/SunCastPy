@@ -1,12 +1,5 @@
-CLI_COMMAND = "python"
-
-CLI_ARGS = [
-    "-m",
-    "SunCastPy",
-]
-
-DEFAULT_CITY = "SJU"
-
-OUTPUT_FILENAME = "index.html"
+DEFAULT_CITY = "San Juan"
 
 ZONE = "San Juan and Vicinity"
+
+DEFAULT_HTML_FILE = "index.html"
