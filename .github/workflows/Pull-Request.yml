@@ -19,15 +19,15 @@ env:
   SCRIPTS_DIR: ${{ github.workspace }}/scripts
 
 jobs:
-  pytest:
+  unit-tests:
     runs-on: ubuntu-latest
     steps:
       # Setup
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -43,7 +43,7 @@ jobs:
         continue-on-error: true
 
       - name: Publish test summary to PR
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v3
         if: always()
         with:
           name: Pytest Results
@@ -70,15 +70,15 @@ jobs:
         if: steps.pytest.outcome == 'failure'
         run: exit 1
 
-  robot:
+  quality-checks:
     runs-on: ubuntu-latest
     steps:
       # Setup
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -92,13 +92,30 @@ jobs:
 
       - name: Publish Robot Test Results
         if: always()
-        uses: mikepenz/action-junit-report@v5
+        uses: mikepenz/action-junit-report@v6
         with:
           check_name: Robot-Framework Report
           report_paths: ${{ env.OUTPUT_DIR }}/robot/xunit.xml
           include_passed: true
           detailed_summary: true
           require_tests: true
+
+      - name: Setup Semgrep
+        run: ${{ env.SCRIPTS_DIR }}/ci-cd/run-semgrep.sh -i
+
+      - name: Run Semgrep framework
+        id: Semgrep
+        run: ${{ env.SCRIPTS_DIR }}/ci-cd/run-semgrep.sh -r
+        continue-on-error: false
+
+      - name: Publish semgrep Test Results
+        if: always()
+        uses: mikepenz/action-junit-report@v6
+        with:
+          check_name: Semgrep Report
+          report_paths: ${{ env.OUTPUT_DIR }}/semgrep/result.xml
+          include_passed: true
+          detailed_summary: true
 
       - name: Upload test reports
         uses: actions/upload-artifact@v4
