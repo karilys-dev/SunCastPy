@@ -105,7 +105,7 @@ jobs:
 
       - name: Run Semgrep framework
         id: Semgrep
-        run: ${{ env.SCRIPTS_DIR }}/ci-cd/run-semgrep.sh -r ; ls -R ${{ env.OUTPUT_DIR }}
+        run: ${{ env.SCRIPTS_DIR }}/ci-cd/run-semgrep.sh -r
         continue-on-error: false
 
       - name: Publish semgrep Test Results
@@ -113,7 +113,7 @@ jobs:
         uses: mikepenz/action-junit-report@v5
         with:
           check_name: Semgrep Report
-          report_paths: ${{ env.OUTPUT_DIR }}/semgrep/report.xml
+          report_paths: ${{ env.OUTPUT_DIR }}/semgrep/result.xml
           include_passed: true
           detailed_summary: true
           require_tests: true
