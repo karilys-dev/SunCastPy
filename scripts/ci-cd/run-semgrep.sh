@@ -26,8 +26,8 @@ run(){
     --matching-explanations \
     --output=${ARTIFACTS}/report.json --json \
     --junit-xml-output=${ARTIFACTS}/result.xml \
+    --exclude-rule=python.flask.security.xss.audit.direct-use-of-jinja2.direct-use-of-jinja2 \
     ${DIR}/SunCastPy
-    # --exclude-rule=python.flask.security.xss.audit.direct-use-of-jinja2.direct-use-of-jinja2 \
 }
 
 usage() {
