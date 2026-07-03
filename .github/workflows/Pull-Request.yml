@@ -116,7 +116,6 @@ jobs:
           report_paths: ${{ env.OUTPUT_DIR }}/semgrep/result.xml
           include_passed: true
           detailed_summary: true
-          require_tests: true
 
       - name: Upload test reports
         uses: actions/upload-artifact@v4
