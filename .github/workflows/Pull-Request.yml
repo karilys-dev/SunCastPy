@@ -105,7 +105,7 @@ jobs:
 
       - name: Run Semgrep framework
         id: Semgrep
-        run: ${{ env.SCRIPTS_DIR }}/ci-cd/run-semgrep.sh -r ; cat ${{ env.OUTPUT_DIR }}/semgrep/report.xml
+        run: ${{ env.SCRIPTS_DIR }}/ci-cd/run-semgrep.sh -r ; ls -R ${{ env.OUTPUT_DIR }}
         continue-on-error: false
 
       - name: Publish semgrep Test Results
