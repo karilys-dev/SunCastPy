@@ -19,7 +19,7 @@ env:
   SCRIPTS_DIR: ${{ github.workspace }}/scripts
 
 jobs:
-  pytest:
+  unit-tests:
     runs-on: ubuntu-latest
     steps:
       # Setup
@@ -70,7 +70,7 @@ jobs:
         if: steps.pytest.outcome == 'failure'
         run: exit 1
 
-  robot:
+  quality-checks:
     runs-on: ubuntu-latest
     steps:
       # Setup
@@ -82,30 +82,30 @@ jobs:
         with:
           python-version: "3.12"
 
-      # - name: Setup robot-framework
-      #   run: ${{ env.SCRIPTS_DIR }}/ci-cd/run-robot.sh -i
+      - name: Setup robot-framework
+        run: ${{ env.SCRIPTS_DIR }}/ci-cd/run-robot.sh -i
 
-      # - name: Run robot framework
-      #   id: robot-framework
-      #   run: ${{ env.SCRIPTS_DIR }}/ci-cd/run-robot.sh -r
-      #   continue-on-error: false
+      - name: Run robot framework
+        id: robot-framework
+        run: ${{ env.SCRIPTS_DIR }}/ci-cd/run-robot.sh -r
+        continue-on-error: false
 
-      # - name: Publish Robot Test Results
-      #   if: always()
-      #   uses: mikepenz/action-junit-report@v5
-      #   with:
-      #     check_name: Robot-Framework Report
-      #     report_paths: ${{ env.OUTPUT_DIR }}/robot/xunit.xml
-      #     include_passed: true
-      #     detailed_summary: true
-      #     require_tests: true
+      - name: Publish Robot Test Results
+        if: always()
+        uses: mikepenz/action-junit-report@v5
+        with:
+          check_name: Robot-Framework Report
+          report_paths: ${{ env.OUTPUT_DIR }}/robot/xunit.xml
+          include_passed: true
+          detailed_summary: true
+          require_tests: true
 
       - name: Setup Semgrep
         run: ${{ env.SCRIPTS_DIR }}/ci-cd/run-semgrep.sh -i
 
       - name: Run Semgrep framework
         id: Semgrep
-        run: ${{ env.SCRIPTS_DIR }}/ci-cd/run-semgrep.sh -r ; cat ${{ env.OUTPUT_DIR }}/semgrep/result.xml
+        run: ${{ env.SCRIPTS_DIR }}/ci-cd/run-semgrep.sh -r
         continue-on-error: false
 
       - name: Publish semgrep Test Results
