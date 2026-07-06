@@ -9,7 +9,7 @@ Suite Teardown      Browser Teardown
 
 *** Variables ***
 ${OUTPUT_DIR}           NONE
-
+${DAY_LIMIT}            3
 @{CLI_ARGS}
 ...                     --group-by
 ...                     date
@@ -17,11 +17,11 @@ ${OUTPUT_DIR}           NONE
 ...                     18.441459
 ...                     --longitude
 ...                     -65.999504
-...                     --limit=3
+...                     --limit=${DAY_LIMIT}
 @{EXPECTED_FILES}
 ...                     ${DEFAULT_HTML_FILE}
 
 
 *** Test Cases ***
 Verify Report Creation
-    Single Forecast Report    @{EXPECTED_FILES}
+    Single Forecast Report    @{EXPECTED_FILES}    day_limit=${DAY_LIMIT}
