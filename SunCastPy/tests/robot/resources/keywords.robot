@@ -5,6 +5,7 @@ Library         ${CURDIR}/tempdir.py
 Library         SeleniumLibrary
 Variables       ${CURDIR}/variables.py
 Library         String
+Library         ${CURDIR}/../resources/HtmlKeywords.py
 
 
 *** Keywords ***
@@ -75,9 +76,19 @@ Generate Test Site
 
     RETURN    ${temp_dir}
 
+Verify Forecast HTML Content
+    [Documentation]    Open the html file and make sure that the forecast report tables are not empty and that the page has a title
+    [Arguments]    ${html_file}    ${day_limit}=1    ${city_name}=San Juan
+
+    ${page}=    Load Html    ${html_file}
+    Page Title Should Be    ${page}    🌤 SunCast Forecast
+    City Should Be    ${page}    ${city_name}
+    Forecast Day Limit Should Be    ${page}    ${day_limit}
+    Page Should Have Forecast    ${page}
+
 Single Forecast Report
     [Documentation]    Run a set of tests when it expects a single page to be created
-    [Arguments]    @{EXPECTED_FILES}
+    [Arguments]    @{EXPECTED_FILES}    ${day_limit}=1
 
     Verify Expected Files Exist
     ...    ${OUTPUT_DIR}
@@ -89,3 +100,5 @@ Single Forecast Report
     Verify Pages Are Not Empty
     ...    ${OUTPUT_DIR}
     ...    @{EXPECTED_FILES}
+
+    Verify Forecast HTML Content    html_file=${OUTPUT_DIR}/${DEFAULT_HTML_FILE}    day_limit=${day_limit}

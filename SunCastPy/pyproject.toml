@@ -19,6 +19,7 @@ test-robot = [
     "robotframework",
     "robotframework-seleniumlibrary",
     "robotframework-robocop",
+    "beautifulsoup4",
 ]
 scan = ['semgrep']
 
