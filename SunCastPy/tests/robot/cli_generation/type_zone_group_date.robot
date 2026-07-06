@@ -48,8 +48,9 @@ Validate Generated Index
 
     Page Should Contain    Forecast
     FOR    ${button}    IN    @{EXPECTED_FILES}
-        ${button_name}=    Remove String    ${button}    .html
-        Page Should Contain    ${button_name}
+        ${city_name}=    Remove String    ${button}    .html
+        Page Should Contain    ${city_name}
+        Verify Forecast HTML Content    html_file=${OUTPUT_DIR}/${button}    day_limit=1    city_name=${city_name}
     END
 
     Close Browser

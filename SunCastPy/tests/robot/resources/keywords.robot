@@ -78,11 +78,11 @@ Generate Test Site
 
 Verify Forecast HTML Content
     [Documentation]    Open the html file and make sure that the forecast report tables are not empty and that the page has a title
-    [Arguments]    ${html_file}    ${day_limit}=1
+    [Arguments]    ${html_file}    ${day_limit}=1    ${city_name}=San Juan
 
     ${page}=    Load Html    ${html_file}
     Page Title Should Be    ${page}    🌤 SunCast Forecast
-    City Should Be    ${page}    San Juan
+    City Should Be    ${page}    ${city_name}
     Forecast Day Limit Should Be    ${page}    ${day_limit}
     Page Should Have Forecast    ${page}
 
