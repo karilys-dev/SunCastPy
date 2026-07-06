@@ -39,3 +39,13 @@ class HtmlKeywords:
     def forecast_day_limit_should_be(self, soup, limit):
         day = soup.find_all("div", class_="day")
         assert len(day) == int(limit), f"The actual value was {len(day)}"
+
+    def get_forecast_row_count(self, file):
+        soup = self.load_html(html_file=file)
+        day = soup.find("div", class_="day")
+        assert day is not None
+        table = day.find("table")
+        assert table is not None
+
+        rows = table.find_all("tr")
+        return len(rows)
