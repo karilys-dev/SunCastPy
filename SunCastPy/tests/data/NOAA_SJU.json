@@ -60,10 +60,10 @@
         "gridId": "SJU",
         "gridX": 171,
         "gridY": 129,
-        "forecast": "https://api.weather.gov/gridpoints/SJU/171,129/forecast",
-        "forecastHourly": "https://api.weather.gov/gridpoints/SJU/171,129/forecast/hourly",
-        "forecastGridData": "https://api.weather.gov/gridpoints/SJU/171,129",
-        "observationStations": "https://api.weather.gov/gridpoints/SJU/171,129/stations",
+        "forecast": "https://api.weather.gov/gridpoints/SJU/162,132/forecast",
+        "forecastHourly": "https://api.weather.gov/gridpoints/SJU/162,132/forecast/hourly",
+        "forecastGridData": "https://api.weather.gov/gridpoints/SJU/162,132",
+        "observationStations": "https://api.weather.gov/gridpoints/SJU/162,132/stations",
         "relativeLocation": {
             "type": "Feature",
             "geometry": {
