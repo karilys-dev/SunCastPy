@@ -22,6 +22,7 @@ test-robot = [
     "beautifulsoup4",
 ]
 scan = ['semgrep']
+aws = ['fastapi', 'httpx2', 'uvicorn']
 
 [project.scripts]
 forecast = "SunCastPy.main:main"
