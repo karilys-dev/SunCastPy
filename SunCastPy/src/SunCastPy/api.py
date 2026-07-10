@@ -19,13 +19,17 @@ def forecast_city(
     """
 
     try:
-        return city_report(
-            {
-                "city": city,
-                "flatten": flatten,
-                "limit": limit,
-            }
-        ).forecast
+        return (
+            city_report(
+                {
+                    "city": city,
+                    "flatten": flatten,
+                    "limit": limit,
+                }
+            )
+            .group_by_date()
+            .weekly
+        )
 
     except Exception as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
