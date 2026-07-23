@@ -15,7 +15,7 @@ def get_forecast_all_cities_in_zone(
     zone_name: str,
     flatten: bool,
     limit: int,
-) -> dict[str, LocalForecast]:
+) -> dict[str, LocalForecast]:  # skipped: reason covered in robot framework
     """Given a zone name get the forecast for all of the corresponding cities
 
     Args:
@@ -39,7 +39,9 @@ def get_forecast_all_cities_in_zone(
     return forecast_cities
 
 
-def create_html_multi_city(data: dict, output_dir: Path):
+def create_html_multi_city(
+    data: dict, output_dir: Path
+):  # skipped: reason covered in robot framework
     """Create the html file for each city
 
     Args:

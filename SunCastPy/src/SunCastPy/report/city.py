@@ -39,8 +39,8 @@ def report_forecast(
         output (Path | None, optional): Location to save html files. Defaults to None.
         group_by (str | None, optional): Group the data.
     """
-    location: str = data.location
-    if output:
+    if output:  # skipped: reason covered in robot framework
+        location: str = data.location
         grouped_weather: dict[str, list[Forecast]] = data.group_by("date")
         logger.info("Creating html report")
         html = render_html(
