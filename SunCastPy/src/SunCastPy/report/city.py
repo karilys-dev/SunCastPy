@@ -51,7 +51,7 @@ def report_forecast(
         export_html(data=html, output_dir=output, name="index.html")
         logger.info("Report saved to output directory.")
 
-    else:
+    else:  # skipped: reason covered test_current_weather.py::test_print_LocalForecast
         if group_by:
             print_current_weather(data.group_by(group_by))
         print_current_weather(current_weather=data)
