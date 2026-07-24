@@ -103,11 +103,18 @@ def mock_city(monkeypatch, sju_data):
             "forecastZone": sju_data["properties"]["forecastZone"],
         }
     }
-
+    fake_zone = {
+        "Test Zone": {
+            "cities": ["Test"],
+            "url": fake_city["Test"]["forecastZone"],
+            "location": "Test",
+        }
+    }
     monkeypatch.setattr(
         "SunCastPy.models.NOAA.base_local_forecast.SJU_ZONES", fake_city
     )
     monkeypatch.setattr("SunCastPy.data.zones.COORDINATES", fake_city)
+    monkeypatch.setattr("SunCastPy.report.zone.SJU_ZONES_GROUPED", fake_zone)
 
 
 @pytest.fixture

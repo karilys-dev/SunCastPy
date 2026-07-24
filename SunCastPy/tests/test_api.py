@@ -55,13 +55,68 @@ class Test_City_Forecast:
         assert len(response_data.keys()) == params["limit"]
         assert len(response_data["Sunday 2026-03-22"]) == count
 
-    def test_invalid_input(self):
-        response = client.get(
-            f"/forecast_city/{DEFAULTS['city']}?flatten={DEFAULTS['flatten']}&limit=10"
-        )
+
+class Test_Invalid_Input:
+    @pytest.mark.parametrize(
+        ("url"),
+        (
+            pytest.param("forecast_city/Test", id="city"),
+            pytest.param("forecast_zone/Test Zone", id="zone"),
+        ),
+    )
+    def test_exceded_limit(self, mock_city, mock_get_request, url):
+        response = client.get(f"/{url}?flatten={DEFAULTS['flatten']}&limit=10")
 
         assert response.status_code == 404
 
         assert response.json() == {
             "detail": "Invalid number of days to limit the forecast."
         }
+
+
+class Test_Zone_Forecast:
+    @pytest.mark.parametrize(
+        ("overrides"),
+        (
+            pytest.param({}, id="default"),
+            pytest.param({"flatten": False}, id="flatten_false"),
+            pytest.param({"limit": 3}, id="limit_3"),
+        ),
+    )
+    def test_get_zone_forecast(
+        self,
+        mock_get_request,
+        overrides,
+        request,
+        expected_data_group_by_dayname,
+        mock_city,
+    ):
+        """Verify the forecast endpoint returns the expected JSON."""
+        params = {**DEFAULTS, **overrides}
+        logger.info("Test values:")
+        for key, val in params.items():
+            logger.info(f"{key} = {val}")
+        html_city = "Test Zone".replace(" ", "%20")
+
+        # Only add the extra url parameters if its not using default values
+        current_id = request.node.callspec.id
+        if current_id == "default":
+            response = client.get(f"forecast_zone/{html_city}")
+        else:
+            response = client.get(
+                f"forecast_zone/{html_city}?flatten={params['flatten']}&limit={params['limit']}"
+            )
+
+        # The count of forecast values changes if its flattened or not
+        if params["flatten"]:
+            count = expected_data_group_by_dayname["Sunday 2026-03-22"]["flattened"]
+        else:
+            count = expected_data_group_by_dayname["Sunday 2026-03-22"]["default"]
+
+        # Run the command and verify outputs
+        response_data_raw = response.json()
+        response_data = response_data_raw["Test"]
+        assert response.status_code == 200
+        assert response_data is not None
+        assert len(response_data.keys()) == params["limit"]
+        assert len(response_data["Sunday 2026-03-22"]) == count
