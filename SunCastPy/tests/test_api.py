@@ -12,20 +12,20 @@ DEFAULTS = {
     "flatten": True,
     "limit": 1,
 }
+SAMPLE_DAY = "Sunday 2026-03-22"
 
 
 def validate_values(params, expected_data_group_by_dayname, response, response_data):
     # The count of forecast values changes if its flattened or not
-    sample_day = "Sunday 2026-03-22"
     if params["flatten"]:
-        count = expected_data_group_by_dayname[sample_day]["flattened"]
+        count = expected_data_group_by_dayname[SAMPLE_DAY]["flattened"]
     else:
-        count = expected_data_group_by_dayname[sample_day]["default"]
+        count = expected_data_group_by_dayname[SAMPLE_DAY]["default"]
 
     assert response.status_code == 200
     assert response_data is not None
     assert len(response_data.keys()) == params["limit"]
-    assert len(response_data[sample_day]) == count
+    assert len(response_data[SAMPLE_DAY]) == count
 
 
 class Test_City_Forecast:
@@ -60,6 +60,14 @@ class Test_City_Forecast:
         response_data = response.json()
         validate_values(params, expected_data_group_by_dayname, response, response_data)
 
+    def test_city_report(self, mock_get_request):
+        html_city = DEFAULTS["city"].replace(" ", "%20")
+        response = client.get(f"/report/{html_city}")
+        assert response.status_code == 200
+        assert response.headers["content-type"].startswith("text/html")
+        assert "<html" in response.text.lower()
+        assert SAMPLE_DAY in response.text
+
 
 class Test_Invalid_Input:
     @pytest.mark.parametrize(
@@ -67,6 +75,7 @@ class Test_Invalid_Input:
         (
             pytest.param("forecast_city/Test", id="city"),
             pytest.param("forecast_zone/Test Zone", id="zone"),
+            pytest.param("report/Test", id="city_report"),
         ),
     )
     def test_exceded_limit(self, mock_city, mock_get_request, url):
