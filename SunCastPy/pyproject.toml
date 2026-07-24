@@ -14,7 +14,7 @@ dependencies = ["requests", "pydantic", 'jinja2']
 
 [project.optional-dependencies]
 dev = ["ruff", "mypy", "djlint", "pre-commit"]
-tests = ["pytest", "pytest-cov", "pytest-html", "pylint"]
+tests = ["pytest", "pytest-cov", "pytest-html", "pylint", "fastapi"]
 test-robot = [
     "robotframework",
     "robotframework-seleniumlibrary",
@@ -58,7 +58,13 @@ addopts = """
 
 [tool.coverage.run]
 source = ["SunCastPy"]
-omit = ["*/conftest.py", "*/test/*", "*/tests/*", "logging_config.py"]
+omit = [
+    "*/conftest.py",
+    "*/test/*",
+    "*/tests/*",
+    "logging_config.py",
+    "cli_args.py",
+]
 
 [tool.coverage.paths]
 source = [
@@ -71,6 +77,11 @@ source = [
 [tool.coverage.report]
 omit = ["*/conftest.py", "*/test/*", "*/tests/*"]
 exclude_lines = ["pragma: no cover", "def main", "if __name__ == .__main__.:"]
+exclude_also = [
+    "pragma: no cover",
+    "skipped: reason .*", # Regex matching 'skipped: reason <any text>'
+]
+
 
 [tool.pylint.main]
 disable = []
