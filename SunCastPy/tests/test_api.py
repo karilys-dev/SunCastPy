@@ -14,6 +14,20 @@ DEFAULTS = {
 }
 
 
+def validate_values(params, expected_data_group_by_dayname, response, response_data):
+    # The count of forecast values changes if its flattened or not
+    sample_day = "Sunday 2026-03-22"
+    if params["flatten"]:
+        count = expected_data_group_by_dayname[sample_day]["flattened"]
+    else:
+        count = expected_data_group_by_dayname[sample_day]["default"]
+
+    assert response.status_code == 200
+    assert response_data is not None
+    assert len(response_data.keys()) == params["limit"]
+    assert len(response_data[sample_day]) == count
+
+
 class Test_City_Forecast:
     @pytest.mark.parametrize(
         ("overrides"),
@@ -42,18 +56,9 @@ class Test_City_Forecast:
                 f"/forecast_city/{html_city}?flatten={params['flatten']}&limit={params['limit']}"
             )
 
-        # The count of forecast values changes if its flattened or not
-        if params["flatten"]:
-            count = expected_data_group_by_dayname["Sunday 2026-03-22"]["flattened"]
-        else:
-            count = expected_data_group_by_dayname["Sunday 2026-03-22"]["default"]
-
         # Run the command and verify outputs
         response_data = response.json()
-        assert response.status_code == 200
-        assert response_data is not None
-        assert len(response_data.keys()) == params["limit"]
-        assert len(response_data["Sunday 2026-03-22"]) == count
+        validate_values(params, expected_data_group_by_dayname, response, response_data)
 
 
 class Test_Invalid_Input:
@@ -107,16 +112,6 @@ class Test_Zone_Forecast:
                 f"forecast_zone/{html_city}?flatten={params['flatten']}&limit={params['limit']}"
             )
 
-        # The count of forecast values changes if its flattened or not
-        if params["flatten"]:
-            count = expected_data_group_by_dayname["Sunday 2026-03-22"]["flattened"]
-        else:
-            count = expected_data_group_by_dayname["Sunday 2026-03-22"]["default"]
-
         # Run the command and verify outputs
-        response_data_raw = response.json()
-        response_data = response_data_raw["Test"]
-        assert response.status_code == 200
-        assert response_data is not None
-        assert len(response_data.keys()) == params["limit"]
-        assert len(response_data["Sunday 2026-03-22"]) == count
+        response_data = response.json()["Test"]
+        validate_values(params, expected_data_group_by_dayname, response, response_data)
