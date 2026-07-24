@@ -14,7 +14,7 @@ dependencies = ["requests", "pydantic", 'jinja2']
 
 [project.optional-dependencies]
 dev = ["ruff", "mypy", "djlint", "pre-commit"]
-tests = ["pytest", "pytest-cov", "pytest-html", "pylint", "fastapi"]
+tests = ["pytest", "pytest-cov", "pytest-html", "pylint", "fastapi", "httpx2"]
 test-robot = [
     "robotframework",
     "robotframework-seleniumlibrary",
