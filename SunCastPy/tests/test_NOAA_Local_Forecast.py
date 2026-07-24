@@ -64,7 +64,7 @@ class Test_LocalForecast:
             assert len(grouped[forecast]) == expected[forecast][data_type]
 
     def test_group_by_dayname(
-        self, test_data, mock_datetime_today, today_str, expected_data
+        self, test_data, mock_datetime_today, today_str, expected_data_group_by_dayname
     ):
         name_key = format_date(today_str)
         limit: int = 3
@@ -79,7 +79,7 @@ class Test_LocalForecast:
         # Confirm ['Sunday 2026-03-22', 'Monday 2026-03-23', 'Tuesday 2026-03-24']
         assert (
             list(grouped_data.keys())[:limit]
-            == list(expected_data["group_by_dayname"].keys())[:limit]
+            == list(expected_data_group_by_dayname.keys())[:limit]
         )
 
     @pytest.mark.parametrize("arg", GROUP_BY_OPTIONS)

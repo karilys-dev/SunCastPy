@@ -84,7 +84,7 @@ def weather_parser() -> argparse.ArgumentParser:
 
 
 def parse_args(
-    parser: argparse.ArgumentParser = weather_parser(),
+    parser: argparse.ArgumentParser | None = None,
 ) -> argparse.Namespace:  # pragma: no cover
     """Parse the arguments of the weather app
 
@@ -94,10 +94,11 @@ def parse_args(
     Returns:
         argparse.Namespace: arguments
     """
-
+    if parser is None:
+        parser = weather_parser()
     return parser.parse_args()
 
 
 if __name__ == "__main__":
-    args = parse_args()
+    args = parse_args(weather_parser())
     print(args)

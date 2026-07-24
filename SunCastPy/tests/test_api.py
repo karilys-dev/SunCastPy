@@ -1,0 +1,126 @@
+import logging
+
+import pytest
+from fastapi.testclient import TestClient
+
+from SunCastPy.api import app
+
+logger = logging.getLogger(__name__)
+client = TestClient(app)
+DEFAULTS = {
+    "city": "San Juan",
+    "flatten": True,
+    "limit": 1,
+}
+SAMPLE_DAY = "Sunday 2026-03-22"
+
+
+def validate_values(params, expected_data_group_by_dayname, response, response_data):
+    # The count of forecast values changes if its flattened or not
+    if params["flatten"]:
+        count = expected_data_group_by_dayname[SAMPLE_DAY]["flattened"]
+    else:
+        count = expected_data_group_by_dayname[SAMPLE_DAY]["default"]
+
+    assert response.status_code == 200
+    assert response_data is not None
+    assert len(response_data.keys()) == params["limit"]
+    assert len(response_data[SAMPLE_DAY]) == count
+
+
+class Test_City_Forecast:
+    @pytest.mark.parametrize(
+        ("overrides"),
+        (
+            pytest.param({}, id="default"),
+            pytest.param({"flatten": False}, id="flatten_false"),
+            pytest.param({"limit": 3}, id="limit_3"),
+        ),
+    )
+    def test_get_city_forecast(
+        self, mock_get_request, overrides, request, expected_data_group_by_dayname
+    ):
+        """Verify the forecast endpoint returns the expected JSON."""
+        params = {**DEFAULTS, **overrides}
+        logger.info("Test values:")
+        for key, val in params.items():
+            logger.info(f"{key} = {val}")
+        html_city = params["city"].replace(" ", "%20")
+
+        # Only add the extra url parameters if its not using default values
+        current_id = request.node.callspec.id
+        if current_id == "default":
+            response = client.get(f"/forecast_city/{html_city}")
+        else:
+            response = client.get(
+                f"/forecast_city/{html_city}?flatten={params['flatten']}&limit={params['limit']}"
+            )
+
+        # Run the command and verify outputs
+        response_data = response.json()
+        validate_values(params, expected_data_group_by_dayname, response, response_data)
+
+    def test_city_report(self, mock_get_request):
+        html_city = DEFAULTS["city"].replace(" ", "%20")
+        response = client.get(f"/report/{html_city}")
+        assert response.status_code == 200
+        assert response.headers["content-type"].startswith("text/html")
+        assert "<html" in response.text.lower()
+        assert SAMPLE_DAY in response.text
+
+
+class Test_Invalid_Input:
+    @pytest.mark.parametrize(
+        ("url"),
+        (
+            pytest.param("forecast_city/Test", id="city"),
+            pytest.param("forecast_zone/Test Zone", id="zone"),
+            pytest.param("report/Test", id="city_report"),
+        ),
+    )
+    def test_exceded_limit(self, mock_city, mock_get_request, url):
+        response = client.get(f"/{url}?flatten={DEFAULTS['flatten']}&limit=10")
+
+        assert response.status_code == 404
+
+        assert response.json() == {
+            "detail": "Invalid number of days to limit the forecast."
+        }
+
+
+class Test_Zone_Forecast:
+    @pytest.mark.parametrize(
+        ("overrides"),
+        (
+            pytest.param({}, id="default"),
+            pytest.param({"flatten": False}, id="flatten_false"),
+            pytest.param({"limit": 3}, id="limit_3"),
+        ),
+    )
+    def test_get_zone_forecast(
+        self,
+        mock_get_request,
+        overrides,
+        request,
+        expected_data_group_by_dayname,
+        mock_city,
+    ):
+        """Verify the forecast endpoint returns the expected JSON."""
+        params = {**DEFAULTS, **overrides}
+        logger.info("Test values:")
+        for key, val in params.items():
+            logger.info(f"{key} = {val}")
+        html_city = "Test Zone".replace(" ", "%20")
+
+        # Only add the extra url parameters if its not using default values
+        current_id = request.node.callspec.id
+        if current_id == "default":
+            response = client.get(f"forecast_zone/{html_city}")
+        else:
+            response = client.get(
+                f"forecast_zone/{html_city}?flatten={params['flatten']}&limit={params['limit']}"
+            )
+
+        # Run the command and verify outputs
+        response_data = response.json()["Test"]
+        validate_values(params, expected_data_group_by_dayname, response, response_data)

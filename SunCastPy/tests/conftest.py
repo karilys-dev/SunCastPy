@@ -80,6 +80,20 @@ def expected_data(mock_get_request, mock_city, sju_data, sju_forecast):
 
 
 @pytest.fixture
+def expected_data_group_by_dayname():
+    return {
+        "Sunday 2026-03-22": {"default": 8, "flattened": 3},
+        "Monday 2026-03-23": {"default": 24, "flattened": 6},
+        "Tuesday 2026-03-24": {"default": 24, "flattened": 4},
+        "Wednesday 2026-03-25": {"default": 24, "flattened": 3},
+        "Thursday 2026-03-26": {"default": 24, "flattened": 2},
+        "Friday 2026-03-27": {"default": 24, "flattened": 3},
+        "Saturday 2026-03-28": {"default": 24, "flattened": 3},
+        "Sunday 2026-03-29": {"default": 4, "flattened": 1},
+    }
+
+
+@pytest.fixture
 def mock_city(monkeypatch, sju_data):
     fake_city = {
         "Test": {
@@ -89,11 +103,18 @@ def mock_city(monkeypatch, sju_data):
             "forecastZone": sju_data["properties"]["forecastZone"],
         }
     }
-
+    fake_zone = {
+        "Test Zone": {
+            "cities": ["Test"],
+            "url": fake_city["Test"]["forecastZone"],
+            "location": "Test",
+        }
+    }
     monkeypatch.setattr(
         "SunCastPy.models.NOAA.base_local_forecast.SJU_ZONES", fake_city
     )
     monkeypatch.setattr("SunCastPy.data.zones.COORDINATES", fake_city)
+    monkeypatch.setattr("SunCastPy.report.zone.SJU_ZONES_GROUPED", fake_zone)
 
 
 @pytest.fixture

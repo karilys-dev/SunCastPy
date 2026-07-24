@@ -18,12 +18,17 @@ class Test_weekly_forecast:
         ),
     )
     def test_weekly_forecast_object(
-        self, test_data, data_type, mock_datetime_today, today_str, expected_data
+        self,
+        test_data,
+        data_type,
+        mock_datetime_today,
+        today_str,
+        expected_data_group_by_dayname,
     ):
         data: LocalForecast = test_data[data_type]["LocalForecast"]
         weekly_object: WeeklyForecast = data.group_by_date()
         grouped: dict = weekly_object.weekly
-        expected = expected_data["group_by_dayname"]
+        expected = expected_data_group_by_dayname
         duplicate_dayname = "Sunday 2026-03-29"
 
         # Confirm that the object is of the correct type

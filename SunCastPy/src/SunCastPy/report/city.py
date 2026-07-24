@@ -26,11 +26,14 @@ def get_city_forecast(kwargs: dict) -> LocalForecast:
     return current_weather
 
 
+# pylint: disable=inconsistent-return-statements
+# avoid adding an additional line to return None
 def report_forecast(
     data: LocalForecast,
     output: Path | None = None,
     group_by: str | None = "",
-):
+    html_report: bool = False,
+) -> str | None:
     """Create a report for the city.
     If output is provided it will create html. Otherwise print to console.
 
@@ -39,8 +42,8 @@ def report_forecast(
         output (Path | None, optional): Location to save html files. Defaults to None.
         group_by (str | None, optional): Group the data.
     """
-    location: str = data.location
-    if output:
+    if output or html_report:  # skipped: reason covered in robot framework
+        location: str = data.location
         grouped_weather: dict[str, list[Forecast]] = data.group_by("date")
         logger.info("Creating html report")
         html = render_html(
@@ -48,10 +51,13 @@ def report_forecast(
             location=location,
             template="forecast.html.j2",
         )
-        export_html(data=html, output_dir=output, name="index.html")
-        logger.info("Report saved to output directory.")
+        if output:
+            export_html(data=html, output_dir=output, name="index.html")
+            logger.info("Report saved to output directory.")
+        else:
+            return html
 
-    else:
+    else:  # skipped: reason covered test_current_weather.py::test_print_LocalForecast
         if group_by:
             print_current_weather(data.group_by(group_by))
         print_current_weather(current_weather=data)
@@ -61,6 +67,7 @@ def main(
     kwargs: dict,
     output: Path | None = None,
     group_by: str | None = "",
+    html_report: bool = False,
 ):
     """Create the report for the city
 
@@ -70,8 +77,9 @@ def main(
         flatten (bool, optional): Join concurrent time slots.
     """
 
-    report_forecast(
+    return report_forecast(
         data=get_city_forecast(kwargs=kwargs),
         output=output,
         group_by=group_by,
+        html_report=html_report,
     )
