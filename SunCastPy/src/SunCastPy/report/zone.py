@@ -7,6 +7,7 @@ from SunCastPy.data.zones_url import SJU_ZONES_GROUPED
 from SunCastPy.models.NOAA.base_local_forecast import LocalForecast
 from SunCastPy.utils.export_file import export_html
 from SunCastPy.utils.html_renderer import render_html, render_index
+from SunCastPy.utils.utils import verify_list_options
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +27,7 @@ def get_forecast_all_cities_in_zone(
     Returns:
         dict[str, LocalForecast]: Forecasts for all of the cities in the zone
     """
+    zone_name = verify_list_options(zone_name, list(SJU_ZONES_GROUPED))
     forecast_cities = {}
     logger.info(f"Initiating forecast retrieval for all cities in [{zone_name}]")
     for city in SJU_ZONES_GROUPED[zone_name]["cities"]:
