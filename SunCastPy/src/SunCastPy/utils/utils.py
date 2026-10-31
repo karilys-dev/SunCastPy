@@ -123,7 +123,7 @@ def verify_list_options(verify_name: str, defaults_list: list) -> str:
             (c for c in defaults_list if c.casefold() == verify_name.casefold()), None
         )
         if match:
-            return match
+            return str(match)
         # Find the closest match
         suggestions = get_close_matches(
             verify_name,
