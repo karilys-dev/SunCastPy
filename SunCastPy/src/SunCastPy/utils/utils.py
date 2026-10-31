@@ -1,5 +1,6 @@
 """Standardize procedures and have a consistent error message."""
 
+from difflib import get_close_matches
 import json
 from datetime import datetime
 
@@ -81,7 +82,9 @@ def get_api_details(latitude: float, longitude: float, **kwargs) -> dict[str, di
     Returns:
         dict[str, dict]: data from NOAA
     """
-    return get_request(f"https://api.weather.gov/points/{latitude},{longitude}", **kwargs)
+    return get_request(
+        f"https://api.weather.gov/points/{latitude},{longitude}", **kwargs
+    )
 
 
 def get_hourly_forecast_url(data: dict) -> str:
@@ -103,3 +106,37 @@ def get_json_data(json_file) -> dict[str, dict[str, str]]:
     """Get the data from a json file"""
     with open(json_file, mode="r", encoding="utf-8") as fp:
         return json.load(fp)
+
+
+def verify_list_options(verify_name: str, defaults_list: list) -> str:
+    """Verify if the zone is valid otherwise raise error with suggested fix
+
+    Args:
+        zone_name (str): Name of the zone
+
+    Raises:
+        ValueError: Show that the zone is invalid and list of suggested names
+    """
+    if verify_name not in defaults_list:
+        # Is it a lowercase mismatch?
+        match = next(
+            (c for c in defaults_list if c.casefold() == verify_name.casefold()), None
+        )
+        if match:
+            return str(match)
+        # Find the closest match
+        suggestions = get_close_matches(
+            verify_name,
+            defaults_list,
+            n=3,
+            cutoff=0.4,
+        )
+
+        detail = f"Invalid zone '{verify_name}'."
+
+        if suggestions:
+            detail += f" Did you mean: '{', '.join(suggestions)}'?"
+
+        detail += f" Valid zones: {', '.join(defaults_list)}."
+        raise ValueError(detail)
+    return verify_name

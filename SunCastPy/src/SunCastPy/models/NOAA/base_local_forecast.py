@@ -2,6 +2,7 @@
 
 from collections import defaultdict
 from datetime import datetime, time, timedelta
+from SunCastPy.utils.utils import verify_list_options
 
 from SunCastPy.data.zones_url import SJU_ZONES
 from SunCastPy.models.NOAA.forecast import Forecast
@@ -33,7 +34,7 @@ class LocalForecast:
         self.periods: list[dict] = [{}]
         self.location: str = ""
         if city:
-            self.location = city
+            self.location = verify_list_options(city, list(SJU_ZONES))
             _periods = SJU_ZONES[city]["url"]
         elif latitude is not None and longitude is not None:
             _details = get_api_details(latitude=latitude, longitude=longitude)
