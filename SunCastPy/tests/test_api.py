@@ -1,4 +1,5 @@
 import logging
+import re
 
 import pytest
 from fastapi.testclient import TestClient
@@ -50,10 +51,10 @@ class Test_City_Forecast:
         # Only add the extra url parameters if its not using default values
         current_id = request.node.callspec.id
         if current_id == "default":
-            response = client.get(f"/forecast_city/{html_city}")
+            response = client.get(f"/api/city/{html_city}")
         else:
             response = client.get(
-                f"/forecast_city/{html_city}?flatten={params['flatten']}&limit={params['limit']}"
+                f"/api/city/{html_city}?flatten={params['flatten']}&limit={params['limit']}"
             )
 
         # Run the command and verify outputs
@@ -62,7 +63,7 @@ class Test_City_Forecast:
 
     def test_city_report(self, mock_get_request):
         html_city = DEFAULTS["city"].replace(" ", "%20")
-        response = client.get(f"/report/{html_city}")
+        response = client.get(f"/forecast/{html_city}")
         assert response.status_code == 200
         assert response.headers["content-type"].startswith("text/html")
         assert "<html" in response.text.lower()
@@ -73,19 +74,38 @@ class Test_Invalid_Input:
     @pytest.mark.parametrize(
         ("url"),
         (
-            pytest.param("forecast_city/Test", id="city"),
-            pytest.param("forecast_zone/Test Zone", id="zone"),
-            pytest.param("report/Test", id="city_report"),
+            pytest.param("api/city/Test", id="city"),
+            pytest.param("api/zone/Test Zone", id="zone"),
+            pytest.param("forecast/Test", id="city_report"),
         ),
     )
     def test_exceded_limit(self, mock_city, mock_get_request, url):
         response = client.get(f"/{url}?flatten={DEFAULTS['flatten']}&limit=10")
 
+        assert response.status_code == 422
+
+        error = response.json()["detail"][0]
+
+        assert error["type"] == "less_than_equal"
+        assert error["loc"] == ["query", "limit"]
+        assert error["msg"] == "Input should be less than or equal to 7"
+
+    @pytest.mark.parametrize(
+        ("url"),
+        (
+            pytest.param("api/city/unknown", id="city"),
+            pytest.param("api/zone/unknown", id="zone"),
+            pytest.param("forecast/unknown", id="city_report"),
+        ),
+    )
+    def test_invalid_param(self, mock_city, mock_get_request, url):
+        response = client.get(f"/{url}?flatten={DEFAULTS['flatten']}")
+
         assert response.status_code == 404
 
-        assert response.json() == {
-            "detail": "Invalid number of days to limit the forecast."
-        }
+        expected_pattern = r"^Invalid zone 'unknown'\. Valid zones: Test( Zone)?\.$"
+
+        assert re.search(expected_pattern, response.json()["detail"])
 
 
 class Test_Zone_Forecast:
@@ -115,10 +135,10 @@ class Test_Zone_Forecast:
         # Only add the extra url parameters if its not using default values
         current_id = request.node.callspec.id
         if current_id == "default":
-            response = client.get(f"forecast_zone/{html_city}")
+            response = client.get(f"api/zone/{html_city}")
         else:
             response = client.get(
-                f"forecast_zone/{html_city}?flatten={params['flatten']}&limit={params['limit']}"
+                f"api/zone/{html_city}?flatten={params['flatten']}&limit={params['limit']}"
             )
 
         # Run the command and verify outputs

@@ -1,7 +1,9 @@
+# mypy: disable-error-code="return, no-untyped-def"
 """Module used for forecast API"""
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Path, Query
 from fastapi.responses import HTMLResponse
+from starlette import status
 
 from SunCastPy.report.city import get_city_forecast as city_forecast
 from SunCastPy.report.city import main as city_report
@@ -10,11 +12,11 @@ from SunCastPy.report.zone import get_forecast_all_cities_in_zone as zone_report
 app = FastAPI(title="SunCast API", version="1.0.0")
 
 
-@app.get("/forecast_city/{city}")
+@app.get("/api/city/{city}", status_code=status.HTTP_200_OK)
 def forecast_city(
-    city: str,
-    flatten: bool = True,
-    limit: int = 1,
+    city: str = Path(min_length=3, max_length=12),
+    flatten: bool = Query(default=True),
+    limit: int = Query(ge=1, le=7, default=1),
 ):
     """
     Returns the forecast for the requested city.
@@ -37,11 +39,11 @@ def forecast_city(
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
-@app.get("/forecast_zone/{zone_name}")
+@app.get("/api/zone/{zone_name}", status_code=status.HTTP_200_OK)
 def forecast_zone(
-    zone_name: str,
-    flatten: bool = True,
-    limit: int = 1,
+    zone_name: str = Path(min_length=3, max_length=50),
+    flatten: bool = Query(default=True),
+    limit: int = Query(ge=1, le=7, default=1),
 ):
     """
     Returns the forecast for the requested city.
@@ -54,12 +56,12 @@ def forecast_zone(
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
-@app.get("/report/{city}", response_class=HTMLResponse)
+@app.get("/forecast/{city}", response_class=HTMLResponse)
 def report_city(
-    city: str,
-    flatten: bool = True,
-    limit: int = 1,
-    group_by: str | None = "",
+    city: str = Path(min_length=3, max_length=12),
+    flatten: bool = Query(default=True),
+    limit: int = Query(ge=1, le=7, default=1),
+    group_by: str | None = Query(min_length=3, max_length=12, default=None),
 ):
     """
     Returns the html report for the requested city.
