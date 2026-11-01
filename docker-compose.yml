@@ -5,7 +5,11 @@ services:
       context: .
       args:
         PYTHON_VERSION : "3.14"
-    image: weather_api:0.0.0
+        USERNAME : devuser
+        USER_UID : 1000
+        USER_GID : 1000
+      target: ${TARGET:-prod}
+    image: weather_api:0.0.0-${TARGET:-prod}
     container_name: suncastpy-api
     ports:
       - "8000:8000"

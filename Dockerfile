@@ -25,11 +25,10 @@ ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
 # Create user
-# Update pip and create virtual environment
 # Ensure home + workspace are owned correctly
-ARG USERNAME=devuser
-ARG USER_UID=1000
-ARG USER_GID=1000
+ARG USERNAME
+ARG USER_UID
+ARG USER_GID
 
 RUN groupadd --gid $USER_GID $USERNAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
@@ -40,6 +39,9 @@ RUN groupadd --gid $USER_GID $USERNAME \
 # Switch to non-root user
 USER $USERNAME
 WORKDIR /workspace
+
+FROM base AS prod
+ARG USERNAME
 
 COPY --chown=$USERNAME:$USERNAME SunCastPy/pyproject.toml README.md /workspace/
 COPY --chown=$USERNAME:$USERNAME SunCastPy/src /workspace/src

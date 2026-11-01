@@ -1,6 +1,6 @@
 services:
   app:
-    image: "weather:latest"
+    image: "weather_api:0.0.0-base"
 
     volumes:
       - ..:/workspace:cached
