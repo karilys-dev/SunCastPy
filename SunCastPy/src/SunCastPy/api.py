@@ -1,14 +1,17 @@
 # mypy: disable-error-code="return, no-untyped-def"
 """Module used for forecast API"""
 
-from fastapi import FastAPI, HTTPException, Path, Query
+from fastapi import FastAPI, HTTPException, Path, Query, Request
 from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 from starlette import status
 
 from SunCastPy.report.city import get_city_forecast as city_forecast
-from SunCastPy.report.city import main as city_report
 from SunCastPy.report.zone import get_forecast_all_cities_in_zone as zone_report
+from SunCastPy.utils.html_renderer import env
+from SunCastPy.utils.utils import format_hour
 
+templates = Jinja2Templates(directory="templates")
 app = FastAPI(title="SunCast API", version="1.0.0")
 
 
@@ -58,27 +61,33 @@ def forecast_zone(
 
 @app.get("/forecast/{city}", response_class=HTMLResponse)
 def report_city(
+    request: Request,
     city: str = Path(min_length=3, max_length=12),
-    flatten: bool = Query(default=True),
+    summarize: bool = Query(default=True),
     limit: int = Query(ge=1, le=7, default=1),
-    group_by: str | None = Query(min_length=3, max_length=12, default=None),
 ):
     """
     Returns the html report for the requested city.
     """
 
     try:
-        return HTMLResponse(
-            content=city_report(
-                {
-                    "city": city,
-                    "flatten": flatten,
-                    "limit": limit,
-                },
-                group_by=group_by,
-                html_report=True,
-            )
+        data = city_forecast(
+            kwargs={
+                "city": city,
+                "flatten": summarize,
+                "limit": limit,
+            }
+        )
+        template = env.get_template("forecast.html.j2")
+        html_content = template.render(
+            request=request,
+            summarize=summarize,
+            limit=limit,
+            grouped=data.group_by("date"),
+            format_hour=format_hour,
+            location=data.location,
         )
 
+        return HTMLResponse(content=html_content)
     except Exception as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc

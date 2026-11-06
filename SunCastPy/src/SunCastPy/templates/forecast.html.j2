@@ -33,6 +33,31 @@
     <body>
         <h1>🌤 SunCast Forecast</h1>
         <h2 style="text-align: center;">{{ location }}</h2>
+        <form method="get" action="/forecast/{{ location }}" id="learningForm">
+            <h3>Summarize?</h3>
+            <label>
+                <input type="radio"
+                       name="summarize"
+                       value="true"
+                       {% if summarize %}checked{% endif %}
+                       onchange="this.form.submit()">
+                Yes
+            </label>
+            <label>
+                <input type="radio"
+                       name="summarize"
+                       value="false"
+                       {% if not summarize %}checked{% endif %}
+                       onchange="this.form.submit()">
+                No
+            </label>
+            <h3>Extended Forecast</h3>
+            <select name="limit" onchange="this.form.submit()">
+                <option value="1" {% if limit==1 %}selected{% endif %}>1</option>
+                <option value="3" {% if limit==5 %}selected{% endif %}>3</option>
+                <option value="7" {% if limit==7 %}selected{% endif %}>7</option>
+            </select>
+        </form>
         {% for day, forecasts in grouped.items() %}
             <div class="day">
                 <h2>{{ day }}</h2>
