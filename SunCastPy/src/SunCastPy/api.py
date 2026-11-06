@@ -3,16 +3,23 @@
 
 from fastapi import FastAPI, HTTPException, Path, Query, Request
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette import status
 
 from SunCastPy.report.city import get_city_forecast as city_forecast
 from SunCastPy.report.zone import get_forecast_all_cities_in_zone as zone_report
-from SunCastPy.utils.html_renderer import env
+from SunCastPy.utils.html_renderer import BASE_DIR
 from SunCastPy.utils.utils import format_hour
 
 templates = Jinja2Templates(directory="templates")
 app = FastAPI(title="SunCast API", version="1.0.0")
+env = templates.env
+app.mount(
+    "/static",
+    StaticFiles(directory=BASE_DIR / "static"),
+    name="static",
+)
 
 
 @app.get("/api/city/{city}", status_code=status.HTTP_200_OK)

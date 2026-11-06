@@ -7,9 +7,11 @@ from jinja2 import Environment, FileSystemLoader
 from SunCastPy.models.NOAA.forecast import Forecast
 from SunCastPy.utils.utils import format_hour
 
-template_dir = Path(__file__).parent.parent / "templates"
+BASE_DIR = Path(__file__).parent.parent
 
-env = Environment(loader=FileSystemLoader(template_dir), autoescape=True)
+env = Environment(
+    loader=FileSystemLoader(BASE_DIR.joinpath("templates")), autoescape=True
+)
 
 
 def render_index(locations: list[dict]) -> str:
