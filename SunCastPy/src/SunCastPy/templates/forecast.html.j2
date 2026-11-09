@@ -38,6 +38,7 @@
                 <label for="limit">Extended Forecast</label>
                 <select name="limit" id="limit" onchange="this.form.submit()">
                     <option value="1" {% if limit == 1 %}selected{% endif %}>1</option>
+                    <option value="3" {% if limit == 3 %}selected{% endif %}>3</option>
                     <option value="5" {% if limit == 5 %}selected{% endif %}>5</option>
                     <option value="7" {% if limit == 7 %}selected{% endif %}>7</option>
                 </select>
