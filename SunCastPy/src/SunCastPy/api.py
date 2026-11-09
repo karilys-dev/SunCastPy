@@ -1,12 +1,15 @@
 # mypy: disable-error-code="return, no-untyped-def"
 """Module used for forecast API"""
 
+from collections import namedtuple
+
 from fastapi import FastAPI, HTTPException, Path, Query, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette import status
 
+from SunCastPy.data.zones_url import SJU_ZONES
 from SunCastPy.report.city import get_city_forecast as city_forecast
 from SunCastPy.report.zone import get_forecast_all_cities_in_zone as zone_report
 from SunCastPy.utils.html_renderer import BASE_DIR
@@ -95,6 +98,26 @@ def report_city(
             location=data.location,
         )
 
+        return HTMLResponse(content=html_content)
+    except Exception as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@app.get("/", response_class=HTMLResponse)
+def home_page(request: Request):
+    """
+    Returns the html index for all cities.
+    """
+    try:
+        Location = namedtuple("Location", "file name")
+        location = [
+            Location(file=f"/forecast/{zone}", name=zone) for zone in SJU_ZONES.keys()
+        ]
+        template = env.get_template("index.html.j2")
+        html_content = template.render(
+            request=request,
+            locations=location,
+        )
         return HTMLResponse(content=html_content)
     except Exception as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
