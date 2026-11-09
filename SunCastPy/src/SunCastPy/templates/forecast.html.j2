@@ -4,39 +4,15 @@
         <meta charset="utf-8" />
         <meta name="keywords" content="weather" />
         <meta name="description" content="weather forecast" />
+        <title>SunCast Forecast</title>
         <link rel="stylesheet"
               href="{{ url_for('static', path='css/forecast.css') }}">
-    </head>
-    <head>
-        <title>SunCast Forecast</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                background: #0f172a;
-                color: #e2e8f0;
-                padding: 20px;
-            }
-            h1 {
-                text-align: center;
-            }
-            .day {
-                margin-bottom: 20px;
-                padding: 15px;
-                border-radius: 10px;
-                background: #1e293b;
-            }
-            .forecast {
-                margin-left: 10px;
-                padding: 5px 0;
-                border-bottom: 1px solid #334155;
-            }
-        </style>
     </head>
     <body>
         <h1>🌤 SunCast Forecast</h1>
         <h2 style="text-align: center;">{{ location }}</h2>
         <form method="get"
-              action="/forecast/{{ location }}"
+              action="{{ url_for('forecast', city=location) }}"
               id="learningForm"
               class="forecast-controls">
             <fieldset class="control-group">

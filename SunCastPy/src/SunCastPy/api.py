@@ -69,7 +69,7 @@ def forecast_zone(
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
-@app.get("/forecast/{city}", response_class=HTMLResponse)
+@app.get("/forecast/{city}", response_class=HTMLResponse, name="forecast")
 def report_city(
     request: Request,
     city: str = Path(min_length=3, max_length=12),
