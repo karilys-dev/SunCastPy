@@ -1,17 +1,17 @@
 """Module that creates html reports using jinja2"""
 
+from importlib.resources import files
 from pathlib import Path
 
-from jinja2 import Environment, FileSystemLoader
+from fastapi.templating import Jinja2Templates
 
 from SunCastPy.models.NOAA.forecast import Forecast
 from SunCastPy.utils.utils import format_hour
 
-BASE_DIR = Path(__file__).parent.parent
+BASE_DIR = Path(files("SunCastPy").joinpath("web"))
 
-env = Environment(
-    loader=FileSystemLoader(BASE_DIR.joinpath("templates")), autoescape=True
-)
+templates = Jinja2Templates(directory=BASE_DIR / "templates")
+env = templates.env
 
 
 def render_index(locations: list[dict]) -> str:

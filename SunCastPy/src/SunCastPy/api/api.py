@@ -15,7 +15,7 @@ from SunCastPy.report.zone import get_forecast_all_cities_in_zone as zone_report
 from SunCastPy.utils.html_renderer import BASE_DIR
 from SunCastPy.utils.utils import format_hour
 
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory=BASE_DIR / "templates")
 app = FastAPI(title="SunCast API", version="1.0.0")
 env = templates.env
 app.mount(
