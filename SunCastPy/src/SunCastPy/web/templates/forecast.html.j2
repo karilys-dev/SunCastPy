@@ -5,45 +5,19 @@
         <meta name="keywords" content="weather" />
         <meta name="description" content="weather forecast" />
         <title>SunCast Forecast</title>
-        <link rel="stylesheet"
-              href="{{ url_for('static', path='css/forecast.css') }}">
+        {% if show_api_controls | default(false) %}
+            <link rel="stylesheet"
+                  href="{{ url_for('static', path='/css/forecast.css') }}">
+        {% else %}
+            <style>{% include "css/forecast.css" %}</style>
+        {% endif %}
     </head>
     <body>
         <h1>🌤 SunCast Forecast</h1>
         <h2 style="text-align: center;">{{ location }}</h2>
-        <form method="get"
-              action="{{ url_for('forecast', city=location) }}"
-              id="learningForm"
-              class="forecast-controls">
-            <fieldset class="control-group">
-                <legend>Summarize?</legend>
-                <label>
-                    <input type="radio"
-                           name="summarize"
-                           value="true"
-                           {% if summarize %}checked{% endif %}
-                           onchange="this.form.submit()">
-                    Yes
-                </label>
-                <label>
-                    <input type="radio"
-                           name="summarize"
-                           value="false"
-                           {% if not summarize %}checked{% endif %}
-                           onchange="this.form.submit()">
-                    No
-                </label>
-            </fieldset>
-            <div class="control-group">
-                <label for="limit">Extended Forecast</label>
-                <select name="limit" id="limit" onchange="this.form.submit()">
-                    <option value="1" {% if limit == 1 %}selected{% endif %}>1</option>
-                    <option value="3" {% if limit == 3 %}selected{% endif %}>3</option>
-                    <option value="5" {% if limit == 5 %}selected{% endif %}>5</option>
-                    <option value="7" {% if limit == 7 %}selected{% endif %}>7</option>
-                </select>
-            </div>
-        </form>
+        {% if show_api_controls | default(false) %}
+            {% include "partials/forecast_controls.html.j2" %}
+        {% endif %}
         {% for day, forecasts in grouped.items() %}
             <div class="day">
                 <h2>{{ day }}</h2>

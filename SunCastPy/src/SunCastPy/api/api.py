@@ -96,6 +96,7 @@ def report_city(
             grouped=data.group_by("date"),
             format_hour=format_hour,
             location=data.location,
+            show_api_controls=True,
         )
 
         return HTMLResponse(content=html_content)
