@@ -4,35 +4,20 @@
         <meta charset="utf-8" />
         <meta name="keywords" content="weather" />
         <meta name="description" content="weather forecast" />
-    </head>
-    <head>
         <title>SunCast Forecast</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                background: #0f172a;
-                color: #e2e8f0;
-                padding: 20px;
-            }
-            h1 {
-                text-align: center;
-            }
-            .day {
-                margin-bottom: 20px;
-                padding: 15px;
-                border-radius: 10px;
-                background: #1e293b;
-            }
-            .forecast {
-                margin-left: 10px;
-                padding: 5px 0;
-                border-bottom: 1px solid #334155;
-            }
-        </style>
+        {% if show_api_controls | default(false) %}
+            <link rel="stylesheet"
+                  href="{{ url_for('static', path='/css/forecast.css') }}">
+        {% else %}
+            <style>{% include "css/forecast.css" %}</style>
+        {% endif %}
     </head>
     <body>
         <h1>🌤 SunCast Forecast</h1>
         <h2 style="text-align: center;">{{ location }}</h2>
+        {% if show_api_controls | default(false) %}
+            {% include "partials/forecast_controls.html.j2" %}
+        {% endif %}
         {% for day, forecasts in grouped.items() %}
             <div class="day">
                 <h2>{{ day }}</h2>

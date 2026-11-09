@@ -4,7 +4,7 @@ import re
 import pytest
 from fastapi.testclient import TestClient
 
-from SunCastPy.api import app
+from SunCastPy.api.api import app
 
 logger = logging.getLogger(__name__)
 client = TestClient(app)
