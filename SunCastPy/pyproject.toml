@@ -25,7 +25,7 @@ scan = ['semgrep']
 aws = ['fastapi', 'httpx2', 'uvicorn']
 
 [project.scripts]
-forecast = "SunCastPy.main:main"
+forecast = "SunCastPy.cli.main:main"
 
 [tool.setuptools]
 
@@ -52,10 +52,10 @@ addopts = """
     --cov=SunCastPy
     --cov-report=term-missing
     --cov-fail-under=90
-    --cov-report=html:reports/coverage
-    --html=reports/pytest-report.html
+    --cov-report=html:/tmp/artifacts/python/reports/coverage
+    --html=/tmp/artifacts/python/reports/pytest-report.html
     --self-contained-html
-    --junitxml=reports/junit.xml
+    --junitxml=/tmp/artifacts/python/reports/junit.xml
     -p no:cacheprovider
     -vv
     -s 
