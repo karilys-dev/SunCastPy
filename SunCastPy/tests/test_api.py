@@ -144,3 +144,39 @@ class Test_Zone_Forecast:
         # Run the command and verify outputs
         response_data = response.json()["Test"]
         validate_values(params, expected_data_group_by_dayname, response, response_data)
+
+
+class Test_Home_Page:
+    def test_home_page_template_exception(self, monkeypatch):
+        err_msg = "Template not found"
+
+        def mock_get_template(*args, **kwargs):
+            raise Exception(err_msg)
+
+        monkeypatch.setattr(
+            "SunCastPy.api.api.env.get_template",
+            mock_get_template,
+        )
+
+        response = client.get("/")
+
+        assert response.status_code == 404
+        assert response.json()["detail"] == err_msg
+
+    def test_home_page(self, mock_get_request):
+        response = client.get("/")
+        assert response.status_code == 200, response.text
+        assert response.headers["content-type"].startswith("text/html")
+        assert "<html" in response.text.lower()
+
+        expected = (
+            f'<div class="card"> '
+            f'<a href="/forecast/{DEFAULTS["city"]}">'
+            f"{DEFAULTS['city']}</a> </div>"
+        )
+
+        normalized_response = re.sub(r"\s+", " ", response.text)
+
+        assert (
+            expected in normalized_response
+        ), f"Expected button for city {DEFAULTS['city']}"
