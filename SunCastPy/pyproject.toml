@@ -52,10 +52,10 @@ addopts = """
     --cov=SunCastPy
     --cov-report=term-missing
     --cov-fail-under=90
-    --cov-report=html:/tmp/artifacts/python/reports/coverage
-    --html=/tmp/artifacts/python/reports/pytest-report.html
+    --cov-report=html:reports/coverage
+    --html=reports/pytest-report.html
     --self-contained-html
-    --junitxml=/tmp/artifacts/python/reports/junit.xml
+    --junitxml=reports/junit.xml
     -p no:cacheprovider
     -vv
     -s 
