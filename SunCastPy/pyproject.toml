@@ -25,7 +25,7 @@ scan = ['semgrep']
 aws = ['fastapi', 'httpx2', 'uvicorn']
 
 [project.scripts]
-forecast = "SunCastPy.main:main"
+forecast = "SunCastPy.cli.main:main"
 
 [tool.setuptools]
 
@@ -35,7 +35,14 @@ include = ["*"]
 exclude = ["test*"]
 
 [tool.setuptools.package-data]
-SunCastPy = ["templates/*.j2", "data/*"]
+SunCastPy = [
+    "data/*",
+    "web/templates/*.j2",
+    "web/templates/*.html",
+    "web/templates/partials/*.j2",
+    "web/static/css/*.css",
+    "web/static/js/*.js",
+]
 
 # Optional dynamic versioning
 # [tool.setuptools.dynamic]
@@ -53,7 +60,7 @@ addopts = """
     -p no:cacheprovider
     -vv
     -s 
-    --log-cli-level=INFO
+    --log-cli-level=ERROR
 """
 
 [tool.coverage.run]
@@ -103,10 +110,12 @@ disable = [
 python_version = "3.11"
 strict = true
 ignore_missing_imports = true
+cache_dir = "/dev/null"  # Use "nul" on Windows
 
 [tool.ruff]
 line-length = 88
 target-version = "py312"
+cache-dir = "/tmp/ruff"  # Note: This redirects rather than strictly disables; see CLI flag below
 
 [tool.ruff.lint]
 select = ["E", "F"]
