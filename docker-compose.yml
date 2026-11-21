@@ -12,7 +12,7 @@ services:
         USER_GID: 1000
         VERSION: ${VERSION}
       target: ${TARGET:-prod}
-    image: weather_api:${IMAGE_VERSION:-${VERSION_LABEL}}
+    image: ${IMAGE_NAME:-weather_api}:${IMAGE_VERSION:-${VERSION_LABEL}}
     container_name: suncastpy-api
     ports:
       - "8000:8000"
