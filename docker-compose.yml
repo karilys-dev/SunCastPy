@@ -1,15 +1,18 @@
-
 services:
   suncastpy:
-    build: 
+    build:
       context: .
+      labels:
+        org.opencontainers.image.version: ${VERSION_LABEL}
+        org.opencontainers.image.revision: ${GIT_COMMIT}
       args:
-        PYTHON_VERSION : "3.14"
-        USERNAME : devuser
-        USER_UID : 1000
-        USER_GID : 1000
+        PYTHON_VERSION: "3.14"
+        USERNAME: devuser
+        USER_UID: 1000
+        USER_GID: 1000
+        VERSION: ${VERSION}
       target: ${TARGET:-prod}
-    image: weather_api:0.0.0-${TARGET:-prod}
+    image: weather_api:${IMAGE_VERSION:-${VERSION_LABEL}}
     container_name: suncastpy-api
     ports:
       - "8000:8000"
