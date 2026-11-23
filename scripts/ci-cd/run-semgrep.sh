@@ -2,7 +2,7 @@
 set -euo pipefail
 
 CONFIG_DIR="$( realpath $(dirname "${BASH_SOURCE[0]}") )"
-DIR="$( realpath $(dirname "${BASH_SOURCE[0]}")/../ )"
+DIR="$( realpath $(dirname "${BASH_SOURCE[0]}")/ )"
 
 install(){
   if command -v semgrep &> /dev/null; then
