@@ -7,8 +7,8 @@ install(){
       echo "Success: robot is installed and ready."
   else
       echo "Installing: robot-framework."
-      DIR="$( realpath $(dirname "${BASH_SOURCE[0]}")/ )"
-      pip install ${DIR}/SunCastPy[test-robot]
+      DIR="$( realpath $(dirname "${BASH_SOURCE[0]}")/../../ )"
+      pip install ${DIR}/.[test-robot]
   fi
 }
 
