@@ -15,7 +15,7 @@ permissions:
 #     working-directory: SunCastPy
 
 env:
-  OUTPUT_DIR: ${{ github.workspace }}/SunCastPy/reports
+  OUTPUT_DIR: ${{ github.workspace }}/reports
   SCRIPTS_DIR: ${{ github.workspace }}/scripts
 
 jobs:
