@@ -16,23 +16,26 @@ if ! docker compose version >/dev/null 2>&1; then
 fi
 
 
+if [[ -z "${VERSION:-}" ]]; then
+    if ! python3 -c "import setuptools_scm" >/dev/null 2>&1; then
+        echo "Warning: setuptools-scm is not installed in the active Python environment." >&2
+        TMP_VENV="$(mktemp -d)"
+        echo "Creating temp venv at ${TMP_VENV}"
+        trap 'rm -rf "$TMP_VENV"' EXIT
 
-if ! python3 -c "import setuptools_scm" >/dev/null 2>&1; then
-    echo "Warning: setuptools-scm is not installed in the active Python environment." >&2
-    TMP_VENV="$(mktemp -d)"
-    echo "Creating temp venv at ${TMP_VENV}"
-    trap 'rm -rf "$TMP_VENV"' EXIT
+        python3 -m venv "$TMP_VENV"
+        source ${TMP_VENV}/bin/activate
 
-    python3 -m venv "$TMP_VENV"
-    source ${TMP_VENV}/bin/activate
-    which python
-    echo "Installing setuptools-scm" >&2
-    pip3 install --quiet setuptools-scm
+        echo "Installing setuptools-scm" >&2
+        pip3 install --quiet setuptools-scm
+    fi    
+    VERSION="$(python3 -m setuptools_scm)"
+    VERSION_LABEL="$(python3 -m setuptools_scm | tr '+' '-')"
+else
+    VERSION_LABEL="$(echo ${VERSION} | tr '+' '-')"
 fi
 
-# Keep the setuptools_scm version, replacing '+' because Docker tags do not allow it.
-VERSION="$(python3 -m setuptools_scm)"
-VERSION_LABEL="$(python3 -m setuptools_scm | tr '+' '-')"
+
 export VERSION 
 export VERSION_LABEL
 export GIT_COMMIT="$(git rev-parse HEAD)"
