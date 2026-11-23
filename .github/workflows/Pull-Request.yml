@@ -10,9 +10,9 @@ permissions:
   actions: read
   checks: write
 
-defaults:
-  run:
-    working-directory: SunCastPy
+# defaults:
+#   run:
+#     working-directory: SunCastPy
 
 env:
   OUTPUT_DIR: ${{ github.workspace }}/SunCastPy/reports
