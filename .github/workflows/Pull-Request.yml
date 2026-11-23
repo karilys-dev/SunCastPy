@@ -39,7 +39,7 @@ jobs:
       # Pytest
       - name: Run tests + generate reports
         id: pytest
-        run: pytest
+        run: pytest ; ls -R
         continue-on-error: true
 
       - name: Publish test summary to PR
