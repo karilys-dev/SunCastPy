@@ -47,7 +47,7 @@ SunCastPy = [
 # [tool.setuptools.dynamic]
 # version = { attr = "app.__version__" }
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["SunCastPy/tests"]
 addopts = """
     --cov=SunCastPy
     --cov-report=term-missing
@@ -58,12 +58,12 @@ addopts = """
     --junitxml=reports/junit.xml
     -p no:cacheprovider
     -vv
-    -s 
+    -s
     --log-cli-level=ERROR
 """
 
 [tool.coverage.run]
-source = ["SunCastPy"]
+source_pkgs = ["SunCastPy"]
 omit = [
     "*/conftest.py",
     "*/test/*",
@@ -72,23 +72,20 @@ omit = [
     "cli_args.py",
 ]
 
-[tool.coverage.paths]
-source = [
-    "SunCastPy",
-    "src/SunCastPy",
-    "SunCastPy/src/SunCastPy",
-    "*/site-packages/SunCastPy",
-]
-
 [tool.coverage.report]
-omit = ["*/conftest.py", "*/test/*", "*/tests/*"]
-exclude_lines = ["pragma: no cover", "def main", "if __name__ == .__main__.:"]
-exclude_also = [
-    "pragma: no cover",
-    "skipped: reason .*", # Regex matching 'skipped: reason <any text>'
+omit = [
+    "*/conftest.py",
+    "*/test/*",
+    "*/tests/*",
 ]
-
-
+exclude_lines = [
+    "pragma: no cover",
+    "def main",
+    "if __name__ == .__main__.:",
+]
+exclude_also = [
+    "skipped: reason .*",
+]
 [tool.pylint.main]
 disable = []
 
