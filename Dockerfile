@@ -42,14 +42,17 @@ WORKDIR /workspace
 
 FROM base AS prod
 ARG USERNAME
+ARG VERSION
 
-COPY --chown=$USERNAME:$USERNAME SunCastPy/pyproject.toml README.md /workspace/
-COPY --chown=$USERNAME:$USERNAME SunCastPy/src /workspace/src
+COPY --chown=$USERNAME:$USERNAME pyproject.toml README.md /workspace/
+COPY --chown=$USERNAME:$USERNAME SunCastPy/src /workspace/SunCastPy/src
 
-RUN pip install --no-cache-dir .[aws]
+RUN VCS_VERSIONING_PRETEND_VERSION_FOR_SUNCASTPY=${VERSION} \
+    SETUPTOOLS_SCM_PRETEND_VERSION_FOR_SUNCASTPY=${VERSION} \
+    pip install --no-cache-dir .[aws]
 
 # FastAPI port
 EXPOSE 8000
 
 ENTRYPOINT ["python", "-m", "uvicorn"]
-CMD ["SunCastPy.api:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["SunCastPy.api.api:app", "--host", "0.0.0.0", "--port", "8000"]

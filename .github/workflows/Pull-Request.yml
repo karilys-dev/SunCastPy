@@ -10,12 +10,12 @@ permissions:
   actions: read
   checks: write
 
-defaults:
-  run:
-    working-directory: SunCastPy
+# defaults:
+#   run:
+#     working-directory: SunCastPy
 
 env:
-  OUTPUT_DIR: ${{ github.workspace }}/SunCastPy/reports
+  OUTPUT_DIR: ${{ github.workspace }}/reports
   SCRIPTS_DIR: ${{ github.workspace }}/scripts
 
 jobs:
@@ -55,7 +55,7 @@ jobs:
         uses: karilys-dev/python-coverage-check-action@v1
         if: always()
         with:
-          working-directory: SunCastPy
+          working-directory: .
 
       # Post Actions
       - name: Upload test reports

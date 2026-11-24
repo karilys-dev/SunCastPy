@@ -4,11 +4,10 @@ from importlib.resources import files
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
-
 from SunCastPy.models.NOAA.forecast import Forecast
 from SunCastPy.utils.utils import format_hour
 
-BASE_DIR = Path(files("SunCastPy").joinpath("web"))
+BASE_DIR = Path(str(files("SunCastPy").joinpath("web")))
 
 env = Environment(loader=FileSystemLoader(BASE_DIR / "templates"), autoescape=True)
 templates = Environment(
@@ -45,9 +44,7 @@ def render_html(
         str: html data for file creation
     """
 
-    template = templates.get_template(template)
-
-    return template.render(
+    return templates.get_template(template).render(
         grouped=grouped_data,
         format_hour=format_hour,
         location=location,

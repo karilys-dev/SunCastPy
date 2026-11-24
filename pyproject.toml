@@ -1,15 +1,14 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = [ "setuptools>=80", "setuptools-scm[simple]>=9.2","wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "SunCastPy"
-version = "0.1.0"
-description = "Starter app to get weather data and estimate if solar panels will charge and if clothes can dry in the sun."
+dynamic = ["version"]
+description = "Starter app to get weather data."
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [{ name = "Karilys Collazo", email = "karilys.learn@gmail.com" }]
-
 dependencies = ["requests", "pydantic", 'jinja2']
 
 [project.optional-dependencies]
@@ -30,7 +29,7 @@ forecast = "SunCastPy.cli.main:main"
 [tool.setuptools]
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["SunCastPy/src"]
 include = ["*"]
 exclude = ["test*"]
 
@@ -48,7 +47,7 @@ SunCastPy = [
 # [tool.setuptools.dynamic]
 # version = { attr = "app.__version__" }
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["SunCastPy/tests"]
 addopts = """
     --cov=SunCastPy
     --cov-report=term-missing
@@ -59,12 +58,12 @@ addopts = """
     --junitxml=reports/junit.xml
     -p no:cacheprovider
     -vv
-    -s 
+    -s
     --log-cli-level=ERROR
 """
 
 [tool.coverage.run]
-source = ["SunCastPy"]
+source_pkgs = ["SunCastPy"]
 omit = [
     "*/conftest.py",
     "*/test/*",
@@ -73,23 +72,20 @@ omit = [
     "cli_args.py",
 ]
 
-[tool.coverage.paths]
-source = [
-    "SunCastPy",
-    "src/SunCastPy",
-    "SunCastPy/src/SunCastPy",
-    "*/site-packages/SunCastPy",
-]
-
 [tool.coverage.report]
-omit = ["*/conftest.py", "*/test/*", "*/tests/*"]
-exclude_lines = ["pragma: no cover", "def main", "if __name__ == .__main__.:"]
-exclude_also = [
-    "pragma: no cover",
-    "skipped: reason .*", # Regex matching 'skipped: reason <any text>'
+omit = [
+    "*/conftest.py",
+    "*/test/*",
+    "*/tests/*",
 ]
-
-
+exclude_lines = [
+    "pragma: no cover",
+    "def main",
+    "if __name__ == .__main__.:",
+]
+exclude_also = [
+    "skipped: reason .*",
+]
 [tool.pylint.main]
 disable = []
 

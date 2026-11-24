@@ -10,7 +10,7 @@ install(){
       echo "Success: semgrep is installed and ready."
   else
       echo "Installing: semgrep."
-      pip install ${DIR}/SunCastPy[scan]
+      pip install ${DIR}/.[scan]
   fi
 }
 
