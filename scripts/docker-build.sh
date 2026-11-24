@@ -34,7 +34,10 @@ setup_vars(){
     else
         VERSION_LABEL="$(echo ${VERSION} | tr '+' '-')"
     fi
-
+    if [ "${GITHUB_REF_TYPE:-}" = "tag" ]; then
+        echo "This is a tag: $GITHUB_REF_NAME"
+        COMPOSE_FILE+=" -f ${DIR}/docker-compose.ci.yml"
+    fi
     export VERSION 
     export VERSION_LABEL
     export GIT_COMMIT="${GIT_COMMIT:-$(git rev-parse HEAD)}"
@@ -43,17 +46,17 @@ setup_vars(){
 }
 
 config(){
-    docker compose -f "${COMPOSE_FILE}" config
+    docker compose -f ${COMPOSE_FILE} config
 }
 
 build(){
     echo "Building docker image"
-    docker compose -f "${COMPOSE_FILE}" build
+    docker compose -f ${COMPOSE_FILE} build
     echo "Built docker image"
 }
 
 push(){
-    docker compose -f "${COMPOSE_FILE}" push
+    docker compose -f ${COMPOSE_FILE} push
 }
 
 usage() {

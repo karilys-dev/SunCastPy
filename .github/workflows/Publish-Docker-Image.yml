@@ -34,6 +34,12 @@ jobs:
             - name: Config Docker Image
               run: ./scripts/docker-build.sh -c
 
+            - name: Set up QEMU
+              uses: docker/setup-qemu-action@v3
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+
             - name: Build Docker Image
               run: ./scripts/docker-build.sh -b
 
