@@ -64,7 +64,7 @@ github_action(){
 }
 
 usage() {
-    echo "Usage: $(basename "$0") [-h help] [-c config] [-b build] [-p push]" >&2
+    echo "Usage: $(basename "$0") [-h help] [-c config] [-b build] [-p push] [-a github_action]" >&2
 }
 
 while getopts ":abcph" opt; do
