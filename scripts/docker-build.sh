@@ -59,12 +59,17 @@ push(){
     docker compose -f ${COMPOSE_FILE} push
 }
 
+github_action(){
+    docker compose -f ${COMPOSE_FILE} build --push
+}
+
 usage() {
     echo "Usage: $(basename "$0") [-h help] [-c config] [-b build] [-p push]" >&2
 }
 
-while getopts ":cbph" opt; do
+while getopts ":abcph" opt; do
     case $opt in
+        a) setup_vars && github_action ;;
         c) setup_vars && config ;;
         b) setup_vars && build ;;
         p) setup_vars && push ;;
