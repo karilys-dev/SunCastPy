@@ -35,10 +35,12 @@ else
     VERSION_LABEL="$(echo ${VERSION} | tr '+' '-')"
 fi
 
-
 export VERSION 
 export VERSION_LABEL
-export GIT_COMMIT="$(git rev-parse HEAD)"
+export GIT_COMMIT="${GIT_COMMIT:-$(git rev-parse HEAD)}"
+export BUILD_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+export SOURCE_URL="${SOURCE_URL:-https://github.com/$(git config --get remote.origin.url | sed -E 's#.*github.com[:/]##; s#\.git$##')}"
+
 docker compose -f "${COMPOSE_FILE}" config
 
 echo "Building docker image"

@@ -3,8 +3,15 @@ services:
     build:
       context: .
       labels:
-        org.opencontainers.image.version: ${VERSION_LABEL}
-        org.opencontainers.image.revision: ${GIT_COMMIT}
+        org.opencontainers.image.version: ${VERSION_LABEL:?Missing Variable. Use ./scripts/docker-build.sh}
+        org.opencontainers.image.revision: ${GIT_COMMIT:?Missing Variable. Use ./scripts/docker-build.sh}
+        org.opencontainers.image.source: "${SOURCE_URL:?Missing Variable. Use ./scripts/docker-build.sh}"
+        org.opencontainers.image.title: "SunCastPy"
+        org.opencontainers.image.description: "Python weather package for Puerto Rico"
+        org.opencontainers.image.url: "${SOURCE_URL:?Missing Variable. Use ./scripts/docker-build.sh}"
+        org.opencontainers.image.documentation: "${SOURCE_URL:?Missing Variable. Use ./scripts/docker-build.sh}#readme"
+        org.opencontainers.image.created: "${BUILD_DATE:-unknown}"
+        org.opencontainers.image.licenses: "MIT"
       args:
         PYTHON_VERSION: "3.14"
         USERNAME: devuser
